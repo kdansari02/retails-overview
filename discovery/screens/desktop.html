@@ -1,0 +1,525 @@
+<!doctype html>
+<!--
+  DISCOVERY SCREEN — Foodbridge Module Retails — "Desktop"
+  Standalone-openable: open this file directly to review in isolation. Also
+  reachable from the wiring hub (../index.html). Same feature set and data as
+  screens/mobile.html, restyled for a large viewport (Addendum 002): persistent
+  category sidebar + product grid + sticky cart panel, top nav instead of a
+  bottom tab bar, modal dialogs instead of bottom sheets for Company Info and
+  Order Detail. Deliberately NOT a copy of the legacy admin-table as-is screen
+  (see inputs/.../14-26-59...annotation.md) — same features, modern chrome.
+  Rules: HTML/CSS/vanilla JS only. No frameworks, no build step, no real API
+  calls. Data from ../seed-data/seed.json. Disposable — informs the SSOTs,
+  not imported by development/.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Role Play Wholesale — Desktop</title>
+<style>
+  :root {
+    color-scheme: light;
+    --brand: #17a34a;
+    --brand-dark: #128a43;
+    --brand-tint: #e8f7ee;
+    --ink: #16181d;
+    --muted: #7a8291;
+    --line: #e7e8eb;
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --amber-bg: #fef3c7; --amber-fg: #92680b;
+    --blue-bg: #dbeafe; --blue-fg: #1d4ed8;
+    --green-bg: #d9f5e3; --green-fg: #0f7a3d;
+    --danger: #dc2626;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(16,24,40,.05), 0 2px 6px rgba(16,24,40,.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  a { color: var(--brand-dark); }
+
+  header.topbar {
+    background: var(--card); border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px; position: sticky; top: 0; z-index: 15;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand .logo { width: 38px; height: 38px; border-radius: 11px; background: var(--brand); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .brand .name { font-weight: 700; font-size: 17px; letter-spacing: -0.2px; }
+
+  nav.toptabs { display: flex; gap: 4px; background: var(--bg); border-radius: 12px; padding: 4px; }
+  nav.toptabs button {
+    border: none; background: none; padding: 9px 20px; border-radius: 9px; font-weight: 600; font-size: 14px;
+    cursor: pointer; color: var(--muted); font-family: inherit;
+  }
+  nav.toptabs button.active { background: var(--card); color: var(--brand-dark); box-shadow: var(--shadow); }
+
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .info-btn {
+    width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--brand);
+    background: #fff; color: var(--brand); font-weight: 700; cursor: pointer;
+  }
+
+  main { max-width: 1280px; margin: 0 auto; padding: 28px 32px 60px; }
+  .view.hidden { display: none; }
+
+  .shop-layout { display: grid; grid-template-columns: 220px 1fr 300px; gap: 24px; align-items: start; }
+  @media (max-width: 1000px) { .shop-layout { grid-template-columns: 180px 1fr; } .cart-panel { grid-column: 1 / -1; } }
+
+  .panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
+
+  .cat-list { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 88px; }
+  .cat-title { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  .cat-item {
+    text-align: left; border: none; background: none; padding: 10px 12px; border-radius: 9px;
+    font-size: 14px; font-weight: 600; color: var(--ink); cursor: pointer; font-family: inherit;
+  }
+  .cat-item.active { background: var(--brand-tint); color: var(--brand-dark); }
+
+  .toolbar { display: flex; gap: 12px; margin-bottom: 18px; }
+  .search-bar {
+    flex: 1; display: flex; align-items: center; gap: 8px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 11px; padding: 11px 16px; color: var(--muted); box-shadow: var(--shadow);
+  }
+  .search-bar input { border: none; outline: none; flex: 1; font-size: 14.5px; font-family: inherit; background: transparent; color: var(--ink); }
+
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .product-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .thumb { width: 100%; height: 96px; border-radius: 10px; background: repeating-linear-gradient(45deg, #eef0f3, #eef0f3 6px, #e4e6ea 6px, #e4e6ea 12px); }
+  .p-name { font-weight: 700; font-size: 14.5px; }
+  .p-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .p-price { font-weight: 700; font-size: 15px; }
+  .p-row { display: flex; justify-content: space-between; align-items: center; }
+  .stepper { display: flex; align-items: center; gap: 10px; }
+  .stepper button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line); background: #fff; font-size: 16px; cursor: pointer; color: var(--ink); }
+  .stepper button.plus { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .stepper .qty { min-width: 18px; text-align: center; font-weight: 700; font-size: 14px; }
+  .p-avail { color: #b45309; font-size: 11.5px; font-weight: 600; }
+  .p-total { color: var(--brand-dark); font-weight: 700; font-size: 13px; }
+
+  .empty { text-align: center; color: var(--muted); padding: 60px 12px; font-size: 14px; grid-column: 1/-1; }
+
+  .cart-panel { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 12px; }
+  .cart-panel h3 { margin: 0; font-size: 15px; }
+  .cart-line { display: flex; justify-content: space-between; font-size: 13.5px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .cart-empty { color: var(--muted); font-size: 13.5px; padding: 12px 0; }
+  .cart-total-row { display: flex; justify-content: space-between; font-weight: 700; font-size: 16px; padding-top: 6px; }
+
+  .btn { border: none; border-radius: 11px; padding: 12px; font-weight: 700; font-size: 14.5px; cursor: pointer; font-family: inherit; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-secondary { background: #f0f1f3; color: var(--ink); }
+  .btn.full { width: 100%; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  .section-label { font-size: 12px; font-weight: 700; letter-spacing: .05em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; }
+
+  table.orders-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  table.orders-table th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  table.orders-table td { padding: 14px 18px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  table.orders-table tr:last-child td { border-bottom: none; }
+  .status-pill { font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .status-delivered { background: var(--green-bg); color: var(--green-fg); }
+  .status-outfordelivery { background: var(--blue-bg); color: var(--blue-fg); }
+  .status-processing { background: var(--amber-bg); color: var(--amber-fg); }
+  .link-btn { border: none; background: none; color: var(--brand-dark); font-weight: 700; cursor: pointer; font-family: inherit; font-size: 13.5px; }
+
+  .profile-grid { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 900px) { .profile-grid { grid-template-columns: 1fr; } }
+  .profile-card { display: flex; gap: 14px; align-items: center; }
+  .avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--brand-tint); color: var(--brand-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex: none; }
+  .profile-name { font-weight: 700; font-size: 16px; }
+  .profile-sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .credit-row { display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 8px; }
+  .bar-track { height: 8px; border-radius: 999px; background: #e7e9ed; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--brand); border-radius: 999px; }
+  .addr-card { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .addr-label { font-weight: 700; font-size: 14px; }
+  .addr-detail { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .badge-default { font-size: 10.5px; font-weight: 700; color: var(--green-fg); background: var(--green-bg); padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+  .payment-card { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-weight: 700; font-size: 14px; margin-bottom: 20px; }
+  .logout-btn { border: none; background: none; color: var(--danger); font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; }
+
+  /* Modals */
+  .backdrop { position: fixed; inset: 0; background: rgba(20,22,26,.5); z-index: 40; opacity: 0; pointer-events: none; transition: opacity .18s ease; }
+  .backdrop.show { opacity: 1; pointer-events: auto; }
+  .modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%); width: 92%; max-width: 460px;
+    background: #fff; border-radius: 18px; padding: 24px 26px; z-index: 41; box-shadow: 0 30px 70px rgba(0,0,0,.3);
+    opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease; max-height: 84vh; overflow-y: auto;
+  }
+  .modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
+  .modal h2 { margin: 0 0 4px; font-size: 18px; }
+  .modal .muted { color: var(--muted); font-size: 12.5px; }
+  .sheet-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+  .sheet-row:last-of-type { border-bottom: none; }
+  .sheet-label { font-size: 11px; font-weight: 700; letter-spacing: .05em; color: var(--muted); text-transform: uppercase; margin-top: 14px; }
+  .sheet-value { font-size: 14px; font-weight: 600; margin-top: 3px; }
+  .company-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .company-logo { width: 46px; height: 46px; border-radius: 12px; background: var(--brand); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; flex: none; }
+  .rating { color: #b45309; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; }
+  .rating span.reviews { color: var(--muted); font-weight: 500; }
+  .btn-row { display: flex; gap: 10px; margin-top: 18px; }
+  .timeline { margin: 12px 0; }
+  .t-step { display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 13.5px; font-weight: 600; }
+  .t-dot { width: 10px; height: 10px; border-radius: 50%; background: #e2e4e8; flex: none; }
+  .t-step.done .t-dot { background: var(--brand); }
+  .t-step.done { color: var(--ink); }
+  .t-step:not(.done) { color: var(--muted); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 34px; transform: translateX(-50%);
+    background: #16181d; color: #fff; padding: 12px 22px; border-radius: 10px; font-size: 14px;
+    z-index: 60; opacity: 0; transition: opacity .25s ease; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">🛍</span>
+    <span class="name" id="brandName">Role Play Wholesale</span>
+  </div>
+  <nav class="toptabs">
+    <button class="active" data-view="shop">Shop</button>
+    <button data-view="orders">Orders</button>
+    <button data-view="profile">Profile</button>
+  </nav>
+  <div class="topbar-right">
+    <button class="info-btn" id="infoBtn" title="Company info">i</button>
+  </div>
+</header>
+
+<main>
+  <!-- SHOP -->
+  <section class="view" id="view-shop">
+    <div class="toolbar">
+      <div class="search-bar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search products..." />
+      </div>
+    </div>
+    <div class="shop-layout">
+      <div class="panel cat-list" id="catList">
+        <div class="cat-title">Categories</div>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+      <div class="panel cart-panel" id="cartPanel">
+        <h3>Your order</h3>
+        <div id="cartLines"></div>
+        <div class="cart-total-row" id="cartTotalRow" style="display:none;">
+          <span>Total</span><span id="cartTotal"></span>
+        </div>
+        <button class="btn btn-primary full" id="placeOrderBtn" disabled>Place Order</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORDERS -->
+  <section class="view hidden" id="view-orders">
+    <div class="section-label">Order history</div>
+    <table class="orders-table">
+      <thead><tr><th>Order</th><th>Date</th><th>Items</th><th>Status</th><th>Total</th><th></th></tr></thead>
+      <tbody id="ordersBody"></tbody>
+    </table>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="view hidden" id="view-profile">
+    <div class="section-label">Profile</div>
+    <div class="profile-grid">
+      <div>
+        <div class="panel profile-card" style="margin-bottom:16px;">
+          <div class="avatar" id="profileInitials"></div>
+          <div>
+            <div class="profile-name" id="profileName"></div>
+            <div class="profile-sub" id="profileSub"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="section-label" style="margin-bottom:10px;">Credit</div>
+          <div class="credit-row"><span class="muted" style="color:var(--muted);">Used</span><span id="creditText"></span></div>
+          <div class="bar-track"><div class="bar-fill" id="creditFill"></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="section-label">Saved addresses</div>
+        <div id="addressList"></div>
+        <div class="section-label">Payment</div>
+        <div class="payment-card" id="paymentCard"></div>
+        <button class="logout-btn" id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Modals -->
+<div class="backdrop" id="backdrop"></div>
+
+<div class="modal" id="companyModal">
+  <div class="company-head">
+    <div class="company-logo">🛍</div>
+    <div>
+      <h2 id="companyName"></h2>
+      <div class="muted" id="companyTagline"></div>
+    </div>
+  </div>
+  <div class="rating" id="companyRating"></div>
+  <div class="sheet-label">Address</div>
+  <div class="sheet-value" id="companyAddress"></div>
+  <div class="sheet-label">Contact</div>
+  <div class="sheet-value" id="companyContact"></div>
+  <div class="sheet-label">Hours</div>
+  <div class="sheet-value" id="companyHours"></div>
+  <div class="sheet-label">GST</div>
+  <div class="sheet-value" id="companyGst"></div>
+  <div class="btn-row"><button class="btn btn-secondary full" data-close>Close</button></div>
+</div>
+
+<div class="modal" id="orderDetailModal">
+  <div class="order-top" style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <h2 id="odId"></h2>
+      <div class="muted" id="odDate"></div>
+    </div>
+    <span class="status-pill" id="odStatus"></span>
+  </div>
+  <div class="timeline" id="odTimeline"></div>
+  <div id="odLines"></div>
+  <div class="sheet-row" style="font-weight:700; font-size:16px; border:none;">
+    <span>Total</span><span id="odTotal"></span>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" data-close>Close</button>
+    <button class="btn btn-primary" id="odInvoiceBtn">Invoice · Reorder</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const fmt = (n) => '₹' + Number(n).toFixed(2);
+const statusClass = (s) => 'status-' + s.toLowerCase().replace(/\s+/g, '');
+
+let seed = null;
+let activeCategory = 'all';
+let searchTerm = '';
+const cart = {};
+
+function el(id) { return document.getElementById(id); }
+
+fetch('../seed-data/seed.json')
+  .then((r) => r.json())
+  .then((data) => { seed = data; init(); });
+
+function init() {
+  el('brandName').textContent = seed.company.name;
+  renderCompanyModal();
+  renderCategories();
+  renderProducts();
+  renderOrders();
+  renderProfile();
+  wireEvents();
+}
+
+function renderCompanyModal() {
+  const c = seed.company;
+  el('companyName').textContent = c.name;
+  el('companyTagline').textContent = c.tagline;
+  el('companyRating').innerHTML = `★ ${c.rating} <span class="reviews">(${c.reviews} reviews)</span>`;
+  el('companyAddress').textContent = c.address;
+  el('companyContact').textContent = `${c.phone} · ${c.email}`;
+  el('companyHours').textContent = c.hours;
+  el('companyGst').textContent = c.gst;
+}
+
+function renderCategories() {
+  const wrap = el('catList');
+  wrap.innerHTML = '<div class="cat-title">Categories</div>' + seed.categories.map((c) =>
+    `<button class="cat-item ${c.id === activeCategory ? 'active' : ''}" data-cat="${c.id}">${c.label}</button>`
+  ).join('');
+  wrap.querySelectorAll('.cat-item').forEach((b) => b.addEventListener('click', () => {
+    activeCategory = b.dataset.cat; renderCategories(); renderProducts();
+  }));
+}
+
+function filteredProducts() {
+  return seed.products.filter((p) => {
+    const inCat = activeCategory === 'all' || p.category === activeCategory;
+    const inSearch = !searchTerm || p.name.toLowerCase().includes(searchTerm);
+    return inCat && inSearch;
+  });
+}
+
+function renderProducts() {
+  const list = filteredProducts();
+  const grid = el('productGrid');
+  if (!list.length) { grid.innerHTML = '<div class="empty">No products match your search.</div>'; return; }
+  grid.innerHTML = list.map((p) => {
+    const qty = cart[p.id] || 0;
+    return `
+    <div class="product-card" data-id="${p.id}">
+      <div class="thumb"></div>
+      <div class="p-name">${p.name}</div>
+      <div class="p-meta">Art No: ${p.artNo} · ${p.unit}</div>
+      <div class="p-row"><span class="p-price">${fmt(p.price)}</span><span class="p-avail">${p.available} avail.</span></div>
+      <div class="p-row">
+        <div class="stepper">
+          <button class="minus" data-id="${p.id}">−</button>
+          <span class="qty" id="qty-${p.id}">${qty}</span>
+          <button class="plus" data-id="${p.id}">+</button>
+        </div>
+        <span class="p-total" id="total-${p.id}">${fmt(qty * p.price)}</span>
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.plus').forEach((b) => b.addEventListener('click', () => changeQty(b.dataset.id, 1)));
+  grid.querySelectorAll('.minus').forEach((b) => b.addEventListener('click', () => changeQty(b.dataset.id, -1)));
+}
+
+function changeQty(id, delta) {
+  const product = seed.products.find((p) => p.id === id);
+  const next = Math.max(0, Math.min(product.available, (cart[id] || 0) + delta));
+  if (next === 0) delete cart[id]; else cart[id] = next;
+  const qtyEl = el('qty-' + id);
+  const totalEl = el('total-' + id);
+  if (qtyEl) qtyEl.textContent = next;
+  if (totalEl) totalEl.textContent = fmt(next * product.price);
+  renderCartPanel();
+}
+
+function cartLines() {
+  return Object.entries(cart).map(([id, qty]) => {
+    const p = seed.products.find((x) => x.id === id);
+    return { name: p.name, qty, price: p.price, total: qty * p.price };
+  });
+}
+
+function renderCartPanel() {
+  const lines = cartLines();
+  const linesWrap = el('cartLines');
+  const totalRow = el('cartTotalRow');
+  const placeBtn = el('placeOrderBtn');
+  if (!lines.length) {
+    linesWrap.innerHTML = '<div class="cart-empty">Your cart is empty. Add items from the catalog.</div>';
+    totalRow.style.display = 'none';
+    placeBtn.disabled = true;
+    return;
+  }
+  linesWrap.innerHTML = lines.map((l) =>
+    `<div class="cart-line"><span>${l.name} × ${l.qty}</span><span>${fmt(l.total)}</span></div>`
+  ).join('');
+  el('cartTotal').textContent = fmt(lines.reduce((s, l) => s + l.total, 0));
+  totalRow.style.display = 'flex';
+  placeBtn.disabled = false;
+}
+
+function renderOrders() {
+  const body = el('ordersBody');
+  const rows = seed.orders.slice().reverse();
+  if (!rows.length) { body.innerHTML = '<tr><td colspan="6" class="empty">No orders yet.</td></tr>'; return; }
+  body.innerHTML = rows.map((o) => `
+    <tr>
+      <td><strong>${o.id}</strong></td>
+      <td>${o.date}</td>
+      <td>${o.items.length}</td>
+      <td><span class="status-pill ${statusClass(o.status)}">${o.status}</span></td>
+      <td>${fmt(o.total)}</td>
+      <td><button class="link-btn" data-id="${o.id}">View details ›</button></td>
+    </tr>`).join('');
+  body.querySelectorAll('.link-btn').forEach((b) => b.addEventListener('click', () => openOrderDetail(b.dataset.id)));
+}
+
+function openOrderDetail(id) {
+  const o = seed.orders.find((x) => x.id === id);
+  el('odId').textContent = o.id;
+  el('odDate').textContent = o.date;
+  const pill = el('odStatus');
+  pill.textContent = o.status;
+  pill.className = 'status-pill ' + statusClass(o.status);
+  el('odTimeline').innerHTML = o.timeline.map((t) =>
+    `<div class="t-step ${t.done ? 'done' : ''}"><span class="t-dot"></span>${t.step}</div>`
+  ).join('');
+  el('odLines').innerHTML = o.items.map((i) =>
+    `<div class="sheet-row"><span>${i.name} × ${i.qty}</span><span>${fmt(i.total)}</span></div>`
+  ).join('');
+  el('odTotal').textContent = fmt(o.total);
+  openModal('orderDetailModal');
+}
+
+function renderProfile() {
+  const p = seed.profile;
+  el('profileInitials').textContent = p.initials;
+  el('profileName').textContent = p.businessName;
+  el('profileSub').textContent = `${p.contactName} · Member since ${p.memberSince}`;
+  el('creditText').textContent = `${fmt(p.credit.used)} / ${fmt(p.credit.limit)}`;
+  el('creditFill').style.width = Math.min(100, (p.credit.used / p.credit.limit) * 100) + '%';
+  el('addressList').innerHTML = p.addresses.map((a) => `
+    <div class="addr-card">
+      <div>
+        <div class="addr-label">${a.label}</div>
+        <div class="addr-detail">${a.detail}</div>
+      </div>
+      ${a.default ? '<span class="badge-default">DEFAULT</span>' : ''}
+    </div>`).join('');
+  el('paymentCard').textContent = `${p.payment.method} · ${p.payment.handle}`;
+}
+
+function switchView(view) {
+  ['shop', 'orders', 'profile'].forEach((v) => el('view-' + v).classList.toggle('hidden', v !== view));
+  document.querySelectorAll('.toptabs button').forEach((t) => t.classList.toggle('active', t.dataset.view === view));
+}
+
+function openModal(id) { el('backdrop').classList.add('show'); el(id).classList.add('show'); }
+function closeModals() { el('backdrop').classList.remove('show'); document.querySelectorAll('.modal').forEach((m) => m.classList.remove('show')); }
+
+function showToast(msg) {
+  const t = el('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function wireEvents() {
+  el('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.trim().toLowerCase(); renderProducts(); });
+  document.querySelectorAll('.toptabs button').forEach((t) => t.addEventListener('click', () => switchView(t.dataset.view)));
+  el('infoBtn').addEventListener('click', () => openModal('companyModal'));
+  el('backdrop').addEventListener('click', closeModals);
+  document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeModals));
+
+  el('placeOrderBtn').addEventListener('click', () => {
+    const lines = cartLines();
+    if (!lines.length) return;
+    const total = lines.reduce((s, l) => s + l.total, 0);
+    const id = 'PO-' + Math.floor(10000 + Math.random() * 89999);
+    seed.orders.push({
+      id,
+      date: new Date().toISOString().slice(0, 10),
+      status: 'Processing',
+      total,
+      items: lines.map((l) => ({ name: l.name, qty: l.qty, unit: 'Bottle', price: l.price, total: l.total })),
+      timeline: [
+        { step: 'Order Placed', done: true },
+        { step: 'Packed', done: false },
+        { step: 'Out for Delivery', done: false },
+        { step: 'Delivered', done: false }
+      ]
+    });
+    Object.keys(cart).forEach((k) => delete cart[k]);
+    renderCartPanel();
+    renderProducts();
+    renderOrders();
+    switchView('orders');
+    showToast(`Order ${id} placed`);
+  });
+
+  el('odInvoiceBtn').addEventListener('click', () => showToast('Invoice sent · Items added back to cart'));
+  el('logoutBtn').addEventListener('click', () => showToast('Logged out (demo only)'));
+}
+</script>
+</body>
+</html>

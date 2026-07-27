@@ -1,0 +1,142 @@
+<!doctype html>
+<!--
+  DISCOVERY WIRING — Foodbridge Module Retails
+  ---------------------------------------------------------
+  This file is the WIRING only — the hub + transition map. It holds no real
+  screen content itself beyond the desktop/mobile choice; the two real screens
+  live in screens/ (mobile.html, desktop.html). Company Info, Review Order and
+  Order Detail are overlays inside each screen, not separate pages (Addendum
+  002). The transition map below is the proto-FSM that SSOT-1 (state-machine)
+  and SSOT-5 (workflow) are later derived from.
+  Rules:
+  - HTML/CSS/vanilla JS only. No frameworks, no build step, no real API calls.
+  - Screens are standalone-openable and link to each other; this hub is the entry.
+  - Use seed-data/seed.json for any data.
+  - Disposable. When a version is accepted, snapshot the whole folder
+    (screens/ + index.html + seed-data) into versions/vN/.
+  - Nothing here is imported by development/. It only informs the SSOTs.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foodbridge Module Retails — Discovery Prototype</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --brand: #17a34a; --brand-dark: #128a43; --brand-tint: #e8f7ee;
+      --ink: #16181d; --muted: #667085; --line: #eaebee; --bg: #f6f7f9; --card: #ffffff;
+      --shadow: 0 1px 2px rgba(16,24,40,.05), 0 2px 8px rgba(16,24,40,.06);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 48px 24px 64px;
+    }
+    .wrap { max-width: 860px; margin: 0 auto; }
+    h1 { font-size: 1.7rem; margin: 0 0 8px; letter-spacing: -0.3px; }
+    .lede { color: var(--muted); font-size: 1.02rem; line-height: 1.5; max-width: 640px; margin: 0 0 28px; }
+
+    .hero {
+      background: var(--brand-tint); border: 1px solid #cdeedb; border-radius: 18px;
+      padding: 28px 30px; margin-bottom: 36px;
+    }
+    .hero .tag {
+      display: inline-block; background: var(--brand); color: #fff; font-size: 11px; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 14px;
+    }
+    .hero h2 { margin: 0 0 8px; font-size: 1.25rem; }
+    .hero p { color: #285c3c; font-size: .95rem; line-height: 1.55; margin: 0 0 20px; max-width: 620px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; padding: 12px 20px;
+      font-weight: 700; font-size: 14.5px; text-decoration: none; cursor: pointer; border: none;
+    }
+    .btn-primary { background: var(--brand); color: #fff; }
+    .btn-primary:hover { background: var(--brand-dark); }
+    .btn-secondary { background: #fff; color: var(--brand-dark); border: 1.5px solid var(--brand); }
+
+    h3.section-title { font-size: 1.05rem; margin: 0 0 16px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 36px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; box-shadow: var(--shadow); }
+    .card .chip { display: inline-block; background: var(--bg); color: var(--muted); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+    .card h4 { margin: 0 0 6px; font-size: 1.02rem; }
+    .card p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+    .card a.open { display: block; margin-top: 12px; font-size: .88rem; font-weight: 700; color: var(--brand-dark); text-decoration: none; }
+
+    table { border-collapse: collapse; width: 100%; font-size: .88rem; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+    th, td { border-bottom: 1px solid var(--line); padding: .55rem .75rem; text-align: left; }
+    th { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+    tr:last-child td { border-bottom: none; }
+
+    .note { color: var(--muted); font-size: 0.85rem; }
+    a { color: var(--brand-dark); }
+    .footer-links { margin-top: 32px; font-size: .85rem; color: var(--muted); }
+    .footer-links a { margin-right: 14px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Foodbridge Module Retails — Discovery Prototype</h1>
+  <p class="lede">Can a retailer open a QR/link straight into Shop — no login wall — search and
+  add items with qty steppers, check the wholesaler's details, review and place an order, then
+  track it and manage their profile? Same features on desktop, laid out for a larger screen.</p>
+
+  <div class="hero">
+    <span class="tag">Addendum 002 · Mobile-first shop flow</span>
+    <h2>Shop · Orders · Profile — one app, two layouts</h2>
+    <p>One real "app" per device (no separate pages per tab — Shop/Orders/Profile switch
+    in place). Company Info, Review Order and Order Detail are overlays on top of whichever
+    screen you're on: a bottom sheet on mobile, a modal / side panel on desktop.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="screens/mobile.html">📱 Open mobile →</a>
+      <a class="btn btn-secondary" href="screens/desktop.html">🖥️ Open desktop →</a>
+    </div>
+  </div>
+
+  <h3 class="section-title">Screens</h3>
+  <div class="cards">
+    <div class="card">
+      <span class="chip">Mobile</span>
+      <h4>Shop · Orders · Profile</h4>
+      <p>QR/link opens straight into Shop. Search, category pills, catalog with qty steppers,
+      floating cart bar → Review Order sheet → Place Order. Bottom tabs for Orders (live status,
+      tap for detail sheet) and Profile (addresses, payment, credit). Header ⓘ opens Company Info.</p>
+      <a class="open" href="screens/mobile.html">Open screens/mobile.html →</a>
+    </div>
+    <div class="card">
+      <span class="chip">Desktop</span>
+      <h4>Shop · Orders · Profile</h4>
+      <p>Same flow, adapted: top nav instead of bottom tabs, category sidebar + product grid +
+      always-visible cart panel, Orders as a table, Company Info / Order Detail as modal dialogs.</p>
+      <a class="open" href="screens/desktop.html">Open screens/desktop.html →</a>
+    </div>
+  </div>
+
+  <h3 class="section-title">Transition map (→ SSOT-1 state-machine / SSOT-5 workflow)</h3>
+  <table>
+    <thead><tr><th>From</th><th>Event</th><th>To</th></tr></thead>
+    <tbody>
+      <tr><td>Hub (this page)</td><td>Open mobile / Open desktop</td><td>screens/mobile.html · screens/desktop.html (Shop view, default)</td></tr>
+      <tr><td>Shop</td><td>Tap header ⓘ</td><td>Company Info overlay (sheet / modal), over Shop</td></tr>
+      <tr><td>Shop</td><td>Qty stepper +/- &gt; 0</td><td>Floating cart bar / cart panel appears</td></tr>
+      <tr><td>Shop</td><td>Tap "Review Order"</td><td>Review Order overlay (sheet on mobile; always-visible panel on desktop)</td></tr>
+      <tr><td>Review Order</td><td>Tap "Place Order"</td><td>Cart cleared · new order (status "Processing") added · view switches to Orders</td></tr>
+      <tr><td>Orders</td><td>Tap tab / nav item</td><td>Shop ⇄ Orders ⇄ Profile (in-place, same page)</td></tr>
+      <tr><td>Orders</td><td>Tap "View details"</td><td>Order Detail overlay (timeline, items, invoice/reorder), over Orders</td></tr>
+      <tr><td>Profile</td><td>Tap "Log Out"</td><td>(Demo only — toast, no real session)</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Data for every screen comes from <a href="seed-data/seed.json">seed-data/seed.json</a>.
+  Decisions and inputs behind this iteration are logged in
+  <a href="instructions/addendum-002-mobile-desktop-shop-flow.md">Addendum 002</a>.</p>
+
+  <div class="footer-links">
+    <a href="instructions/instructions.md">Instructions log</a>
+    <a href="design-principles.md">Design principles</a>
+    <a href="instructions/inputs/RetailsModuleItteration/As-is/">As-is source screenshots</a>
+  </div>
+</div>
+</body>
+</html>
