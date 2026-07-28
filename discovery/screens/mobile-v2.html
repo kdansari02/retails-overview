@@ -1,0 +1,661 @@
+<!doctype html>
+<!--
+  DISCOVERY SCREEN — Foodbridge Module Retails — "Mobile V2" (Addendum 003)
+  Version 2 of the mobile app, built from the Gupta Wholesale reference
+  screenshots. Lives entirely alongside screens/mobile.html (Version 1) —
+  nothing in that file was touched. Shop / My purchases / Payments /
+  Help & queries are in-place views; Store Info, Review Order, Pay Now and
+  Help topics are overlay sheets. Data: ../seed-data/seed.json (shared with
+  V1 where the two designs overlap) + ../seed-data/seed.v2.json (V2-only).
+  Rules: HTML/CSS/vanilla JS only. No frameworks, no build step, no real API
+  calls. Disposable — informs the SSOTs, not imported by development/.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Gupta Wholesale Store — Mobile (V2)</title>
+<style>
+  :root {
+    color-scheme: light;
+    --brand: #17a34a; --brand-dark: #128a43; --brand-tint: #e8f7ee;
+    --ink: #16181d; --muted: #7a8291; --line: #ececef; --bg: #f6f7f9; --card: #ffffff;
+    --amber-bg: #fef3c7; --amber-fg: #92680b;
+    --blue-bg: #dbeafe; --blue-fg: #1d4ed8;
+    --green-bg: #d9f5e3; --green-fg: #0f7a3d;
+    --red-bg: #fee2e2; --red-fg: #dc2626;
+    --orange: #ea580c;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #d9dbe0; color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+  .stage { min-height: 100vh; display: flex; justify-content: center; }
+  .device { width: 100%; max-width: 430px; min-height: 100vh; background: var(--bg); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  @media (min-width: 431px) {
+    .stage { align-items: flex-start; padding: 32px 0; }
+    .device { min-height: 844px; max-height: 844px; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,.35); border: 8px solid #111; }
+  }
+  .statusbar { display: none; }
+  @media (min-width: 431px) { .statusbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 22px 2px; font-size: 13px; font-weight: 600; flex: none; } }
+
+  main.view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
+  main.view.hidden { display: none; }
+
+  /* Shop header */
+  .shop-header { padding: 14px 16px 10px; background: var(--bg); }
+  .store-row { display: flex; align-items: center; gap: 10px; }
+  .store-logo { width: 40px; height: 40px; border-radius: 10px; background: var(--brand-tint); color: var(--brand-dark); border: 1.5px solid var(--brand); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 17px; flex: none; cursor: pointer; }
+  .store-name-row { display: flex; align-items: center; gap: 6px; }
+  .store-name { font-weight: 700; font-size: 15.5px; cursor: pointer; }
+  .verified { color: var(--brand); font-size: 13px; }
+  .store-sub { color: var(--muted); font-size: 11.5px; margin-top: 1px; }
+  .store-loc { color: var(--muted); font-size: 11.5px; margin-top: 1px; }
+  .contact-row { display: flex; gap: 8px; margin-top: 10px; }
+  .contact-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 9px; font-weight: 600; font-size: 12.5px; cursor: pointer; color: var(--ink); font-family: inherit; }
+
+  /* Simple page title header (Purchases/Payments/Help) */
+  .page-header { padding: 16px 16px 4px; font-weight: 700; font-size: 19px; }
+
+  .content { padding: 0 16px; }
+
+  /* Promo banner */
+  .promo { position: relative; background: linear-gradient(135deg, #eaf9ef, #dff3e4); border: 1px solid #cdeedb; border-radius: var(--radius); padding: 14px; margin: 10px 0 14px; overflow: hidden; }
+  .promo .close { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; border-radius: 50%; border: none; background: rgba(255,255,255,.7); cursor: pointer; font-size: 13px; color: var(--muted); }
+  .promo-badge { display: inline-block; background: var(--brand); color: #fff; font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-bottom: 8px; }
+  .promo h3 { margin: 0 0 8px; font-size: 15px; line-height: 1.3; }
+  .promo h3 b { color: var(--orange); font-size: 19px; }
+  .promo-meta { font-size: 11px; color: #285c3c; }
+
+  /* Search */
+  .search-row { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
+  .search-bar { flex: 1; display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; color: var(--muted); }
+  .search-bar input { border: none; outline: none; flex: 1; font-size: 14px; font-family: inherit; background: transparent; color: var(--ink); }
+  .filter-btn { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--line); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
+
+  .pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
+  .pills::-webkit-scrollbar { display: none; }
+  .pill { flex: none; padding: 8px 15px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--ink); }
+  .pill[data-cat="offers"] { color: var(--orange); }
+  .pill.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+  .product-row { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px; margin-bottom: 10px; display: grid; grid-template-columns: 52px 1fr; gap: 12px; }
+  .p-thumb { width: 52px; height: 52px; border-radius: 10px; background: repeating-linear-gradient(45deg, #eef0f3, #eef0f3 6px, #e4e6ea 6px, #e4e6ea 12px); }
+  .p-name { font-weight: 700; font-size: 14px; }
+  .p-brand { color: var(--muted); font-size: 11.5px; }
+  .p-price-row { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 4px; }
+  .p-price { font-weight: 700; font-size: 14.5px; }
+  .p-price small { font-weight: 500; color: var(--muted); font-size: 11px; }
+  .p-mrp { text-decoration: line-through; color: var(--muted); font-size: 11.5px; margin-left: 5px; }
+  .p-off { color: var(--orange); font-weight: 700; font-size: 11.5px; margin-left: 4px; }
+  .p-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .p-avail { color: var(--brand-dark); font-size: 11px; font-weight: 600; }
+  .stepper { display: flex; align-items: center; gap: 8px; }
+  .stepper button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: #fff; font-size: 15px; cursor: pointer; color: var(--ink); }
+  .stepper button.plus { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .stepper .qty { min-width: 16px; text-align: center; font-weight: 700; font-size: 13.5px; }
+
+  .empty { text-align: center; color: var(--muted); padding: 40px 12px; font-size: 14px; }
+
+  /* Cart bar (light style) */
+  .cart-bar { position: absolute; left: 16px; right: 16px; bottom: 78px; background: #fff; border: 1px solid var(--line); color: var(--ink); border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 24px rgba(0,0,0,.14); z-index: 20; }
+  .cart-bar.hidden { display: none; }
+  .cart-left { display: flex; align-items: center; gap: 10px; }
+  .cart-badge { position: relative; width: 30px; height: 30px; border-radius: 9px; background: var(--brand-tint); display: flex; align-items: center; justify-content: center; }
+  .cart-badge span { position: absolute; top: -5px; right: -5px; background: var(--orange); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
+  .cart-total { font-weight: 700; font-size: 15px; }
+  .cart-bar button { background: var(--brand); color: #fff; border: none; border-radius: 10px; padding: 9px 15px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
+
+  /* Stats strip */
+  .stats-strip { display: flex; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin: 10px 0 14px; overflow: hidden; }
+  .stats-strip > div { flex: 1; padding: 12px 14px; }
+  .stats-strip > div + div { border-left: 1px solid var(--line); }
+  .stats-strip .label { color: var(--muted); font-size: 11px; }
+  .stats-strip .value { font-weight: 700; font-size: 16px; margin-top: 2px; }
+
+  .order-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; margin-bottom: 10px; }
+  .order-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .order-id { font-weight: 700; font-size: 14.5px; }
+  .order-date { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+  .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .status-delivered { background: var(--green-bg); color: var(--green-fg); }
+  .status-intransit { background: var(--blue-bg); color: var(--blue-fg); }
+  .status-pending { background: var(--amber-bg); color: var(--amber-fg); }
+  .order-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .order-total { font-weight: 700; font-size: 15px; }
+  .order-action { color: var(--brand-dark); font-weight: 700; font-size: 12.5px; background: none; border: none; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px; }
+
+  /* Payments */
+  .summary-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin: 10px 0 14px; }
+  .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13.5px; border-bottom: 1px solid var(--line); }
+  .summary-row:last-of-type { border-bottom: none; }
+  .summary-row .lbl { color: var(--muted); }
+  .summary-row.due .val { color: var(--red-fg); font-weight: 700; }
+  .due-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--amber-bg); color: var(--amber-fg); font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 10px; margin: 10px 0; }
+  .pay-btn { width: 100%; background: var(--brand); color: #fff; border: none; border-radius: 12px; padding: 13px; font-weight: 700; font-size: 14.5px; cursor: pointer; margin-top: 4px; }
+
+  .pay-row { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 13px 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+  .pay-row .date { color: var(--muted); font-size: 11.5px; }
+  .pay-row .amt { font-weight: 700; font-size: 14.5px; margin-top: 2px; }
+  .pay-row .mode { color: var(--muted); font-size: 12px; }
+  .chev { color: var(--muted); font-size: 15px; }
+
+  /* Help */
+  .topic-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .topic-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--brand-tint); color: var(--brand-dark); display: flex; align-items: center; justify-content: center; font-size: 17px; flex: none; }
+  .topic-title { font-weight: 700; font-size: 14px; }
+  .topic-sub { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+  .wa-banner { background: var(--brand-tint); border-radius: var(--radius); padding: 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 4px; }
+  .wa-banner .icon { width: 38px; height: 38px; border-radius: 50%; background: var(--brand); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; flex: none; }
+
+  nav.tabbar { flex: none; display: flex; padding: 8px 8px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--card); border-top: 1px solid var(--line); }
+  nav.tabbar button { flex: 1; background: none; border: none; padding: 6px 0 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--muted); font-size: 11.5px; font-weight: 600; font-family: inherit; }
+  nav.tabbar button.active { color: var(--brand); }
+  .home-indicator { width: 120px; height: 4px; background: #d0d2d8; border-radius: 3px; margin: 6px auto 0; }
+
+  /* Overlays */
+  .backdrop { position: absolute; inset: 0; background: rgba(20,22,26,.55); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+  .backdrop.show { opacity: 1; pointer-events: auto; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 31; background: #fff; border-radius: 20px 20px 0 0; padding: 8px 20px calc(20px + env(safe-area-inset-bottom, 0px)); max-height: 82%; overflow-y: auto; transform: translateY(100%); transition: transform .25s cubic-bezier(.32,.72,0,1); box-shadow: 0 -8px 30px rgba(0,0,0,.2); }
+  .sheet.show { transform: translateY(0); }
+  .sheet .handle { width: 40px; height: 5px; background: #e2e4e8; border-radius: 3px; margin: 8px auto 14px; }
+  .sheet h2 { font-size: 17px; margin: 0 0 4px; }
+  .sheet .muted { color: var(--muted); font-size: 12.5px; }
+  .sheet-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+  .sheet-row:last-of-type { border-bottom: none; }
+  .sheet-label { font-size: 11px; font-weight: 700; letter-spacing: .05em; color: var(--muted); text-transform: uppercase; margin-top: 14px; }
+  .sheet-value { font-size: 14px; font-weight: 600; margin-top: 3px; }
+  .btn-row { display: flex; gap: 10px; margin-top: 18px; }
+  .btn { flex: 1; border: none; border-radius: 12px; padding: 13px; font-weight: 700; font-size: 14.5px; cursor: pointer; font-family: inherit; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-secondary { background: #f0f1f3; color: var(--ink); }
+  .btn.full { width: 100%; }
+
+  .toast { position: absolute; left: 50%; bottom: 100px; transform: translateX(-50%); background: #16181d; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13.5px; z-index: 40; opacity: 0; transition: opacity .25s ease; pointer-events: none; max-width: 85%; text-align: center; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="device" id="device">
+    <div class="statusbar"><span>9:41</span><span>●●●●</span></div>
+
+    <!-- SHOP -->
+    <main class="view" id="view-shop">
+      <div class="shop-header">
+        <div class="store-row">
+          <div class="store-logo" id="storeLogoBtn">G</div>
+          <div>
+            <div class="store-name-row"><span class="store-name" id="storeNameBtn"></span><span class="verified">✔</span></div>
+            <div class="store-sub" id="storeSub"></div>
+            <div class="store-loc" id="storeLoc">📍 <span id="storeLocText"></span></div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <button class="contact-btn" id="callBtn">📞 Call</button>
+          <button class="contact-btn" id="waBtn">💬 WhatsApp</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="promo" id="promo">
+          <button class="close" id="promoClose">✕</button>
+          <span class="promo-badge" id="promoBadge"></span>
+          <h3 id="promoHeadline"></h3>
+          <div class="promo-meta" id="promoMeta"></div>
+        </div>
+        <div class="search-row">
+          <div class="search-bar">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchInput" placeholder="Search products by name or SKU..." />
+          </div>
+          <button class="filter-btn" id="filterBtn">⋮</button>
+        </div>
+        <div class="pills" id="pills"></div>
+        <div id="productList"></div>
+      </div>
+    </main>
+
+    <!-- PURCHASES -->
+    <main class="view hidden" id="view-purchases">
+      <div class="page-header">My purchases</div>
+      <div class="content">
+        <div class="stats-strip">
+          <div><div class="label">This month</div><div class="value" id="purchThisMonth"></div></div>
+          <div><div class="label">Open orders</div><div class="value" id="purchOpenOrders"></div></div>
+        </div>
+        <div id="ordersList"></div>
+      </div>
+    </main>
+
+    <!-- PAYMENTS -->
+    <main class="view hidden" id="view-payments">
+      <div class="page-header">Payments</div>
+      <div class="content">
+        <div class="summary-card">
+          <div class="sheet-label" style="margin-top:0;">Account summary</div>
+          <div class="summary-row"><span class="lbl">Purchased</span><span id="paidPurchased"></span></div>
+          <div class="summary-row"><span class="lbl">Paid</span><span id="paidPaid"></span></div>
+          <div class="summary-row due"><span class="lbl">Balance due</span><span class="val" id="paidBalance"></span></div>
+          <div class="due-chip" id="dueChip"></div>
+          <button class="pay-btn" id="payNowBtn">Pay now</button>
+        </div>
+        <div class="sheet-label" style="margin-top:0;">Recent payments</div>
+        <div id="recentPayments" style="margin-top:8px;"></div>
+      </div>
+    </main>
+
+    <!-- HELP -->
+    <main class="view hidden" id="view-help">
+      <div class="page-header">Help & queries</div>
+      <div class="content">
+        <div id="helpTopics"></div>
+        <div class="wa-banner" id="waBanner">
+          <div class="icon">💬</div>
+          <div>
+            <div class="topic-title">Get quick help on WhatsApp</div>
+            <div class="topic-sub">Chat with us for faster support</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Floating cart bar -->
+    <div class="cart-bar hidden" id="cartBar">
+      <div class="cart-left">
+        <div class="cart-badge">🛒<span id="cartCount">0</span></div>
+        <div class="cart-total" id="cartTotal">₹0</div>
+      </div>
+      <button id="reviewOrderBtn">Review order</button>
+    </div>
+
+    <nav class="tabbar">
+      <button class="tab active" data-view="shop">🛍<br>Shop</button>
+      <button class="tab" data-view="purchases">📦<br>Purchases</button>
+      <button class="tab" data-view="payments">₹<br>Payments</button>
+      <button class="tab" data-view="help">❓<br>Help</button>
+    </nav>
+    <div class="home-indicator"></div>
+
+    <!-- Overlays -->
+    <div class="backdrop" id="backdrop"></div>
+
+    <div class="sheet" id="storeSheet">
+      <div class="handle"></div>
+      <div class="store-row" style="margin-bottom:6px;">
+        <div class="store-logo" style="cursor:default;">G</div>
+        <div>
+          <div class="store-name-row"><h2 id="sStoreName" style="margin:0;"></h2><span class="verified">✔</span></div>
+          <div class="muted" id="sStoreSub"></div>
+        </div>
+      </div>
+      <div class="sheet-label">Location</div>
+      <div class="sheet-value" id="sStoreLoc"></div>
+      <div class="sheet-label">Contact</div>
+      <div class="sheet-value" id="sStoreContact"></div>
+      <div class="sheet-label">GSTIN</div>
+      <div class="sheet-value" id="sStoreGst"></div>
+      <div class="sheet-label">Support hours</div>
+      <div class="sheet-value" id="sStoreHours"></div>
+      <div class="btn-row"><button class="btn btn-secondary full" data-close>Close</button></div>
+    </div>
+
+    <div class="sheet" id="reviewSheet">
+      <div class="handle"></div>
+      <h2>Review order</h2>
+      <div id="reviewLines"></div>
+      <div class="sheet-row" style="font-weight:700; font-size:16px; border:none; margin-top:6px;"><span>Total</span><span id="reviewTotal"></span></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" data-close>Back to Shop</button>
+        <button class="btn btn-primary" id="placeOrderBtn">Place order</button>
+      </div>
+    </div>
+
+    <div class="sheet" id="orderDetailSheet">
+      <div class="handle"></div>
+      <div class="order-top">
+        <div><h2 id="odId"></h2><div class="muted" id="odDate"></div></div>
+        <span class="status-pill" id="odStatus"></span>
+      </div>
+      <div id="odLines" style="margin-top:10px;"></div>
+      <div class="sheet-row" style="font-weight:700; font-size:16px; border:none;"><span>Total</span><span id="odTotal"></span></div>
+      <div class="btn-row"><button class="btn btn-primary full" data-close>Close</button></div>
+    </div>
+
+    <div class="sheet" id="payNowSheet">
+      <div class="handle"></div>
+      <h2>Pay now</h2>
+      <p class="muted">Confirm payment of your outstanding balance.</p>
+      <div class="sheet-row" style="font-weight:700; font-size:16px;"><span>Amount due</span><span id="payNowAmount"></span></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" data-close>Cancel</button>
+        <button class="btn btn-primary" id="payNowConfirm">Confirm payment</button>
+      </div>
+    </div>
+
+    <div class="sheet" id="topicSheet">
+      <div class="handle"></div>
+      <h2 id="topicTitle"></h2>
+      <p class="muted" id="topicSub"></p>
+      <textarea id="topicMessage" placeholder="Describe your query…" rows="4" style="width:100%; border:1px solid var(--line); border-radius:12px; padding:12px; font-family:inherit; font-size:13.5px; margin-top:10px; resize:none;"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-secondary" data-close>Cancel</button>
+        <button class="btn btn-primary" id="topicSubmit">Submit query</button>
+      </div>
+    </div>
+
+    <div class="sheet" id="queriesSheet">
+      <div class="handle"></div>
+      <h2>Previous queries</h2>
+      <div id="queriesList" style="margin-top:6px;"></div>
+      <div class="btn-row"><button class="btn btn-secondary full" data-close>Close</button></div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<script>
+const fmt = (n) => '₹' + Number(n).toLocaleString('en-IN');
+const statusClass = (s) => 'status-' + s.toLowerCase().replace(/\s+/g, '');
+
+let seed = null, seed2 = null;
+let activeCategory = 'all';
+let searchTerm = '';
+const cart = {};
+
+function el(id) { return document.getElementById(id); }
+
+Promise.all([
+  fetch('../seed-data/seed.json').then((r) => r.json()),
+  fetch('../seed-data/seed.v2.json').then((r) => r.json())
+]).then(([a, b]) => { seed = a; seed2 = b; init(); });
+
+function init() {
+  renderStoreHeader();
+  renderPromo();
+  renderPills();
+  renderProducts();
+  renderPurchases();
+  renderPayments();
+  renderHelp();
+  wireEvents();
+}
+
+function renderStoreHeader() {
+  const s = seed2.store;
+  el('storeNameBtn').textContent = s.name;
+  el('storeSub').textContent = s.subtitle;
+  el('storeLocText').textContent = s.location;
+  el('sStoreName').textContent = s.name;
+  el('sStoreSub').textContent = s.subtitle;
+  el('sStoreLoc').textContent = s.location;
+  el('sStoreContact').textContent = `${s.phone} · WhatsApp ${s.whatsapp}`;
+  el('sStoreGst').textContent = s.gstin;
+  el('sStoreHours').textContent = s.supportHours;
+}
+
+function renderPromo() {
+  const p = seed2.promo;
+  el('promoBadge').textContent = p.badge;
+  el('promoHeadline').innerHTML = `Save up to <b>${p.offerCount ? '15%' : ''}</b> on selected beverages`;
+  el('promoMeta').textContent = `Valid till ${p.validTill} · ${p.offerCount} products on offer · Free delivery above ${fmt(p.freeDeliveryAbove)}`;
+}
+
+function renderPills() {
+  const wrap = el('pills');
+  wrap.innerHTML = seed2.categoriesV2.map((c) =>
+    `<button class="pill ${c.id === activeCategory ? 'active' : ''}" data-cat="${c.id}">${c.label}</button>`
+  ).join('');
+  wrap.querySelectorAll('.pill').forEach((btn) => btn.addEventListener('click', () => { activeCategory = btn.dataset.cat; renderPills(); renderProducts(); }));
+}
+
+function filteredProducts() {
+  return seed2.productsV2.filter((p) => {
+    let inCat = true;
+    if (activeCategory === 'offers') inCat = p.offer;
+    else if (activeCategory === 'buy-again') inCat = p.buyAgain;
+    else if (activeCategory !== 'all') inCat = p.category === activeCategory;
+    const inSearch = !searchTerm || p.name.toLowerCase().includes(searchTerm) || p.brand.toLowerCase().includes(searchTerm);
+    return inCat && inSearch;
+  });
+}
+
+function renderProducts() {
+  const list = filteredProducts();
+  const wrap = el('productList');
+  if (!list.length) { wrap.innerHTML = '<div class="empty">No products match your search.</div>'; return; }
+  wrap.innerHTML = list.map((p) => {
+    const qty = cart[p.id] || 0;
+    return `
+    <div class="product-row" data-id="${p.id}">
+      <div class="p-thumb"></div>
+      <div>
+        <div class="p-name">${p.name}</div>
+        <div class="p-brand">${p.brand} · ${p.packSize}</div>
+        <div class="p-price-row">
+          <div class="p-price">${fmt(p.price)}<small> /case</small><span class="p-mrp">${fmt(p.mrp)}</span><span class="p-off">${p.discount}% off</span></div>
+        </div>
+        <div class="p-foot">
+          <span class="p-avail">${p.available} cases available</span>
+          <div class="stepper">
+            <button class="minus" data-id="${p.id}">−</button>
+            <span class="qty" id="qty-${p.id}">${qty}</span>
+            <button class="plus" data-id="${p.id}">+</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('.plus').forEach((b) => b.addEventListener('click', () => changeQty(b.dataset.id, 1)));
+  wrap.querySelectorAll('.minus').forEach((b) => b.addEventListener('click', () => changeQty(b.dataset.id, -1)));
+}
+
+function changeQty(id, delta) {
+  const product = seed2.productsV2.find((p) => p.id === id);
+  const next = Math.max(0, Math.min(product.available, (cart[id] || 0) + delta));
+  if (next === 0) delete cart[id]; else cart[id] = next;
+  const qtyEl = el('qty-' + id);
+  if (qtyEl) qtyEl.textContent = next;
+  updateCartBar();
+}
+
+function cartLines() {
+  return Object.entries(cart).map(([id, qty]) => {
+    const p = seed2.productsV2.find((x) => x.id === id);
+    return { name: p.name, qty, price: p.price, total: qty * p.price };
+  });
+}
+
+function updateCartBar() {
+  const lines = cartLines();
+  const count = lines.reduce((s, l) => s + l.qty, 0);
+  const total = lines.reduce((s, l) => s + l.total, 0);
+  const bar = el('cartBar');
+  if (count === 0) { bar.classList.add('hidden'); return; }
+  bar.classList.remove('hidden');
+  el('cartCount').textContent = count;
+  el('cartTotal').textContent = fmt(total);
+}
+
+function renderReviewSheet() {
+  const lines = cartLines();
+  el('reviewLines').innerHTML = lines.map((l) => `<div class="sheet-row"><span>${l.name} × ${l.qty}</span><span>${fmt(l.total)}</span></div>`).join('');
+  el('reviewTotal').textContent = fmt(lines.reduce((s, l) => s + l.total, 0));
+}
+
+function renderPurchases() {
+  const p = seed2.purchasesV2;
+  el('purchThisMonth').textContent = fmt(p.thisMonthTotal);
+  el('purchOpenOrders').textContent = p.openOrders;
+  const wrap = el('ordersList');
+  wrap.innerHTML = p.orders.slice().reverse().map((o) => `
+    <div class="order-card" data-id="${o.id}">
+      <div class="order-top">
+        <div><div class="order-id">Order #${o.id}</div><div class="order-date">${o.date}</div></div>
+        <span class="status-pill ${statusClass(o.status)}">${o.status}</span>
+      </div>
+      <div class="order-bottom">
+        <div class="order-total">${fmt(o.total)}</div>
+        <button class="order-action" data-id="${o.id}">${o.status === 'Delivered' ? '↻ Reorder' : '⏱ View details ›'}</button>
+      </div>
+    </div>`).join('');
+  wrap.querySelectorAll('.order-action').forEach((b) => b.addEventListener('click', () => {
+    const o = p.orders.find((x) => x.id === b.dataset.id);
+    if (o.status === 'Delivered') { showToast(`Items from #${o.id} added to cart`); return; }
+    openOrderDetail(o);
+  }));
+}
+
+function openOrderDetail(o) {
+  el('odId').textContent = 'Order #' + o.id;
+  el('odDate').textContent = o.date;
+  const pill = el('odStatus');
+  pill.textContent = o.status;
+  pill.className = 'status-pill ' + statusClass(o.status);
+  el('odLines').innerHTML = o.items.map((i) => `<div class="sheet-row"><span>${i.name} × ${i.qty}</span><span>${fmt(i.total)}</span></div>`).join('');
+  el('odTotal').textContent = fmt(o.total);
+  openSheet('orderDetailSheet');
+}
+
+function renderPayments() {
+  const p = seed2.payments;
+  el('paidPurchased').textContent = fmt(p.purchasedThisMonth);
+  el('paidPaid').textContent = fmt(p.paid);
+  el('paidBalance').textContent = fmt(p.balanceDue);
+  el('dueChip').textContent = p.balanceDue > 0 ? `⏰ Next due in ${p.nextDueInDays} days` : '✓ No dues';
+  el('payNowBtn').disabled = p.balanceDue === 0;
+  el('payNowAmount').textContent = fmt(p.balanceDue);
+  el('recentPayments').innerHTML = p.recent.map((r) => `
+    <div class="pay-row">
+      <div><div class="date">${r.date}</div><div class="mode">${r.mode} · ${r.ref}</div></div>
+      <div style="text-align:right;"><div class="amt">${fmt(r.amount)}</div></div>
+      <span class="chev">›</span>
+    </div>`).join('');
+}
+
+function renderHelp() {
+  const h = seed2.help;
+  el('helpTopics').innerHTML = h.topics.map((t) => `
+    <div class="topic-card" data-id="${t.id}">
+      <div class="topic-icon">${t.icon === 'chat' ? '💬' : t.icon === 'warning' ? '⚠️' : t.icon === 'rupee' ? '₹' : '🚚'}</div>
+      <div><div class="topic-title">${t.title}</div><div class="topic-sub">${t.subtitle}</div></div>
+    </div>`).join('') + `
+    <div class="topic-card" id="prevQueriesBtn">
+      <div class="topic-icon">🕘</div>
+      <div><div class="topic-title">View previous queries</div><div class="topic-sub">Track your earlier queries</div></div>
+    </div>`;
+  el('helpTopics').querySelectorAll('.topic-card[data-id]').forEach((c) => c.addEventListener('click', () => openTopic(c.dataset.id)));
+  el('prevQueriesBtn').addEventListener('click', openQueries);
+}
+
+function openTopic(id) {
+  const t = seed2.help.topics.find((x) => x.id === id);
+  el('topicTitle').textContent = t.title;
+  el('topicSub').textContent = t.subtitle;
+  el('topicMessage').value = '';
+  openSheet('topicSheet');
+}
+
+function openQueries() {
+  el('queriesList').innerHTML = seed2.help.openQueries.map((q) => `
+    <div class="pay-row" style="cursor:default;">
+      <div><div class="date">${q.type} · #${q.id}</div><div class="mode">${q.title}</div></div>
+      <span class="status-pill ${q.status === 'Resolved' ? 'status-delivered' : 'status-pending'}">${q.status}</span>
+    </div>`).join('');
+  openSheet('queriesSheet');
+}
+
+function switchView(view) {
+  ['shop', 'purchases', 'payments', 'help'].forEach((v) => el('view-' + v).classList.toggle('hidden', v !== view));
+  document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('active', t.dataset.view === view));
+}
+
+function openSheet(id) { el('backdrop').classList.add('show'); el(id).classList.add('show'); }
+function closeSheets() { el('backdrop').classList.remove('show'); document.querySelectorAll('.sheet').forEach((s) => s.classList.remove('show')); }
+
+function showToast(msg) {
+  const t = el('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function wireEvents() {
+  el('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.trim().toLowerCase(); renderProducts(); });
+  el('filterBtn').addEventListener('click', () => showToast('Filters (demo)'));
+  document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => switchView(t.dataset.view)));
+
+  el('storeLogoBtn').addEventListener('click', () => openSheet('storeSheet'));
+  el('storeNameBtn').addEventListener('click', () => openSheet('storeSheet'));
+  el('callBtn').addEventListener('click', () => showToast('Calling ' + seed2.store.phone + ' (demo)'));
+  el('waBtn').addEventListener('click', () => showToast('Opening WhatsApp chat (demo)'));
+  el('waBanner').addEventListener('click', () => showToast('Opening WhatsApp chat (demo)'));
+  el('promoClose').addEventListener('click', () => { el('promo').style.display = 'none'; });
+
+  el('reviewOrderBtn').addEventListener('click', () => { renderReviewSheet(); openSheet('reviewSheet'); });
+  el('backdrop').addEventListener('click', closeSheets);
+  document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeSheets));
+
+  el('placeOrderBtn').addEventListener('click', () => {
+    const lines = cartLines();
+    if (!lines.length) return;
+    const total = lines.reduce((s, l) => s + l.total, 0);
+    const id = 'ORD-' + Math.floor(1000 + Math.random() * 8999);
+    seed2.purchasesV2.orders.push({ id, date: new Date().toISOString().slice(0, 10), total, status: 'Pending', items: lines.map((l) => ({ name: l.name, qty: l.qty, total: l.total })) });
+    seed2.purchasesV2.thisMonthTotal += total;
+    seed2.purchasesV2.openOrders += 1;
+    Object.keys(cart).forEach((k) => delete cart[k]);
+    updateCartBar();
+    renderProducts();
+    renderPurchases();
+    closeSheets();
+    switchView('purchases');
+    showToast(`Order ${id} placed`);
+  });
+
+  el('payNowBtn').addEventListener('click', () => { if (seed2.payments.balanceDue > 0) openSheet('payNowSheet'); });
+  el('payNowConfirm').addEventListener('click', () => {
+    const p = seed2.payments;
+    p.paid += p.balanceDue;
+    p.balanceDue = 0;
+    p.invoicesPending = 0;
+    renderPayments();
+    closeSheets();
+    showToast('Payment successful (demo)');
+  });
+
+  el('topicSubmit').addEventListener('click', () => {
+    closeSheets();
+    showToast('Query submitted — we\'ll get back to you shortly');
+  });
+}
+</script>
+
+<!-- Version Switcher (Addendum 003) — see mobile.html for the pattern -->
+<style>
+  .vsw-wrap { position: fixed; left: 14px; bottom: 14px; z-index: 9999; display: flex; align-items: center; gap: 2px; background: #16181d; border-radius: 999px; padding: 4px; box-shadow: 0 8px 20px rgba(0,0,0,.28); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .vsw-wrap a { display: inline-flex; align-items: center; justify-content: center; padding: 7px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; color: #c8cbd2; text-decoration: none; white-space: nowrap; }
+  .vsw-wrap a.vsw-active { background: #17a34a; color: #fff; }
+  .vsw-wrap a.vsw-hub { color: #8b90a0; padding: 7px 9px; }
+</style>
+<div class="vsw-wrap" id="versionSwitcher"></div>
+<script>
+(function () {
+  var versions = [
+    { label: 'V1', href: 'mobile.html' },
+    { label: 'V2', href: 'mobile-v2.html' },
+    { label: 'V3', href: 'mobile-v3.html' }
+    // Add future versions here, e.g. { label: 'V4', href: 'mobile-v4.html' }
+  ];
+  var current = 'mobile-v2.html';
+  var wrap = document.getElementById('versionSwitcher');
+  wrap.innerHTML = '<a class="vsw-hub" href="../index.html" title="Back to hub">⌂</a>' +
+    versions.map(function (v) {
+      return '<a href="' + v.href + '"' + (v.href === current ? ' class="vsw-active"' : '') + '>' + v.label + '</a>';
+    }).join('');
+})();
+</script>
+</body>
+</html>

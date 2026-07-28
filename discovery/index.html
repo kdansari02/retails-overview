@@ -114,6 +114,87 @@
     </div>
   </div>
 
+  <!-- ====================================================================
+       Version 2 (Addendum 003) — appended below, nothing above this
+       comment was edited. V1 stays exactly as it was.
+       ==================================================================== -->
+  <div class="hero" style="background:#fff7ed; border-color:#fed7aa;">
+    <span class="tag" style="background:#ea580c;">Addendum 003 · Version 2</span>
+    <h2>Gupta Wholesale reference — Shop · My purchases · Payments · Help &amp; queries</h2>
+    <p style="color:#7c2d12;">A second, independently switchable UI built from the Gupta Wholesale
+    reference screenshots — richer store header (Call/WhatsApp/Store info/My account), promo
+    banner, discount pricing, a full Payments page (invoices, pay-now) and a Help &amp; queries
+    page. Version 1 above is untouched; use the "V1 · V2" switcher in the corner of any screen to
+    jump between them instantly.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="screens/mobile-v2.html" style="background:#ea580c;">📱 Open mobile (V2) →</a>
+      <a class="btn btn-secondary" href="screens/desktop-v2.html" style="color:#c2410c; border-color:#ea580c;">🖥️ Open desktop (V2) →</a>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <span class="chip">Mobile · V2</span>
+      <h4>Shop · Purchases · Payments · Help</h4>
+      <p>Store header with Call/WhatsApp, dismissible promo banner, discount pricing, light
+      floating cart bar → Review order. Bottom tabs add Payments (balance, pay-now, history) and
+      Help &amp; queries (topics, previous queries) alongside Shop and Purchases.</p>
+      <a class="open" href="screens/mobile-v2.html">Open screens/mobile-v2.html →</a>
+    </div>
+    <div class="card">
+      <span class="chip">Desktop · V2</span>
+      <h4>Shop · Purchases · Payments · Help</h4>
+      <p>Header actions (Call/WhatsApp/Store info/My account), account-summary + need-help
+      sidebar, trust badges and a footer bar on Shop; full stat-card Payments page with invoices;
+      Help &amp; queries page with an open-query tracker.</p>
+      <a class="open" href="screens/desktop-v2.html">Open screens/desktop-v2.html →</a>
+    </div>
+  </div>
+  <p class="note">V2 reuses <a href="seed-data/seed.json">seed-data/seed.json</a> where the two
+  designs overlap and adds <a href="seed-data/seed.v2.json">seed-data/seed.v2.json</a> for
+  V2-only data (store profile, promo, invoices, help queries). Decisions are logged in
+  <a href="instructions/addendum-003-v2-gupta-wholesale-redesign.md">Addendum 003</a>.</p>
+
+  <!-- ====================================================================
+       Version 3 (Addendum 004) — appended below, nothing above this
+       comment was edited. V1 and V2 stay exactly as they were.
+       ==================================================================== -->
+  <div class="hero" style="background:#eef2ff; border-color:#c7d2fe;">
+    <span class="tag" style="background:#4f46e5;">Addendum 004 · Version 3</span>
+    <h2>Pixel-accuracy pass — same app, closer to the reference</h2>
+    <p style="color:#3730a3;">Same Shop · My purchases · Payments · Help &amp; queries app as V2, same
+    data and interactions, rebuilt against a fuller reference set: a stacked wordmark logo, a
+    folded-ribbon promo badge, bottle-silhouette product art, and a purchases-sort bug fix (V2's
+    list was accidentally reversed — left as-is there, fixed here). V1 and V2 are both untouched.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="screens/mobile-v3.html" style="background:#4f46e5;">📱 Open mobile (V3) →</a>
+      <a class="btn btn-secondary" href="screens/desktop-v3.html" style="color:#4338ca; border-color:#4f46e5;">🖥️ Open desktop (V3) →</a>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <span class="chip">Mobile · V3</span>
+      <h4>Shop · Purchases · Payments · Help</h4>
+      <p>Wordmark logo, ribbon promo banner, bottle product art, an info icon on Account
+      summary, and purchases sorted newest-first (bug-fixed vs. V2). Same cart/order/pay/help
+      interactions as V2 — only the skin changed.</p>
+      <a class="open" href="screens/mobile-v3.html">Open screens/mobile-v3.html →</a>
+    </div>
+    <div class="card">
+      <span class="chip">Desktop · V3</span>
+      <h4>Shop · Purchases · Payments · Help</h4>
+      <p>Same refinements scaled up: wordmark logo box in the header and Store Info modal, a
+      larger ribbon-on-sunburst promo, bottle art in the product grid, and the purchases-sort fix.</p>
+      <a class="open" href="screens/desktop-v3.html">Open screens/desktop-v3.html →</a>
+    </div>
+  </div>
+  <p class="note">V3 reuses <a href="seed-data/seed.json">seed.json</a> and
+  <a href="seed-data/seed.v2.json">seed.v2.json</a> as-is — no new seed file, per "reuse existing
+  business logic, only replace the presentation layer." Decisions and the known gaps against
+  "pixel-perfect" (no source product photography or ribbon vector) are logged in
+  <a href="instructions/addendum-004-v3-pixel-accurate-redesign.md">Addendum 004</a>.</p>
+
   <h3 class="section-title">Transition map (→ SSOT-1 state-machine / SSOT-5 workflow)</h3>
   <table>
     <thead><tr><th>From</th><th>Event</th><th>To</th></tr></thead>

@@ -30,3 +30,6 @@ Standing rules are in **[Addendum 001 — Working Rules](./addendum-001-working-
 
 - [Addendum 001 — Working Rules](./addendum-001-working-rules.md) — standing rules for how we work in discovery (addendum-first, table summaries, iteration-as-version, gradual context build-up)
 - [Addendum 002 — Mobile-first shop flow, desktop adaptation](./addendum-002-mobile-desktop-shop-flow.md) — full Shop/Orders/Profile app from the As-is screenshots, desktop + mobile entry points
+- [Addendum 003 — Version 2 UI (Gupta Wholesale reference) + version switcher](./addendum-003-v2-gupta-wholesale-redesign.md) — Shop/My purchases/Payments/Help & queries redesign as a new, switchable Version 2 alongside the untouched Version 1
+- [Addendum 004 — Version 3: pixel-accurate Gupta Wholesale rebuild](./addendum-004-v3-pixel-accurate-redesign.md) — closes visual gaps against a fuller reference set (wordmark logo, ribbon promo, purchases-sort fix) as a new, switchable Version 3; V1 and V2 remain untouched
+- [Addendum 005 — Version 3 desktop reference pass](./addendum-005-v3-desktop-reference-pass.md) — desktop-only correction of the V3 shell and all four clickable sections against the supplied 1536px reference views
