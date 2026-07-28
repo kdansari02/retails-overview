@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gupta Wholesale Store — Mobile (V4)</title>
+<style>
+  *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#d9dbe0}
+  #app{display:block;width:100%;height:100%;border:0}
+  .vsw{position:fixed;left:14px;bottom:14px;z-index:20;display:flex;gap:2px;padding:4px;border-radius:999px;background:#16181d;box-shadow:0 8px 20px rgba(0,0,0,.28);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  .vsw a{padding:7px 11px;border-radius:999px;color:#c8cbd2;text-decoration:none}.vsw a.active{color:#fff;background:#17a34a}.vsw a.home{color:#8b90a0;padding-inline:9px}
+</style>
+</head>
+<body>
+<iframe id="app" src="mobile-v3.html" title="FoodBridge Retail V4 mobile"></iframe>
+<nav class="vsw"><a class="home" href="../index.html">⌂</a><a href="mobile.html">V1</a><a href="mobile-v2.html">V2</a><a href="mobile-v3.html">V3</a><a class="active" href="mobile-v4.html">V4</a></nav>
+<script>
+const frame=document.getElementById('app');
+if(location.hash)frame.src='mobile-v3.html'+location.hash;
+frame.addEventListener('load',e=>e.target.contentDocument.querySelector('.vsw-wrap')?.remove());
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gupta Wholesale Store — Desktop (V4)</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #fff; }
+  #app { display: block; width: 100%; height: 100%; border: 0; }
+  .vsw { position: fixed; left: 20px; bottom: 20px; z-index: 20; display:flex; gap:2px; padding:4px; border-radius:999px; background:#16181d; box-shadow:0 8px 20px rgba(0,0,0,.28); font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+  .vsw a { padding:7px 12px; border-radius:999px; color:#c8cbd2; text-decoration:none; }
+  .vsw a.active { color:#fff; background:#17a34a; }
+  .vsw a.home { color:#8b90a0; padding-inline:10px; }
+</style>
+</head>
+<body>
+<iframe id="app" src="desktop-v3.html" title="FoodBridge Retail V4"></iframe>
+<nav class="vsw" aria-label="UI version">
+  <a class="home" href="../index.html">⌂</a><a href="desktop.html">V1</a><a href="desktop-v2.html">V2</a><a href="desktop-v3.html">V3</a><a class="active" href="desktop-v4.html">V4</a>
+</nav>
+<script>
+const frame = document.getElementById('app');
+if (location.hash) frame.src = 'desktop-v3.html' + location.hash;
+frame.addEventListener('load', () => {
+  const doc = frame.contentDocument;
+  const win = frame.contentWindow;
+  const enhance = () => {
+  if (!doc.querySelector('#ordersBody tr')) { setTimeout(enhance, 50); return; }
+  doc.querySelector('.vsw-wrap')?.remove();
+  const style = doc.createElement('style');
+  style.textContent = `
+    #view-purchases .v4-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:22px}
+    #view-purchases .v4-stat{height:132px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:24px 20px 20px 120px;position:relative}
+    #view-purchases .v4-stat .v4-icon{position:absolute;left:28px;top:24px;width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:#edf8ee;color:#149447}
+    #view-purchases .v4-stat .v4-icon svg{width:34px;height:34px}
+    #view-purchases .v4-stat .label{font-size:14px;color:var(--muted)}
+    #view-purchases .v4-stat .value{font-size:25px;font-weight:700;margin-top:5px}
+    #view-purchases .v4-stat .note{font-size:12px;color:var(--muted);margin-top:6px}
+    #view-purchases .v4-stat .note.green{color:var(--brand-dark)}
+    #view-purchases .v4-layout{display:grid;grid-template-columns:minmax(0,1fr) 365px;gap:22px}
+    #view-purchases .v4-orders,#view-purchases .v4-help{border:1px solid var(--line);border-radius:12px;background:#fff}
+    #view-purchases .v4-toolbar{height:74px;display:flex;align-items:center;gap:22px;padding:0 20px;border-bottom:1px solid var(--line)}
+    #view-purchases .v4-filter{border:0;background:transparent;padding:12px 20px;font:500 14px inherit;cursor:pointer;border-radius:9px}
+    #view-purchases .v4-filter.active{background:var(--brand);color:#fff}
+    #view-purchases .v4-search{margin-left:auto;width:330px;height:44px;border:1px solid var(--line);border-radius:9px;padding:0 14px;font:14px inherit}
+    #view-purchases .v4-filter-btn{height:44px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 18px;font:600 14px inherit;cursor:pointer}
+    #view-purchases .v4-table{width:100%;border-collapse:separate;border-spacing:0;padding:0 20px}
+    #view-purchases .v4-table th{text-align:left;color:var(--muted);font-size:12px;font-weight:600;padding:14px 16px}
+    #view-purchases .v4-table td{padding:13px 16px;border-top:1px solid var(--line);font-size:14px}
+    #view-purchases .v4-table tr.order-row td:first-child{border-left:1px solid var(--line);border-radius:10px 0 0 10px}
+    #view-purchases .v4-table tr.order-row td:last-child{border-right:1px solid var(--line);border-radius:0 10px 10px 0}
+    #view-purchases .v4-table .sub{font-size:12px;color:var(--muted);margin-top:3px}
+    #view-purchases .v4-status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 12px;font-size:12px}
+    #view-purchases .v4-status:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+    #view-purchases .delivered{background:#e5f7eb;color:#159447}.active-order{background:#e8f2ff;color:#1680ff}.pending{background:#fff2df;color:#f47a10}.cancelled{background:#eef0f3;color:#5b6575}
+    #view-purchases .v4-action{min-width:142px;border:1px solid #29a855;border-radius:8px;background:#fff;color:#168c42;padding:9px 14px;font:600 13px inherit;cursor:pointer}
+    #view-purchases .v4-view-all{display:block;margin:12px auto 18px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:10px 28px;font:500 13px inherit;cursor:pointer}
+    #view-purchases .v4-help{padding:22px}
+    #view-purchases .v4-help h3{margin:0;font-size:16px}#view-purchases .v4-help>p{margin:7px 0 18px;color:var(--muted);font-size:13px}
+    #view-purchases .v4-help-card{border:1px solid var(--line);border-radius:10px;padding:0 15px}
+    #view-purchases .v4-help-row{display:flex;align-items:center;gap:14px;min-height:91px;border-bottom:1px solid var(--line);cursor:pointer}
+    #view-purchases .v4-help-row:last-child{border:0}
+    #view-purchases .v4-help-row .circle{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#edf8ee;color:#159447;flex:none}
+    #view-purchases .v4-help-row:nth-child(2) .circle{background:#fff1e7;color:#ff6a00}
+    #view-purchases .v4-help-row svg{width:24px;height:24px}.v4-help-row strong{font-size:14px}.v4-help-row small{display:block;color:var(--muted);line-height:18px;margin-top:3px}.v4-help-row b{margin-left:auto}
+    #view-purchases .v4-trust{height:78px;margin-top:18px;border-radius:10px;background:#f1faec;display:flex;align-items:center;justify-content:center;gap:16px;color:#168c42;font-size:13px}
+    @media(max-width:1200px){#view-purchases .v4-stats{grid-template-columns:repeat(2,1fr)}#view-purchases .v4-layout{grid-template-columns:1fr}#view-purchases .v4-search{width:240px}}
+  `;
+  doc.head.appendChild(style);
+  const purchases = doc.getElementById('view-purchases');
+  const svg = (path) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+  const icons = {
+    wallet: svg('<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M16 12h5M7 6V4h10v2"/>'),
+    bag: svg('<path d="M6 8h12l1 13H5L6 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/>'),
+    box: svg('<path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="M4 7v10l8 4 8-4V7M12 11v10"/>'),
+    clock: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+    alert: svg('<path d="m12 3 10 18H2L12 3Z"/><path d="M12 9v5M12 18h.01"/>'),
+    chat: svg('<path d="M21 15a4 4 0 0 1-4 4H8l-5 3 1.7-5A8 8 0 1 1 21 15Z"/>')
+  };
+  const orders = [
+    ['ORD-2025-00089','30 Jul, 2025','08:45 AM','Delivered','₹6,240','12 items','View details'],
+    ['ORD-2025-00088','28 Jul, 2025','11:20 AM','Active','₹4,320','8 items','View details'],
+    ['ORD-2025-00087','26 Jul, 2025','03:15 PM','Pending','₹3,960','7 items','View details'],
+    ['ORD-2025-00086','22 Jul, 2025','10:05 AM','Delivered','₹5,750','11 items','↻ Reorder'],
+    ['ORD-2025-00085','18 Jul, 2025','02:35 PM','Delivered','₹4,330','9 items','↻ Reorder'],
+    ['ORD-2025-00084','15 Jul, 2025','09:50 AM','Cancelled','₹2,400','5 items','View details']
+  ];
+  const orderRows = orders.map(o => `<tr class="order-row" data-status="${o[3].toLowerCase()}"><td>${o[0]}</td><td>${o[1]}<div class="sub">${o[2]}</div></td><td><span class="v4-status ${o[3]==='Active'?'active-order':o[3].toLowerCase()}">${o[3]}</span></td><td><strong>${o[4]}</strong><div class="sub">${o[5]}</div></td><td><button class="v4-action">${o[6]}　›</button></td></tr>`).join('');
+  purchases.innerHTML = `
+    <div class="v4-stats">
+      <div class="v4-stat"><div class="v4-icon">${icons.wallet}</div><div class="label">This month purchased</div><div class="value">₹24,600</div><div class="note green">⌃　12% vs last month</div></div>
+      <div class="v4-stat"><div class="v4-icon">${icons.bag}</div><div class="label">Open orders</div><div class="value">2</div><div class="note green">View open orders　›</div></div>
+      <div class="v4-stat"><div class="v4-icon">${icons.box}</div><div class="label">Delivered</div><div class="value">8</div><div class="note">In last 30 days</div></div>
+      <div class="v4-stat"><div class="v4-icon">${icons.clock}</div><div class="label">Pending / Active</div><div class="value">2</div><div class="note">Awaiting updates</div></div>
+    </div>
+    <div class="v4-layout">
+      <section class="v4-orders">
+        <div class="v4-toolbar"><button class="v4-filter active" data-filter="all">All</button><button class="v4-filter" data-filter="active">Active</button><button class="v4-filter" data-filter="delivered">Delivered</button><button class="v4-filter" data-filter="pending">Pending</button><button class="v4-filter" data-filter="cancelled">Cancelled</button><input class="v4-search" placeholder="⌕  Search by Order ID or product…"><button class="v4-filter-btn">☷　Filters</button></div>
+        <table class="v4-table"><thead><tr><th>Order ID</th><th>Date　↓</th><th>Status</th><th>Total</th><th>Action</th></tr></thead><tbody>${orderRows}</tbody></table>
+        <button class="v4-view-all">View all orders　⌄</button>
+      </section>
+      <aside><div class="v4-help"><h3>Need help with an order?</h3><p>Manage your orders or get assistance</p><div class="v4-help-card">
+        <div class="v4-help-row"><span class="circle">${icons.box}</span><div><strong>Reorder from<br>previous purchase</strong><small>Quickly add items from<br>your past orders</small></div><b>›</b></div>
+        <div class="v4-help-row"><span class="circle">${icons.alert}</span><div><strong>Raise order issue</strong><small>Report missing, damaged<br>or wrong items</small></div><b>›</b></div>
+        <div class="v4-help-row"><span class="circle">${icons.chat}</span><div><strong>Ask on WhatsApp</strong><small>Chat with us for quick<br>order support</small></div><b>›</b></div>
+      </div></div><div class="v4-trust">♢　<div><strong>100% Genuine Products</strong><br>Secure & Easy Ordering</div></div></aside>
+    </div>`;
+  purchases.querySelectorAll('.v4-filter').forEach(button => button.addEventListener('click', () => {
+    purchases.querySelectorAll('.v4-filter').forEach(x => x.classList.remove('active'));
+    button.classList.add('active');
+    const filter = button.dataset.filter;
+    purchases.querySelectorAll('.order-row').forEach(row => row.hidden = filter !== 'all' && row.dataset.status !== filter);
+  }));
+  purchases.querySelector('.v4-search').addEventListener('input', e => {
+    const query = e.target.value.toLowerCase();
+    purchases.querySelectorAll('.order-row').forEach(row => row.hidden = !row.textContent.toLowerCase().includes(query));
+  });
+  purchases.querySelectorAll('.v4-action,.v4-help-row,.v4-filter-btn,.v4-view-all').forEach(button => button.addEventListener('click', () => win.showToast?.('Action opened (demo)')));
+  if (location.hash === '#purchases') win.switchView?.('purchases');
+  };
+  enhance();
+});
+</script>
+</body>
+</html>

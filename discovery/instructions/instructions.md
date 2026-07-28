@@ -36,3 +36,4 @@ Standing rules are in **[Addendum 001 — Working Rules](./addendum-001-working-
 - [Addendum 006 — Short root landing URL](./addendum-006-short-root-landing-url.md) — keeps the public repository-root URL visible while rendering the complete V1/V2/V3 discovery hub
 - [Addendum 007 — V3 photography, icons and responsive rebuild](./addendum-007-v3-photography-icons-responsive-rebuild.md) — replaces placeholder bottles and emoji with supplied product photography and Lucide-style SVGs, and rebuilds desktop/mobile V3 card layouts
 - [Addendum 008 — V3 single-product crop fix](./addendum-008-v3-single-product-crop-fix.md) — constrains desktop product photography to one centered crop so neighbouring products cannot appear inside a card
+- [Addendum 009 — Version 4 pixel-reference implementation](./addendum-009-version-4-pixel-reference.md) — adds isolated desktop/mobile V4 routes, rebuilds desktop Purchases, and documents the screenshot-derived FoodBridge UI guidelines
