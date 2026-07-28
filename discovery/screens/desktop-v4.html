@@ -6,8 +6,8 @@
 <title>Gupta Wholesale Store — Desktop (V4)</title>
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #fff; }
-  #app { display: block; width: 100%; height: 100%; border: 0; }
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+  #app { display: block; width: 100%; max-width: 1620px; height: 100%; margin: 0 auto; border: 0; background:#fff; }
   .vsw { position: fixed; left: 20px; bottom: 20px; z-index: 20; display:flex; gap:2px; padding:4px; border-radius:999px; background:#16181d; box-shadow:0 8px 20px rgba(0,0,0,.28); font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
   .vsw a { padding:7px 12px; border-radius:999px; color:#c8cbd2; text-decoration:none; }
   .vsw a.active { color:#fff; background:#17a34a; }
@@ -66,6 +66,33 @@ frame.addEventListener('load', () => {
     #view-purchases .v4-help-row svg{width:24px;height:24px}.v4-help-row strong{font-size:14px}.v4-help-row small{display:block;color:var(--muted);line-height:18px;margin-top:3px}.v4-help-row b{margin-left:auto}
     #view-purchases .v4-trust{height:78px;margin-top:18px;border-radius:10px;background:#f1faec;display:flex;align-items:center;justify-content:center;gap:16px;color:#168c42;font-size:13px}
     @media(max-width:1200px){#view-purchases .v4-stats{grid-template-columns:repeat(2,1fr)}#view-purchases .v4-layout{grid-template-columns:1fr}#view-purchases .v4-search{width:240px}}
+    #view-payments .stat-card::after{display:none!important}
+    #view-payments .v4-pay-icon{position:absolute;left:25px;top:23px;width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:#edf8ee;color:#159447;z-index:2}
+    #view-payments .stat-card:nth-child(3) .v4-pay-icon{background:#fff0ec;color:#ff341d}
+    #view-payments .v4-pay-icon svg{width:38px;height:38px}
+    #view-payments .stat-card .lbl{font-size:15px!important;color:#16181d!important}
+    #view-payments .stat-card .val{font-size:26px!important;line-height:1.15}
+    #view-payments .stat-card .delta,#view-payments .stat-card .chip{font-size:12px!important}
+    #view-payments .panel-head h3{font-size:16px!important}
+    #view-payments table.paytable th{font-size:13px!important;color:#667085!important}
+    #view-payments table.paytable td{font-size:14px!important;padding-block:11px!important}
+    #view-payments .mode-icon{display:inline-flex;width:23px;height:23px;align-items:center;justify-content:center;margin-right:9px;vertical-align:middle;color:#526174}
+    #view-payments .mode-icon svg{width:20px;height:20px}
+    #view-payments .mode-icon.upi{color:#12a652}
+    #view-payments .secure-note{display:flex;align-items:center;gap:10px;color:#667085;font-size:12px;padding:13px 3px 0}
+    #view-payments .secure-note svg{width:17px;height:17px}
+    #view-payments .balance-card{text-align:left!important;padding:24px 26px!important}
+    #view-payments .balance-label{font-size:13px;color:#667085;margin-top:14px}
+    #view-payments .balance-total{font-size:32px!important;margin-top:6px!important}
+    #view-payments .balance-due-note{font-size:13px!important;display:flex;align-items:center;gap:8px}
+    #view-payments .balance-due-note svg{width:17px;height:17px}
+    #view-payments .pay-or{display:flex;align-items:center;gap:14px;color:#667085;font-size:13px;margin:12px 0 4px}
+    #view-payments .pay-or:before,#view-payments .pay-or:after{content:"";height:1px;background:#dfe5e1;flex:1}
+    #view-payments .btn{font-size:14px!important}
+    #view-payments .help-row .t{font-size:13px!important}
+    #view-payments .help-row .s{font-size:12px!important}
+    .top-actions .action-btn{font-size:15px!important}
+    .top-actions .action-btn:nth-child(2) .ui-icon{color:#16a34a}
   `;
   doc.head.appendChild(style);
   const purchases = doc.getElementById('view-purchases');
@@ -76,7 +103,13 @@ frame.addEventListener('load', () => {
     box: svg('<path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="M4 7v10l8 4 8-4V7M12 11v10"/>'),
     clock: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
     alert: svg('<path d="m12 3 10 18H2L12 3Z"/><path d="M12 9v5M12 18h.01"/>'),
-    chat: svg('<path d="M21 15a4 4 0 0 1-4 4H8l-5 3 1.7-5A8 8 0 1 1 21 15Z"/>')
+    chat: svg('<path d="M21 15a4 4 0 0 1-4 4H8l-5 3 1.7-5A8 8 0 1 1 21 15Z"/>'),
+    card: svg('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 15h5"/><circle cx="17" cy="16" r="2"/>'),
+    file: svg('<path d="M6 2h9l4 4v16H6Z"/><path d="M14 2v5h5M9 13h6M9 17h4"/><circle cx="17" cy="18" r="2"/><path d="M17 15v1"/>'),
+    calendar: svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/>'),
+    shield: svg('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/>'),
+    bank: svg('<path d="m3 9 9-5 9 5M5 10h14M6 10v7M10 10v7M14 10v7M18 10v7M4 18h16M3 21h18"/>'),
+    whatsapp: svg('<path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.3-4.7A8.5 8.5 0 1 1 20.5 11.8Z"/><path d="M8.1 7.7c.3-.5.6-.5.9-.5h.4c.2 0 .4.1.5.4l.8 1.9c.1.3.1.5-.1.7l-.6.8c-.2.2-.2.4 0 .7.5 1 1.3 1.8 2.3 2.4.3.2.5.2.7-.1l.9-1.1c.2-.2.4-.3.7-.2l1.9.9c.3.1.5.2.5.4 0 .2 0 1-.5 1.6-.5.7-1.5 1.2-2.4 1.2-.7 0-1.7-.2-3.3-1-2.8-1.4-4.6-4.8-4.7-5-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1.1-2.3Z"/>')
   };
   const orders = [
     ['ORD-2025-00089','30 Jul, 2025','08:45 AM','Delivered','₹6,240','12 items','View details'],
@@ -117,7 +150,28 @@ frame.addEventListener('load', () => {
     purchases.querySelectorAll('.order-row').forEach(row => row.hidden = !row.textContent.toLowerCase().includes(query));
   });
   purchases.querySelectorAll('.v4-action,.v4-help-row,.v4-filter-btn,.v4-view-all').forEach(button => button.addEventListener('click', () => win.showToast?.('Action opened (demo)')));
+  const payCards = doc.querySelectorAll('#view-payments .stat-card');
+  [icons.wallet,icons.card,icons.file,icons.calendar].forEach((icon,index) => payCards[index]?.insertAdjacentHTML('afterbegin',`<span class="v4-pay-icon">${icon}</span>`));
+  doc.querySelectorAll('#paymentsBody tr').forEach(row => {
+    const modeCell = row.children[1];
+    const isUpi = modeCell.textContent.includes('UPI');
+    modeCell.insertAdjacentHTML('afterbegin',`<span class="mode-icon ${isUpi?'upi':''}">${isUpi?'<strong>◢</strong>':icons.bank}</span>`);
+  });
+  const historyPanel = doc.querySelector('#paymentsBody')?.closest('.panel');
+  historyPanel?.insertAdjacentHTML('beforeend',`<div class="secure-note">${icons.shield} All payments are secure and encrypted</div>`);
+  const balanceCard = doc.querySelector('#view-payments .balance-card');
+  balanceCard?.querySelector('.balance-total')?.insertAdjacentHTML('beforebegin','<div class="balance-label">Total balance due</div>');
+  const dueNote = balanceCard?.querySelector('.balance-due-note');
+  if(dueNote) dueNote.innerHTML = `${icons.calendar} ${dueNote.textContent.replace('2026','2025')}`;
+  balanceCard?.querySelector('.btn-row-2')?.insertAdjacentHTML('beforebegin','<div class="pay-or">Or</div>');
+  const whatsappButton = doc.querySelector('.top-actions .action-btn:nth-child(2) .ui-icon');
+  if (whatsappButton) whatsappButton.innerHTML = icons.whatsapp;
+  const cartCount = doc.getElementById('cartCount');
+  const cartTotal = doc.getElementById('cartTotal');
+  if (cartCount) cartCount.textContent = '3 items';
+  if (cartTotal) cartTotal.textContent = '₹1,680';
   if (location.hash === '#purchases') win.switchView?.('purchases');
+  if (location.hash === '#payments') win.switchView?.('payments');
   };
   enhance();
 });

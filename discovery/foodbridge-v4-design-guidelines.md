@@ -65,7 +65,8 @@ Mobile uses one column, 16px page edges and 10–14px vertical gaps.
 
 ## Responsive behaviour
 
-- ≥1440px: full four-card KPI row and table/help two-column composition.
+- ≥1440px: a centred maximum 1620px canvas, full four-card KPI row and
+  table/help two-column composition.
 - 1024–1439px: KPI cards may wrap to two columns; table/help stays fluid until
   the rail can no longer retain its reference width.
 - 768–1023px: content becomes one column while preserving card hierarchy.
