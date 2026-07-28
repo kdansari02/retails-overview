@@ -214,6 +214,36 @@
     <div class="card"><span class="chip">Desktop · V4</span><h4>Full purchases workspace</h4><p>Four purchase KPIs, status filters, order search, complete order table, actions and support rail.</p><a class="open" href="screens/desktop-v4.html">Open desktop V4 →</a></div>
   </div>
 
+  <!-- ====================================================================
+       Version 5 (Addendum 011) — appended below, nothing above this
+       comment was edited. V1-V4 stay exactly as they were.
+       ==================================================================== -->
+  <div class="hero" style="background:#fdf2f8; border-color:#fbcfe8; margin-top:36px;">
+    <span class="tag" style="background:#be185d;">Addendum 011 · Version 5</span>
+    <h2>Functional polish pass — sort, payments, profile, no dead UI</h2>
+    <p style="color:#9d174d;">Working Sort (replaces Filters), real "View all products" pagination,
+    promo banner removed, GST off every customer-facing surface, a redesigned Review Cart, a fully
+    functional order-detail view, a real cash/UPI/card/credit split &amp; partial payment flow, a
+    mobile Profile tab, and Call/WhatsApp moved into a Store Details page with real tel:/WhatsApp
+    links. A first-login form gates checkout until a delivery profile is completed. V1-V4 remain
+    exactly as they were — jump between all five from the switcher on any screen.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="screens/mobile-v5.html" style="background:#be185d;">📱 Open mobile (V5) →</a>
+      <a class="btn btn-secondary" href="screens/desktop-v5.html" style="color:#9d174d; border-color:#be185d;">🖥️ Open desktop (V5) →</a>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="chip">Mobile · V5</span><h4>Shop · Purchases · Payments · Help · Profile</h4><p>Sort menu, load-more pagination, no promo banner, redesigned Review Cart → split/partial payment flow, full order-detail sheet, Store Details sheet with real Call/WhatsApp/Map links, and a new Profile tab (addresses, notifications, edit).</p><a class="open" href="screens/mobile-v5.html">Open mobile V5 →</a></div>
+    <div class="card"><span class="chip">Desktop · V5</span><h4>Same features, desktop layout</h4><p>Compact marketplace-style product cards, status-filterable Purchases table, the same payment flow and order-detail modal, and a Profile view reachable from the account menu.</p><a class="open" href="screens/desktop-v5.html">Open desktop V5 →</a></div>
+  </div>
+  <p class="note">V5 reuses <a href="seed-data/seed.json">seed.json</a> and
+  <a href="seed-data/seed.v2.json">seed.v2.json</a>, and adds
+  <a href="seed-data/seed.v5.json">seed-data/seed.v5.json</a> for V5-only data (customer profile,
+  payment config, richer purchase records). Decisions — including why GSTIN stays in Store Details
+  but not the global footer, and why partial payment defaults to allowed — are logged in
+  <a href="instructions/addendum-011-version-5-functional-polish.md">Addendum 011</a>.</p>
+
   <h3 class="section-title">Transition map (→ SSOT-1 state-machine / SSOT-5 workflow)</h3>
   <table>
     <thead><tr><th>From</th><th>Event</th><th>To</th></tr></thead>
