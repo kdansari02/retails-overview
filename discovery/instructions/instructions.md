@@ -35,3 +35,4 @@ Standing rules are in **[Addendum 001 — Working Rules](./addendum-001-working-
 - [Addendum 005 — Version 3 desktop reference pass](./addendum-005-v3-desktop-reference-pass.md) — desktop-only correction of the V3 shell and all four clickable sections against the supplied 1536px reference views
 - [Addendum 006 — Short root landing URL](./addendum-006-short-root-landing-url.md) — keeps the public repository-root URL visible while rendering the complete V1/V2/V3 discovery hub
 - [Addendum 007 — V3 photography, icons and responsive rebuild](./addendum-007-v3-photography-icons-responsive-rebuild.md) — replaces placeholder bottles and emoji with supplied product photography and Lucide-style SVGs, and rebuilds desktop/mobile V3 card layouts
+- [Addendum 008 — V3 single-product crop fix](./addendum-008-v3-single-product-crop-fix.md) — constrains desktop product photography to one centered crop so neighbouring products cannot appear inside a card
