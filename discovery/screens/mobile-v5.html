@@ -82,20 +82,20 @@
   .product-photo.fanta { background-position: -698px -462px; }
   .product-photo.juice, .product-photo.energy, .product-photo.limca { background-position: -496px -462px; }
 
-  .product-row { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; display: grid; grid-template-columns: 52px 1fr; gap: 12px; }
-  .p-name { font-weight: 700; font-size: 13.5px; }
-  .p-brand { color: var(--muted); font-size: 11px; }
+  .product-row { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; display: grid; grid-template-columns: 52px 1fr; gap: 12px; min-height: 112px; }
+  .p-name { font-weight: 700; font-size: 14px; }
+  .p-brand { color: var(--muted); font-size: 11.5px; }
   .p-price-row { display: flex; align-items: baseline; gap: 5px; margin-top: 3px; }
-  .p-price { font-weight: 700; font-size: 14px; }
-  .p-mrp { text-decoration: line-through; color: var(--muted); font-size: 11px; }
-  .p-off { color: var(--orange); font-weight: 700; font-size: 11px; }
-  .p-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 7px; }
-  .p-avail { color: var(--brand-dark); font-size: 10.5px; font-weight: 600; }
+  .p-price { font-weight: 700; font-size: 14.5px; }
+  .p-mrp { text-decoration: line-through; color: var(--muted); font-size: 11.5px; }
+  .p-off { color: var(--orange); font-weight: 700; font-size: 11.5px; }
+  .p-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .p-avail { color: var(--brand-dark); font-size: 11px; font-weight: 600; }
   .stepper { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 2px; }
-  .stepper button { width: 24px; height: 24px; border-radius: 50%; border: none; background: #fff; font-size: 14px; cursor: pointer; color: var(--ink); }
+  .stepper button { width: 26px; height: 26px; border-radius: 50%; border: none; background: #fff; font-size: 15px; cursor: pointer; color: var(--ink); }
   .stepper button.plus { background: var(--brand); color: #fff; }
-  .stepper .qty { min-width: 14px; text-align: center; font-weight: 700; font-size: 12.5px; }
-  .add-btn { border: 1px solid var(--brand); color: var(--brand-dark); background: #fff; border-radius: 999px; padding: 5px 14px; font-weight: 700; font-size: 12px; cursor: pointer; }
+  .stepper .qty { min-width: 16px; text-align: center; font-weight: 700; font-size: 13.5px; }
+  .add-btn { border: 1px solid var(--brand); color: var(--brand-dark); background: #fff; border-radius: 999px; padding: 6px 16px; font-weight: 700; font-size: 12.5px; cursor: pointer; }
 
   .empty { text-align: center; color: var(--muted); padding: 40px 12px; font-size: 14px; }
   .view-all-wrap { text-align: center; margin: 14px 0; }
@@ -990,16 +990,19 @@ function wireEvents() {
 
 <!-- Version Switcher (Addendum 003, extended through Addendum 011) -->
 <style>
-  /* Positioned top-right (not bottom-left) — V5's 5-tab bottom bar spans the
-     full width, so a bottom-anchored switcher would sit on top of the Shop
-     tab and steal its clicks. The header's top-right corner is free in V5
-     (Call/WhatsApp moved into Store Details, item 9), so it's used instead. */
-  .vsw-wrap { position: fixed; top: 14px; right: 14px; z-index: 25; display: flex; align-items: center; gap: 2px; background: #16181d; border-radius: 999px; padding: 4px; box-shadow: 0 8px 20px rgba(0,0,0,.28); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  .vsw-wrap a { display: inline-flex; align-items: center; justify-content: center; padding: 7px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; color: #c8cbd2; text-decoration: none; white-space: nowrap; }
-  .vsw-wrap a.vsw-active { background: #17a34a; color: #fff; }
-  .vsw-wrap a.vsw-hub { color: #8b90a0; padding: 7px 9px; }
+  /* Compact tap-to-expand switcher, top-right. V5's 5-tab bottom bar spans
+     the full width (a bottom pill would sit on the Shop tab and steal its
+     clicks — confirmed during testing), and a full row up top would overlap
+     the store name. A small collapsed toggle avoids both. */
+  .vsw-toggle { position: fixed; top: 12px; right: 12px; z-index: 26; width: 40px; height: 32px; border-radius: 999px; border: none; background: #16181d; color: #fff; font-size: 11px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,.28); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .vsw-menu { position: fixed; top: 48px; right: 12px; z-index: 26; display: none; flex-direction: column; gap: 2px; background: #16181d; border-radius: 14px; padding: 6px; box-shadow: 0 8px 20px rgba(0,0,0,.28); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .vsw-menu.show { display: flex; }
+  .vsw-menu a { display: block; padding: 7px 16px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #c8cbd2; text-decoration: none; white-space: nowrap; text-align: center; }
+  .vsw-menu a.vsw-active { background: #17a34a; color: #fff; }
+  .vsw-menu a.vsw-hub { color: #8b90a0; }
 </style>
-<div class="vsw-wrap" id="versionSwitcher"></div>
+<button class="vsw-toggle" id="versionToggle">V5</button>
+<div class="vsw-menu" id="versionSwitcher"></div>
 <script>
 (function () {
   var versions = [
@@ -1012,7 +1015,10 @@ function wireEvents() {
   ];
   var current = 'mobile-v5.html';
   var wrap = document.getElementById('versionSwitcher');
-  wrap.innerHTML = '<a class="vsw-hub" href="../index.html" title="Back to hub">⌂</a>' +
+  var toggle = document.getElementById('versionToggle');
+  toggle.addEventListener('click', function (e) { e.stopPropagation(); wrap.classList.toggle('show'); });
+  document.addEventListener('click', function (e) { if (!wrap.contains(e.target) && e.target !== toggle) wrap.classList.remove('show'); });
+  wrap.innerHTML = '<a class="vsw-hub" href="../index.html" title="Back to hub">⌂ Hub</a>' +
     versions.map(function (v) {
       return '<a href="' + v.href + '"' + (v.href === current ? ' class="vsw-active"' : '') + '>' + v.label + '</a>';
     }).join('');
