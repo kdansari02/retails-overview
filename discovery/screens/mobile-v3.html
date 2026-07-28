@@ -35,7 +35,7 @@
   body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #d9dbe0; color: var(--ink); -webkit-font-smoothing: antialiased; }
 
   .stage { min-height: 100vh; display: flex; justify-content: center; }
-  .device { width: 100%; max-width: 430px; min-height: 100vh; background: var(--bg); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  .device { width: 100%; max-width: 430px; height: 100vh; min-height: 0; background: var(--bg); display: flex; flex-direction: column; position: relative; overflow: hidden; }
   @media (min-width: 431px) {
     .stage { align-items: flex-start; padding: 32px 0; }
     .device { min-height: 844px; max-height: 844px; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,.35); border: 8px solid #111; }
@@ -43,13 +43,16 @@
   .statusbar { display: none; }
   @media (min-width: 431px) { .statusbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 22px 2px; font-size: 13px; font-weight: 600; flex: none; } }
 
-  main.view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
+  main.view { flex: 1 1 0; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
   main.view.hidden { display: none; }
 
   /* Wordmark logo */
   .logo-mark { width: 46px; height: 46px; border-radius: 10px; border: 1.5px solid var(--brand); background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none; cursor: pointer; line-height: 1; padding: 3px; }
   .logo-mark .l1 { color: var(--brand-dark); font-weight: 800; font-size: 9.5px; letter-spacing: .01em; }
   .logo-mark .l2 { color: #9aa1af; font-weight: 700; font-size: 5.5px; letter-spacing: .08em; margin-top: 1px; }
+  .logo-mark::before { content: "G"; color: #51a63c; font-weight: 800; font-size: 24px; line-height: 20px; }
+  .logo-mark .l1 { margin-top: 3px; font-size: 8px; }
+  .logo-mark .l2 { font-size: 4.5px; }
 
   /* Shop header */
   .shop-header { padding: 14px 16px 10px; background: var(--bg); }
@@ -68,9 +71,10 @@
   .content { padding: 0 16px; }
 
   /* Promo — ribbon on sunburst */
-  .promo { position: relative; border-radius: var(--radius); padding: 16px 14px 14px; margin: 10px 0 14px; overflow: hidden; background: radial-gradient(circle at 18% 30%, #fef9e0 0%, #eaf9ef 45%, #dff3e4 100%); border: 1px solid #cdeedb; }
+  .promo { position: relative; min-height: 126px; border-radius: var(--radius); padding: 18px 138px 14px 14px; margin: 10px 0 14px; overflow: hidden; background: linear-gradient(105deg,#fffde9,#e9f8ed); border: 1px solid #dce9d8; }
+  .promo::after { content: ""; position: absolute; right: -4px; bottom: 0; width: 142px; height: 116px; background-image: url("../instructions/inputs/RetailsModuleItteration/As-is/single-shop-mobile.png"); background-repeat: no-repeat; background-size: 1448px 1086px; background-position: -235px -261px; }
   .promo .close { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; border-radius: 50%; border: none; background: rgba(255,255,255,.75); cursor: pointer; font-size: 13px; color: var(--muted); z-index: 2; }
-  .promo-ribbon { position: relative; display: inline-block; background: var(--brand); color: #fff; font-size: 10.5px; font-weight: 800; letter-spacing: .03em; padding: 6px 14px; margin-bottom: 10px; clip-path: polygon(6% 0%, 94% 0%, 100% 50%, 94% 100%, 6% 100%, 0% 50%); }
+  .promo-ribbon { position: relative; z-index: 1; display: inline-block; color: var(--brand-dark); font-size: 12px; font-weight: 800; margin-bottom: 12px; }
   .promo h3 { margin: 0 0 8px; font-size: 15px; line-height: 1.3; position: relative; }
   .promo h3 b { color: var(--orange); font-size: 19px; }
   .promo-meta { font-size: 11px; color: #285c3c; position: relative; }
@@ -86,14 +90,15 @@
   .pill[data-cat="offers"] { color: var(--orange); }
   .pill.active { background: var(--brand); border-color: var(--brand); color: #fff; }
 
-  /* Bottle art */
-  .bottle-wrap { width: 52px; height: 52px; border-radius: 10px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; flex: none; }
-  .bottle { width: 20px; height: 34px; position: relative; }
-  .bottle .cap { width: 8px; height: 6px; background: #333; border-radius: 2px 2px 0 0; margin: 0 auto; }
-  .bottle .neck { width: 8px; height: 5px; background: var(--bottle-color, #4aa3e0); margin: 0 auto; opacity: .85; }
-  .bottle .body { width: 20px; height: 23px; background: var(--bottle-color, #4aa3e0); border-radius: 5px 5px 7px 7px; }
+  /* Product photography is sampled from the supplied reference image. */
+  .product-photo { width: 52px; height: 92px; background-image: url("../instructions/inputs/RetailsModuleItteration/As-is/single-shop-desktop.png"); background-repeat: no-repeat; background-size: 1229px 819px; flex: none; }
+  .product-photo.kinley { background-position: -88px -462px; }
+  .product-photo.coke { background-position: -294px -462px; }
+  .product-photo.sprite { background-position: -496px -462px; }
+  .product-photo.fanta { background-position: -698px -462px; }
+  .product-photo.juice, .product-photo.energy, .product-photo.limca { background-position: -496px -462px; }
 
-  .product-row { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px; margin-bottom: 10px; display: grid; grid-template-columns: 52px 1fr; gap: 12px; }
+  .product-row { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 10px 12px; margin-bottom: 10px; display: grid; grid-template-columns: 52px 1fr; gap: 12px; min-height: 112px; }
   .p-name { font-weight: 700; font-size: 14px; }
   .p-brand { color: var(--muted); font-size: 11.5px; }
   .p-price-row { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 4px; }
@@ -124,44 +129,50 @@
   .stats-strip .label { color: var(--muted); font-size: 11px; }
   .stats-strip .value { font-weight: 700; font-size: 16px; margin-top: 2px; }
 
-  .order-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; margin-bottom: 10px; }
+  .order-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin-bottom: 14px; min-height: 132px; }
   .order-top { display: flex; justify-content: space-between; align-items: flex-start; }
   .order-id { font-weight: 700; font-size: 14.5px; }
-  .order-date { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+  .order-date { color: var(--muted); font-size: 11.5px; }
   .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
   .status-delivered { background: var(--green-bg); color: var(--green-fg); }
   .status-intransit { background: var(--blue-bg); color: var(--blue-fg); }
   .status-pending { background: var(--amber-bg); color: var(--amber-fg); }
-  .order-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .order-main { display: flex; justify-content: space-between; align-items: end; margin-top: 18px; }
+  .order-total-label { color: var(--muted); font-size: 11px; margin-bottom: 4px; }
   .order-total { font-weight: 700; font-size: 15px; }
-  .order-action { color: var(--brand-dark); font-weight: 700; font-size: 12.5px; background: none; border: none; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px; }
+  .order-action { width: 100%; color: var(--muted); font-weight: 600; font-size: 12.5px; background: none; border: none; border-top: 1px solid var(--line); margin-top: 14px; padding: 11px 0 0; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 7px; text-align: left; }
 
-  .summary-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin: 10px 0 14px; }
+  .summary-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin: 10px 0 20px; }
   .summary-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
   .summary-head .ic { width: 15px; height: 15px; border-radius: 50%; border: 1.3px solid var(--muted); color: var(--muted); font-size: 10px; display: flex; align-items: center; justify-content: center; }
-  .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13.5px; border-bottom: 1px solid var(--line); }
+  .summary-row { display: block; padding: 16px 0; font-size: 13.5px; border-bottom: 1px solid var(--line); }
+  .summary-row > span:last-child { display: block; color: var(--ink); font-weight: 700; font-size: 22px; margin-top: 7px; }
   .summary-row:last-of-type { border-bottom: none; }
   .summary-row .lbl { color: var(--muted); }
   .summary-row.due .val { color: var(--red-fg); font-weight: 700; }
   .due-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--amber-bg); color: var(--amber-fg); font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 10px; margin: 10px 0; }
   .pay-btn { width: 100%; background: var(--brand); color: #fff; border: none; border-radius: 12px; padding: 13px; font-weight: 700; font-size: 14.5px; cursor: pointer; margin-top: 4px; }
 
-  .pay-row { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 13px 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+  #recentPayments { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .pay-row { background: var(--card); border-radius: 0; box-shadow: none; padding: 15px; margin: 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+  .pay-row:last-child { border-bottom: 0; }
   .pay-row .date { color: var(--muted); font-size: 11.5px; }
   .pay-row .amt { font-weight: 700; font-size: 14.5px; margin-top: 2px; }
   .pay-row .mode { color: var(--muted); font-size: 12px; }
   .chev { color: var(--muted); font-size: 15px; }
 
-  .topic-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
-  .topic-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--brand-tint); color: var(--brand-dark); display: flex; align-items: center; justify-content: center; font-size: 17px; flex: none; }
+  .topic-card { min-height: 88px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 16px; cursor: pointer; }
+  .topic-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--brand-tint); color: var(--brand-dark); display: flex; align-items: center; justify-content: center; font-size: 18px; flex: none; }
   .topic-title { font-weight: 700; font-size: 14px; }
   .topic-sub { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
-  .wa-banner { background: var(--brand-tint); border-radius: var(--radius); padding: 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 4px; }
+  .wa-banner { min-height: 82px; background: var(--brand-tint); border-radius: var(--radius); padding: 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 20px; }
   .wa-banner .icon { width: 38px; height: 38px; border-radius: 50%; background: var(--brand); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; flex: none; }
 
   nav.tabbar { flex: none; display: flex; padding: 8px 8px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--card); border-top: 1px solid var(--line); }
   nav.tabbar button { flex: 1; background: none; border: none; padding: 6px 0 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--muted); font-size: 11.5px; font-weight: 600; font-family: inherit; }
   nav.tabbar button.active { color: var(--brand); }
+  .ui-icon { width: 20px; height: 20px; display: inline-block; vertical-align: middle; }
+  .ui-icon svg { width: 100%; height: 100%; display: block; }
   .home-indicator { width: 120px; height: 4px; background: #d0d2d8; border-radius: 3px; margin: 6px auto 0; }
 
   .backdrop { position: absolute; inset: 0; background: rgba(20,22,26,.55); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
@@ -198,12 +209,12 @@
           <div>
             <div class="store-name-row"><span class="store-name" id="storeNameBtn"></span><span class="verified">✔</span></div>
             <div class="store-sub" id="storeSub"></div>
-            <div class="store-loc">📍 <span id="storeLocText"></span></div>
+            <div class="store-loc"><span class="ui-icon" data-icon="map-pin"></span> <span id="storeLocText"></span></div>
           </div>
         </div>
         <div class="contact-row">
-          <button class="contact-btn" id="callBtn">📞 Call</button>
-          <button class="contact-btn" id="waBtn">💬 WhatsApp</button>
+          <button class="contact-btn" id="callBtn"><span class="ui-icon" data-icon="phone"></span> Call</button>
+          <button class="contact-btn" id="waBtn"><span class="ui-icon" data-icon="message-circle"></span> WhatsApp</button>
         </div>
       </div>
       <div class="content">
@@ -218,7 +229,7 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" id="searchInput" placeholder="Search products by name or SKU..." />
           </div>
-          <button class="filter-btn" id="filterBtn">⋮</button>
+          <button class="filter-btn" id="filterBtn" aria-label="Filters"><span class="ui-icon" data-icon="sliders"></span></button>
         </div>
         <div class="pills" id="pills"></div>
         <div id="productList"></div>
@@ -260,7 +271,7 @@
       <div class="content">
         <div id="helpTopics"></div>
         <div class="wa-banner" id="waBanner">
-          <div class="icon">💬</div>
+          <div class="icon"><span class="ui-icon" data-icon="message-circle"></span></div>
           <div>
             <div class="topic-title">Get quick help on WhatsApp</div>
             <div class="topic-sub">Chat with us for faster support</div>
@@ -271,17 +282,17 @@
 
     <div class="cart-bar hidden" id="cartBar">
       <div class="cart-left">
-        <div class="cart-badge">🛒<span id="cartCount">0</span></div>
+        <div class="cart-badge"><span class="ui-icon" data-icon="shopping-cart"></span><span id="cartCount">0</span></div>
         <div class="cart-total" id="cartTotal">₹0</div>
       </div>
       <button id="reviewOrderBtn">Review order</button>
     </div>
 
     <nav class="tabbar">
-      <button class="tab active" data-view="shop">🏠<br>Shop</button>
-      <button class="tab" data-view="purchases">📦<br>Purchases</button>
-      <button class="tab" data-view="payments">₹<br>Payments</button>
-      <button class="tab" data-view="help">❓<br>Help</button>
+      <button class="tab active" data-view="shop"><span class="ui-icon" data-icon="home"></span>Shop</button>
+      <button class="tab" data-view="purchases"><span class="ui-icon" data-icon="shopping-bag"></span>Purchases</button>
+      <button class="tab" data-view="payments"><span class="ui-icon" data-icon="credit-card"></span>Payments</button>
+      <button class="tab" data-view="help"><span class="ui-icon" data-icon="circle-help"></span>Help</button>
     </nav>
     <div class="home-indicator"></div>
 
@@ -364,15 +375,44 @@
 
 <script>
 const fmt = (n) => '₹' + Number(n).toLocaleString('en-IN');
+const iconPaths = {
+  home:'<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>',
+  'shopping-bag':'<path d="M6 8h12l1 13H5L6 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/>',
+  'shopping-cart':'<circle cx="9" cy="20" r="1"/><circle cx="19" cy="20" r="1"/><path d="M3 4h2l2.5 11h10l2-7H7"/>',
+  'credit-card':'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/>',
+  'circle-help':'<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.5 2c-.9.5-1.3 1-1.3 2"/><path d="M12 17h.01"/>',
+  phone:'<path d="M22 17v3a2 2 0 0 1-2.2 2A20 20 0 0 1 2 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.8a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7A2 2 0 0 1 22 17Z"/>',
+  'message-circle':'<path d="M21 15a4 4 0 0 1-4 4H8l-5 3 1.7-5A8 8 0 1 1 21 15Z"/>',
+  'map-pin':'<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
+  sliders:'<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="18" r="2"/>',
+  'alert-triangle':'<path d="m12 3 10 18H2L12 3Z"/><path d="M12 9v5M12 18h.01"/>',
+  'file-text':'<path d="M6 2h9l4 4v16H6Z"/><path d="M14 2v5h5M9 13h6M9 17h6"/>',
+  truck:'<path d="M3 6h11v11H3Z"/><path d="M14 10h4l3 3v4h-7Z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/>',
+  history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>'
+};
+const svgIcon = (name) => `<span class="ui-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[name] || iconPaths['circle-help']}</svg></span>`;
+function hydrateIcons() {
+  document.querySelectorAll('[data-icon]').forEach((node) => {
+    node.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[node.dataset.icon] || iconPaths['circle-help']}</svg>`;
+  });
+}
 const statusClass = (s) => 'status-' + s.toLowerCase().replace(/\s+/g, '');
-const bottleColors = { water: '#4aa3e0', soda: '#c0392b', juices: '#e08a1e', energy: '#8e44ad', new: '#2ecc71' };
-const bottleColor = (p) => p.name.toLowerCase().includes('sprite') || p.name.toLowerCase().includes('limca') ? '#2ecc71' : p.name.toLowerCase().includes('fanta') ? '#e67e22' : (bottleColors[p.category] || '#4aa3e0');
-const bottleIcon = (p) => `<div class="bottle-wrap"><div class="bottle" style="--bottle-color:${bottleColor(p)};"><div class="cap"></div><div class="neck"></div><div class="body"></div></div></div>`;
+const productPhotoClass = (p) => {
+  const value = `${p.name} ${p.brand}`.toLowerCase();
+  if (value.includes('kinley') || value.includes('natural water')) return 'kinley';
+  if (value.includes('coca') || value.includes('coke')) return 'coke';
+  if (value.includes('sprite') || value.includes('limca')) return 'sprite';
+  if (value.includes('fanta')) return 'fanta';
+  if (p.category === 'juices') return 'juice';
+  if (p.category === 'energy') return 'energy';
+  return 'kinley';
+};
+const bottleIcon = (p) => `<div class="product-photo ${productPhotoClass(p)}" role="img" aria-label="${p.brand} ${p.name}"></div>`;
 
 let seed = null, seed2 = null;
 let activeCategory = 'all';
 let searchTerm = '';
-const cart = {};
+const cart = { 'v2-natural-water': 2, 'v2-coke-500': 1 };
 
 function el(id) { return document.getElementById(id); }
 
@@ -389,7 +429,11 @@ function init() {
   renderPurchases();
   renderPayments();
   renderHelp();
+  updateCartBar();
   wireEvents();
+  hydrateIcons();
+  const requestedView = location.hash.replace('#', '');
+  if (['shop', 'purchases', 'payments', 'help'].includes(requestedView)) switchView(requestedView);
 }
 
 function renderStoreHeader() {
@@ -419,7 +463,7 @@ function renderPills() {
 }
 
 function filteredProducts() {
-  return seed2.productsV2.filter((p) => {
+  const products = seed2.productsV2.filter((p) => {
     let inCat = true;
     if (activeCategory === 'offers') inCat = p.offer;
     else if (activeCategory === 'buy-again') inCat = p.buyAgain;
@@ -427,6 +471,14 @@ function filteredProducts() {
     const inSearch = !searchTerm || p.name.toLowerCase().includes(searchTerm) || p.brand.toLowerCase().includes(searchTerm);
     return inCat && inSearch;
   });
+  if (activeCategory === 'all' && !searchTerm) {
+    const priority = ['v2-natural-water', 'v2-coke-500', 'v2-sprite-600', 'v2-fanta-orange', 'v2-kinley-250'];
+    return products.sort((a, b) => {
+      const ai = priority.indexOf(a.id), bi = priority.indexOf(b.id);
+      return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
+    });
+  }
+  return products;
 }
 
 function renderProducts() {
@@ -483,7 +535,7 @@ function updateCartBar() {
   if (count === 0) { bar.classList.add('hidden'); return; }
   bar.classList.remove('hidden');
   el('cartCount').textContent = count;
-  el('cartTotal').textContent = fmt(total);
+  el('cartTotal').textContent = `${count} items · ${fmt(total)}`;
 }
 
 function renderReviewSheet() {
@@ -505,14 +557,12 @@ function renderPurchases() {
   const wrap = el('ordersList');
   wrap.innerHTML = sortedOrders().map((o) => `
     <div class="order-card" data-id="${o.id}">
-      <div class="order-top">
-        <div><div class="order-id">Order #${o.id}</div><div class="order-date">${o.date}</div></div>
+      <div class="order-top"><div class="order-id">Order #${o.id}</div><div class="order-date">${o.date}</div></div>
+      <div class="order-main">
+        <div><div class="order-total-label">Total</div><div class="order-total">${fmt(o.total)}</div></div>
         <span class="status-pill ${statusClass(o.status)}">${o.status}</span>
       </div>
-      <div class="order-bottom">
-        <div class="order-total">${fmt(o.total)}</div>
-        <button class="order-action" data-id="${o.id}">${o.status === 'Delivered' ? '↻ Reorder' : '⏱ View details ›'}</button>
-      </div>
+      <button class="order-action" data-id="${o.id}">${o.status === 'Delivered' ? `${svgIcon('history')} Reorder` : `${svgIcon('circle-help')} View details`}<span style="margin-left:auto;">›</span></button>
     </div>`).join('');
   wrap.querySelectorAll('.order-action').forEach((b) => b.addEventListener('click', () => {
     const o = p.orders.find((x) => x.id === b.dataset.id);
@@ -540,7 +590,7 @@ function renderPayments() {
   /* Mobile reference literally reads "Next due in 5 days" (desktop's stat
      card reads "in 3 days" — the two source screens disagree; kept as-is
      per screen, not silently unified, per Addendum 004 item 6). */
-  el('dueChip').textContent = p.balanceDue > 0 ? '⏰ Next due in 5 days' : '✓ No dues';
+  el('dueChip').innerHTML = p.balanceDue > 0 ? `${svgIcon('history')} Next due in 5 days` : 'No dues';
   el('payNowBtn').disabled = p.balanceDue === 0;
   el('payNowAmount').textContent = fmt(p.balanceDue);
   el('recentPayments').innerHTML = p.recent.map((r) => `
@@ -553,13 +603,13 @@ function renderPayments() {
 
 function renderHelp() {
   const h = seed2.help;
-  el('helpTopics').innerHTML = h.topics.map((t) => `
+  el('helpTopics').innerHTML = h.topics.filter((t) => t.id !== 'delivery-query').map((t) => `
     <div class="topic-card" data-id="${t.id}">
-      <div class="topic-icon">${t.icon === 'chat' ? '💬' : t.icon === 'warning' ? '⚠️' : t.icon === 'rupee' ? '₹' : '🚚'}</div>
+      <div class="topic-icon">${t.icon === 'chat' ? svgIcon('message-circle') : t.icon === 'warning' ? svgIcon('alert-triangle') : t.icon === 'rupee' ? '<strong>₹</strong>' : svgIcon('truck')}</div>
       <div><div class="topic-title">${t.title}</div><div class="topic-sub">${t.subtitle}</div></div>
     </div>`).join('') + `
     <div class="topic-card" id="prevQueriesBtn">
-      <div class="topic-icon">🕘</div>
+      <div class="topic-icon">${svgIcon('file-text')}</div>
       <div><div class="topic-title">View previous queries</div><div class="topic-sub">Track your earlier queries</div></div>
     </div>`;
   el('helpTopics').querySelectorAll('.topic-card[data-id]').forEach((c) => c.addEventListener('click', () => openTopic(c.dataset.id)));
