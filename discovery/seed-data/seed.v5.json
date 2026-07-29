@@ -18,10 +18,8 @@
   "paymentConfig": {
     "allowPartialPayment": true,
     "methods": [
-      { "id": "cash", "label": "Cash" },
-      { "id": "upi", "label": "UPI" },
-      { "id": "card", "label": "Card" },
-      { "id": "credit", "label": "Credit / outstanding balance" }
+      { "id": "cash", "label": "Cash on Delivery (COD)" },
+      { "id": "upi", "label": "Pay Online — UPI QR" }
     ]
   },
 
@@ -75,7 +73,7 @@
       {
         "id": "ORD-2025-00087", "date": "2026-07-26", "time": "03:15 PM", "status": "Pending", "total": 3960,
         "items": [ { "name": "Mixed Fruit Juice 1L", "brand": "Real", "qty": 7, "price": 540, "total": 3780 } ],
-        "subtotal": 3780, "discount": 0, "deliveryCharge": 0, "paymentMode": "Credit / outstanding balance", "paymentStatus": "Pending",
+        "subtotal": 3780, "discount": 0, "deliveryCharge": 0, "paymentMode": "Unpaid — outstanding balance", "paymentStatus": "Pending",
         "deliveryAddress": "Warehouse, Plot 4, Peenya Industrial Area, Bengaluru 560058",
         "timeline": [
           { "step": "Order Placed", "at": "26 Jul, 03:15 PM", "done": true },
@@ -90,7 +88,7 @@
           { "name": "250ml PET Bottle", "brand": "Kinley", "qty": 15, "price": 252, "total": 3780 },
           { "name": "Natural Water", "brand": "Bisleri", "qty": 6, "price": 310, "total": 1860 }
         ],
-        "subtotal": 5640, "discount": 0, "deliveryCharge": 110, "paymentMode": "Card", "paymentStatus": "Paid",
+        "subtotal": 5640, "discount": 0, "deliveryCharge": 110, "paymentMode": "UPI", "paymentStatus": "Paid",
         "deliveryAddress": "Shop – Main, 12 MG Road, Bengaluru 560001",
         "timeline": [
           { "step": "Order Placed", "at": "22 Jul, 10:05 AM", "done": true },
