@@ -208,6 +208,7 @@
   .btn-primary { background: var(--brand); color: #fff; }
   .btn-primary:disabled { opacity: .5; }
   .btn-secondary { background: #f0f1f3; color: var(--ink); }
+  .btn-back-icon { flex: none; width: 48px; border: none; border-radius: 12px; background: #f0f1f3; color: var(--ink); font-size: 20px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; }
   .btn-text { background: none; border: none; color: var(--muted); font-weight: 600; font-size: 13px; cursor: pointer; text-decoration: underline; text-align: center; padding: 6px; }
   .btn.full { width: 100%; }
 
@@ -441,8 +442,10 @@
           <div class="field-row"><label>Landmark</label><input id="pfLandmark" /></div>
         </div>
         <div id="profileGateMsg"></div>
-        <button class="btn btn-primary full" id="profileGateSave">Save &amp; Continue</button>
-        <button class="btn-text" id="profileGateLater" style="display:block; width:100%; text-align:center; margin-top:10px;">Back to Shop</button>
+        <div class="btn-row">
+          <button class="btn-back-icon" id="profileGateLater" title="Back to Shop">‹</button>
+          <button class="btn btn-primary" id="profileGateSave">Save &amp; Continue</button>
+        </div>
       </div>
     </div>
 
@@ -495,9 +498,9 @@
       <div class="pay-summary-row hidden" id="reviewSavingsRow"><span>You saved</span><span id="reviewSavings" style="color:var(--brand-dark); font-weight:600;"></span></div>
       <div class="pay-summary-row"><span>Delivery charge</span><span id="reviewDelivery"></span></div>
       <div class="pay-summary-row total"><span>Total</span><span id="reviewTotal"></span></div>
-      <div class="btn-row stack">
-        <button class="btn btn-primary full" id="proceedPaymentBtn">Proceed to Payment →</button>
-        <button class="btn-text" data-close>Back to Shop</button>
+      <div class="btn-row">
+        <button class="btn-back-icon" data-close title="Back to Shop">‹</button>
+        <button class="btn btn-primary" id="proceedPaymentBtn">Checkout →</button>
       </div>
     </div>
 
@@ -531,9 +534,9 @@
       <div class="pay-summary-row" id="payDeliveryRow"><span>Delivery</span><span id="payDeliveryFee"></span></div>
       <div class="pay-summary-row total"><span id="payGrandTotalLabel">Grand Total</span><span id="payGrandTotal"></span></div>
       <div class="secure-note">🛡 All transactions are secure and encrypted</div>
-      <div class="btn-row stack">
-        <button class="btn btn-primary full" id="confirmPaymentBtn">Place Order</button>
-        <button class="btn-text" data-close>Cancel</button>
+      <div class="btn-row">
+        <button class="btn-back-icon" data-close title="Cancel">‹</button>
+        <button class="btn btn-primary" id="confirmPaymentBtn">Place Order</button>
       </div>
     </div>
 
