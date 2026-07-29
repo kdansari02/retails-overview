@@ -19,7 +19,7 @@
     "allowPartialPayment": true,
     "methods": [
       { "id": "cash", "label": "Cash on Delivery (COD)" },
-      { "id": "upi", "label": "Pay Online — UPI QR" }
+      { "id": "online", "label": "Pay Online" }
     ]
   },
 

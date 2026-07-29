@@ -18,7 +18,7 @@ and shop UPI QR, including split, partial, and ₹0-now payment.
 | --- | --- |
 | Entry | Shop opens immediately. No first-entry form or onboarding redirect. |
 | Profile | If incomplete, Pay/Proceed opens an in-context modal on desktop and bottom sheet on mobile. Successful save resumes the interrupted payment action. |
-| Methods | Only Cash on Delivery and Pay Online via the shop UPI QR are offered. Card entry and payment-gateway UI are excluded. |
+| Methods | Cash on Delivery and Pay Online are offered. Pay Online communicates support for Card, UPI, Net Banking, and Wallets without embedding a provider-specific gateway. |
 | Confirmation | UPI submissions and cash promises remain pending until the shop owner confirms them. The prototype does not claim instant settlement. |
 | Allocation | Cash and UPI can be split. Partial and ₹0-now allocation remain valid; the unpaid remainder becomes outstanding. |
 | Payments UI | Mobile recent rows use the reference date/mode, amount, and chevron columns. Desktop retains the FoodBridge KPI/history/balance layout. |
@@ -32,8 +32,5 @@ and shop UPI QR, including split, partial, and ₹0-now payment.
 - Use white cards, neutral `#e7e8eb` borders, 10–12px radii, and the existing
   system sans-serif typography.
 - Payment method cards contain a selection control, method icon, title,
-  description, and amount field. UPI selection additionally reveals the shop
-  QR and an explicit owner-confirmation message.
-- Never present a card-number form, third-party gateway, or a success state
-  before shop-owner confirmation.
-
+  description, supported online-payment types, and amount field.
+- Never claim a success state before the shop-owner confirmation step.

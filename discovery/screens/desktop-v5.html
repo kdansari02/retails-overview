@@ -306,11 +306,8 @@
   .pm-amount-row { grid-column: 1 / -1; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); display: flex; align-items: center; gap: 10px; }
   .pm-amount-row label { font-size: 12px; color: var(--muted); font-weight: 600; }
   .pm-amount-row input { flex: 1; border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; font-size: 14px; font-family: inherit; }
-  .shop-qr { grid-column: 1 / -1; display:flex; align-items:center; gap:14px; margin-top:10px; padding:12px; border-top:1px dashed var(--line); background:#fff; border-radius:10px; }
-  .shop-qr svg { width:82px; height:82px; flex:none; border:5px solid #fff; box-shadow:0 0 0 1px var(--line); }
-  .shop-qr strong { font-size:13.5px; }
-  .shop-qr small { display:block; margin-top:4px; line-height:1.35; }
-  .confirmation-note { color:var(--amber-fg); background:var(--amber-bg); border-radius:8px; padding:7px 9px; font-size:11.5px; margin-top:7px; }
+  .online-details { grid-column:1 / -1; display:flex; gap:7px; flex-wrap:wrap; margin-top:8px; padding-top:10px; border-top:1px dashed var(--line); }
+  .online-details span { border:1px solid #e3d9ff; background:#faf7ff; color:#6d3fd6; border-radius:999px; padding:5px 10px; font-size:11.5px; font-weight:700; }
 
   .allocation-bar-wrap { margin-top: 16px; }
   .allocation-row { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
@@ -545,13 +542,12 @@
             <input type="text" id="searchInput" placeholder="Search products by name, brand or SKU..." />
           </div>
           <select class="sort-select" id="sortSelect">
-            <option value="relevance">Sort: Relevance</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="name-asc">Name: A to Z</option>
-            <option value="name-desc">Name: Z to A</option>
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
+            <option value="relevance">Recommended for retailers</option>
+            <option value="margin-desc">Best retailer margin</option>
+            <option value="stock-desc">Stock availability</option>
+            <option value="price-asc">Wholesale price: Low to High</option>
+            <option value="price-desc">Wholesale price: High to Low</option>
+            <option value="newest">New stock first</option>
           </select>
         </div>
         <div class="pills" id="pills"></div>
@@ -923,9 +919,8 @@ let orderThisAmount = 0;
 let orderDiscount = 0;
 const methodMeta = {
   cash: { icon: '🚚', subtitle: 'Pay in cash upon delivery', online: false },
-  upi: { icon: '▦', subtitle: 'Scan the shop UPI QR — no card payment', online: true }
+  online: { icon: '▣', subtitle: 'Cards, UPI, net banking & wallets', online: true }
 };
-const shopQr = `<svg viewBox="0 0 84 84" aria-label="Gupta Wholesale Store UPI QR"><rect width="84" height="84" fill="#fff"/><g fill="#111"><path d="M4 4h28v28H4zm6 6v16h16V10zM52 4h28v28H52zm6 6v16h16V10zM4 52h28v28H4zm6 6v16h16V58z"/><path d="M38 4h8v8h-8zM38 18h8v14h-8zM4 38h8v8H4zM18 38h14v8H18zM38 38h8v8h-8zM52 38h8v8h-8zM66 38h14v8H66zM38 52h8v14h-8zM52 52h8v8h-8zM66 52h8v8h-8zM76 62h4v18h-14v-8h8v-6h-8v-6h10zM50 66h10v14H50zM36 72h8v8h-8z"/></g><rect x="12" y="12" width="8" height="8" fill="#17a34a"/><rect x="60" y="12" width="8" height="8" fill="#17a34a"/><rect x="12" y="60" width="8" height="8" fill="#17a34a"/></svg>`;
 let pendingCheckout = false;
 let onboardingReturnView = 'shop';
 let payingBalance = false;
@@ -973,7 +968,8 @@ function renderHeader() {
 
 function renderPills() {
   const wrap = el('pills');
-  wrap.innerHTML = seed2.categoriesV2.filter((c) => c.id !== 'buy-again').map((c) => `<button class="pill ${c.id === activeCategory ? 'active' : ''}" data-cat="${c.id}">${c.label}</button>`).join('');
+  const tradeLabels = { all: 'All beverages', offers: 'Trade offers', water: 'Packaged water', soda: 'Carbonated drinks', juices: 'Juices & mixers', energy: 'Energy drinks', new: 'New stock' };
+  wrap.innerHTML = seed2.categoriesV2.filter((c) => c.id !== 'buy-again').map((c) => `<button class="pill ${c.id === activeCategory ? 'active' : ''}" data-cat="${c.id}">${tradeLabels[c.id] || c.label}</button>`).join('');
   wrap.querySelectorAll('.pill').forEach((btn) => btn.addEventListener('click', () => { activeCategory = btn.dataset.cat; visibleCount = PAGE_SIZE; renderPills(); renderProducts(); }));
 }
 
@@ -988,6 +984,8 @@ function filteredProducts() {
   list = list.slice();
   if (sortKey === 'price-asc') list.sort((a, b) => a.price - b.price);
   else if (sortKey === 'price-desc') list.sort((a, b) => b.price - a.price);
+  else if (sortKey === 'margin-desc') list.sort((a, b) => b.discount - a.discount);
+  else if (sortKey === 'stock-desc') list.sort((a, b) => b.available - a.available);
   else if (sortKey === 'name-asc') list.sort((a, b) => a.name.localeCompare(b.name));
   else if (sortKey === 'name-desc') list.sort((a, b) => b.name.localeCompare(a.name));
   else if (sortKey === 'newest') list.sort((a, b) => new Date(b.addedDate) - new Date(a.addedDate));
@@ -1193,7 +1191,7 @@ function renderPaymentMethodCards() {
       <span class="pm-icon">${meta.icon || '💰'}</span>
       <div><strong>${m.label}${meta.online ? '<span class="pm-badge">Online</span>' : ''}</strong><small>${meta.subtitle || ''}</small></div>
       <span></span>
-      ${isSelected ? `<div class="pm-amount-row"><label>Amount</label><input type="number" min="0" class="pm-amount-input" data-mode="${m.id}" value="${amount}" /></div>${m.id === 'upi' ? `<div class="shop-qr">${shopQr}<div><strong>Gupta Wholesale Store</strong><small>Scan with any UPI app. Payment stays pending until the shop owner confirms it.</small><div class="confirmation-note">Awaiting shop confirmation after submission</div></div></div>` : ''}` : ''}
+      ${isSelected ? `<div class="pm-amount-row"><label>Amount</label><input type="number" min="0" class="pm-amount-input" data-mode="${m.id}" value="${amount}" /></div>${m.id === 'online' ? '<div class="online-details"><span>Card</span><span>UPI</span><span>Net Banking</span><span>Wallets</span></div>' : ''}` : ''}
     </div>`;
   }).join('');
   wrap.querySelectorAll('.pay-method-card').forEach((card) => card.addEventListener('click', (e) => {
@@ -1486,7 +1484,7 @@ function wireEvents() {
       payingBalance = false;
       closeModals();
       showToast(entered > 0
-        ? `${fmt(entered)} submitted via ${used.includes('upi') ? 'UPI QR' : 'cash'} · awaiting shop owner confirmation`
+        ? `${fmt(entered)} submitted via ${used.includes('online') ? 'online payment' : 'cash'} · awaiting shop owner confirmation`
         : `No payment made now — ${fmt(seed2.payments.balanceDue)} remains outstanding`);
       return;
     }
@@ -1504,7 +1502,7 @@ function wireEvents() {
       id, date: now.toISOString().slice(0, 10), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
       status: 'Active', total, subtotal, discount: orderDiscount, deliveryCharge: delivery,
       paymentMode: entered <= 0 ? 'Unpaid — pay later' : modeLabel + (remaining > 0 ? ' (partial)' : usedIds.length > 1 ? ' (split)' : ''),
-      paymentStatus: entered <= 0 ? 'Unpaid' : usedIds.includes('upi') ? 'Awaiting shop confirmation' : usedIds.includes('cash') ? 'Cash due on delivery' : remaining > 0 ? 'Partially Paid' : 'Paid',
+      paymentStatus: entered <= 0 ? 'Unpaid' : usedIds.includes('online') ? 'Awaiting shop confirmation' : usedIds.includes('cash') ? 'Cash due on delivery' : remaining > 0 ? 'Partially Paid' : 'Paid',
       deliveryAddress: seed5.customer.addresses.find((a) => a.default)?.detail || seed5.customer.addresses[0]?.detail || 'Address on file',
       items: lines.map((l) => ({ name: l.name, qty: l.qty, price: l.price, total: l.total })),
       timeline: [{ step: 'Order Placed', at: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }), done: true }, { step: 'Packed', at: '', done: false }, { step: 'Out for Delivery', at: '', done: false }, { step: 'Delivered', at: '', done: false }]
