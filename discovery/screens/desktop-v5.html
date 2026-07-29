@@ -82,12 +82,7 @@
   .pill[data-cat="offers"] { color: var(--orange); }
   .pill.active { background: var(--brand); border-color: var(--brand); color: #fff; }
 
-  .product-photo { width: 100px; height: 100px; margin: 0 auto; background-color: #fafafa; border-radius: 8px; background-image: url("../instructions/inputs/RetailsModuleItteration/As-is/single-shop-desktop.png"); background-repeat: no-repeat; background-size: 1536px 1024px; overflow: hidden; }
-  .product-photo.kinley { background-position: -93px -573px; }
-  .product-photo.coke { background-position: -342px -573px; }
-  .product-photo.sprite { background-position: -588px -573px; }
-  .product-photo.fanta { background-position: -831px -573px; }
-  .product-photo.juice, .product-photo.energy, .product-photo.limca { background-position: -588px -573px; }
+  .product-photo { width:100px; height:120px; margin:0 auto; display:block; object-fit:contain; object-position:center; border-radius:8px; }
 
   .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
   .product-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; gap: 4px; transition: box-shadow .12s ease, border-color .12s ease; }
@@ -227,7 +222,7 @@
   /* Cart / order-detail rows */
   .cart-row { display: grid; grid-template-columns: 48px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
   .cart-row:last-of-type { border-bottom: none; }
-  .cart-row .thumb { width: 48px; height: 48px; border-radius: 8px; background-color: #fafafa; background-image: url("../instructions/inputs/RetailsModuleItteration/As-is/single-shop-desktop.png"); background-repeat: no-repeat; background-size: 1536px 1024px; }
+  .cart-row .thumb { width:56px; height:64px; border-radius:8px; object-fit:contain; object-position:center; display:block; }
   .cart-row .name { font-weight: 600; font-size: 13.5px; }
   .cart-row .price { color: var(--muted); font-size: 12px; margin-top: 2px; }
   .cart-row .line-total { font-weight: 700; font-size: 13.5px; text-align: right; min-width: 64px; }
@@ -392,15 +387,7 @@
     .pill { min-width: 92px; border-radius: 10px; padding: 12px 16px; font-weight: 500; }
     .product-grid { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; }
     .product-card { min-height: 358px; border: 1px solid var(--line); padding: 16px; gap: 6px; }
-    /* Bigger product photo — scaled up from the Addendum-008-fixed crop
-       (120x125 @ 1536x1024) by 1.3x so the sprite crop stays centred on the
-       same bottle instead of bleeding into its neighbour. */
-    .product-photo { width: 156px; height: 163px; background-size: 1997px 1331px; }
-    .product-photo.kinley { background-position: -121px -745px; }
-    .product-photo.coke { background-position: -445px -745px; }
-    .product-photo.sprite { background-position: -764px -745px; }
-    .product-photo.fanta { background-position: -1080px -745px; }
-    .product-photo.juice, .product-photo.energy, .product-photo.limca { background-position: -764px -745px; }
+    .product-photo { width:156px; height:163px; }
     .p-name { font-size: 16px; }
     .p-brand { color: var(--ink); font-size: 13px; }
     .p-price { font-size: 18px; }
@@ -747,6 +734,7 @@
   <div class="cart-items-scroll drawer-body" id="cartLines"></div>
   <div class="drawer-footer">
     <div class="pay-summary-row"><span>Subtotal</span><span id="cartSubtotal"></span></div>
+    <div class="pay-summary-row"><span>Tax (10%)</span><span id="cartTax"></span></div>
     <div class="pay-summary-row total"><span>Total</span><span id="cartModalTotal"></span></div>
     <div class="btn-row">
       <button class="btn-text" data-close>Back to Shop</button>
@@ -795,6 +783,7 @@
       <div class="summary-customer"><span class="cust-avatar" id="custAvatar"></span><div><strong id="custName"></strong><div class="muted" id="custPhone"></div></div></div>
       <div class="summary-units" id="summaryUnitsBox"><span class="units-ic">📦</span><div><div>Total Units</div><small>Total quantity of items</small></div><strong id="summaryUnits"></strong></div>
       <div class="summary-row" id="paySubtotalRow"><span>Subtotal</span><span id="paySubtotal"></span></div>
+      <div class="summary-row" id="payTaxRow"><span>Tax (10%)</span><span id="payTax"></span></div>
       <div class="summary-row total"><span id="payGrandTotalLabel">Grand Total</span><span id="payGrandTotal"></span></div>
       <button class="btn btn-primary full" id="confirmPaymentBtn">Place Order</button>
     </div>
@@ -813,6 +802,7 @@
   <div class="timeline" id="odTimeline"></div>
   <div id="odLines" style="margin-top:6px;"></div>
   <div class="pay-summary-row"><span>Subtotal</span><span id="odSubtotal"></span></div>
+  <div class="pay-summary-row"><span>Tax (10%)</span><span id="odTax"></span></div>
   <div class="pay-summary-row total"><span>Total payable</span><span id="odTotal"></span></div>
   <div class="sheet-row"><span>Payment mode</span><span id="odPaymentMode"></span></div>
   <div class="sheet-row"><span>Payment status</span><span id="odPaymentStatus"></span></div>
@@ -895,7 +885,14 @@ const productPhotoClass = (p) => {
   if (p.category === 'energy') return 'energy';
   return 'kinley';
 };
-const productPhoto = (p) => `<div class="product-photo ${productPhotoClass(p)}" role="img" aria-label="${p.brand} ${p.name}"></div>`;
+const productAsset = (p) => {
+  const type = productPhotoClass(p);
+  if (type === 'coke' || type === 'energy') return '../assets/v5-products/cola.png';
+  if (type === 'sprite' || type === 'limca') return '../assets/v5-products/lemon-lime.png';
+  if (type === 'fanta' || type === 'juice') return '../assets/v5-products/orange.png';
+  return '../assets/v5-products/water.png';
+};
+const productPhoto = (p) => `<img class="product-photo" src="${productAsset(p)}" alt="${p.brand} ${p.name}" />`;
 
 let seed = null, seed2 = null, seed5 = null;
 let activeCategory = 'all';
@@ -909,6 +906,7 @@ const cart = { 'v2-natural-water': 2, 'v2-coke-500': 1 };
 let splitMode = true;
 let selectedMethods = {};
 let orderThisAmount = 0;
+const TAX_RATE = 0.10;
 const methodMeta = {
   cash: { icon: '🚚', subtitle: 'Pay in cash upon delivery', online: false },
   online: { icon: '▣', subtitle: 'Cards, UPI, net banking & wallets', online: true }
@@ -1030,7 +1028,8 @@ function cartLines() {
 function updateCartPill() {
   const lines = cartLines();
   const count = lines.reduce((s, l) => s + l.qty, 0);
-  const total = lines.reduce((s, l) => s + l.total, 0);
+  const subtotal = lines.reduce((s, l) => s + l.total, 0);
+  const total = subtotal + Math.round(subtotal * TAX_RATE * 100) / 100;
   el('cartCount').textContent = count + (count === 1 ? ' item' : ' items');
   el('cartTotal').textContent = fmt(total);
 }
@@ -1040,16 +1039,18 @@ function cartDeliveryCharge() { return 0; }
 function renderReviewCart() {
   const lines = cartLines();
   const subtotal = lines.reduce((s, l) => s + l.total, 0);
+  const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
   const delivery = cartDeliveryCharge(subtotal);
   el('cartCountLine').textContent = lines.reduce((s, l) => s + l.qty, 0) + ' item(s) in your cart';
   el('cartLines').innerHTML = lines.length ? lines.map((l) => {
     const p = seed5.productsV5.find((x) => x.id === l.id);
-    return `<div class="cart-row"><div class="thumb" style="background-position:${{'kinley':'-119px -599px','coke':'-368px -599px','sprite':'-614px -599px','fanta':'-857px -599px'}[productPhotoClass(p)] || '-614px -599px'};"></div>
+    return `<div class="cart-row"><img class="thumb" src="${productAsset(p)}" alt="${p.brand} ${p.name}" />
       <div><div class="name">${l.name}</div><div class="price">${fmt(l.price)} × ${l.qty}</div></div>
       <div class="line-total">${fmt(l.total)}</div></div>`;
   }).join('') : '<p class="muted">Your cart is empty.</p>';
   el('cartSubtotal').textContent = fmt(subtotal);
-  el('cartModalTotal').textContent = fmt(subtotal + delivery);
+  el('cartTax').textContent = fmt(tax);
+  el('cartModalTotal').textContent = fmt(subtotal + tax + delivery);
   el('proceedPaymentBtn').disabled = !lines.length;
 }
 
@@ -1060,14 +1061,16 @@ function openPaymentFlow() {
   el('obThisOrderLabel').textContent = 'This Order';
   el('summaryUnitsBox').classList.remove('hidden');
   el('paySubtotalRow').classList.remove('hidden');
+  el('payTaxRow').classList.remove('hidden');
   el('payGrandTotalLabel').textContent = 'Grand Total';
   el('confirmPaymentBtn').textContent = 'Place Order';
   if (!seed5.customer.profileComplete) { closeModals(); openOnboarding(true); return; }
   const lines = cartLines();
   if (!lines.length) return;
   const subtotal = lines.reduce((s, l) => s + l.total, 0);
+  const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
   const delivery = cartDeliveryCharge(subtotal);
-  orderThisAmount = subtotal + delivery;
+  orderThisAmount = subtotal + tax + delivery;
   splitMode = true;
   selectedMethods = { [seed5.paymentConfig.methods[0].id]: orderThisAmount };
 
@@ -1076,6 +1079,7 @@ function openPaymentFlow() {
   el('custPhone').textContent = seed5.customer.mobile || '—';
   el('summaryUnits').textContent = lines.reduce((s, l) => s + l.qty, 0);
   el('paySubtotal').textContent = fmt(subtotal);
+  el('payTax').textContent = fmt(tax);
   el('payGrandTotal').textContent = fmt(orderThisAmount);
   el('splitToggleBar').classList.remove('hidden');
   el('splitReopenBtn').classList.add('hidden');
@@ -1099,6 +1103,7 @@ function openBalancePaymentFlow() {
   el('obThisOrderLabel').textContent = 'Amount to Pay';
   el('summaryUnitsBox').classList.add('hidden');
   el('paySubtotalRow').classList.add('hidden');
+  el('payTaxRow').classList.add('hidden');
   el('payGrandTotalLabel').textContent = 'Amount to Pay';
   el('confirmPaymentBtn').textContent = 'Pay Now';
 
@@ -1276,6 +1281,7 @@ function openOrderDetail(o) {
   el('odTimeline').innerHTML = o.timeline.map((t) => `<div class="t-step ${t.done ? 'done' : ''}"><span class="t-dot"></span>${t.step}${t.at ? `<span class="at">${t.at}</span>` : ''}</div>`).join('');
   el('odLines').innerHTML = o.items.map((i) => `<div class="sheet-row"><span>${i.name} × ${i.qty}</span><span>${fmt(i.total)}</span></div>`).join('');
   el('odSubtotal').textContent = fmt(o.subtotal);
+  el('odTax').textContent = fmt(o.tax || 0);
   el('odTotal').textContent = fmt(o.total);
   el('odPaymentMode').textContent = o.paymentMode;
   el('odPaymentStatus').textContent = o.paymentStatus;
@@ -1465,6 +1471,7 @@ function wireEvents() {
     }
     const lines = cartLines();
     const subtotal = lines.reduce((s, l) => s + l.total, 0);
+    const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
     const delivery = cartDeliveryCharge(subtotal);
     const total = orderThisAmount;
     const entered = Object.values(selectedMethods).reduce((s, v) => s + (Number(v) || 0), 0);
@@ -1475,7 +1482,7 @@ function wireEvents() {
     const now = new Date();
     seed5.purchasesV5.orders.push({
       id, date: now.toISOString().slice(0, 10), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-      status: 'Active', total, subtotal, deliveryCharge: delivery,
+      status: 'Active', total, subtotal, tax, deliveryCharge: delivery,
       paymentMode: entered <= 0 ? 'Unpaid — pay later' : modeLabel + (remaining > 0 ? ' (partial)' : usedIds.length > 1 ? ' (split)' : ''),
       paymentStatus: entered <= 0 ? 'Unpaid' : usedIds.includes('online') ? 'Awaiting shop confirmation' : usedIds.includes('cash') ? 'Cash due on delivery' : remaining > 0 ? 'Partially Paid' : 'Paid',
       deliveryAddress: seed5.customer.addresses.find((a) => a.default)?.detail || seed5.customer.addresses[0]?.detail || 'Address on file',
