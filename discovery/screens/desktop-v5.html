@@ -47,7 +47,7 @@
   .brand-text .loc { color: var(--muted); font-size: 12.5px; margin-top: 1px; display: flex; align-items: center; gap: 5px; }
 
   .top-actions { display: flex; align-items: center; gap: 10px; }
-  .action-btn { display: flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 9px 15px; font-weight: 600; font-size: 13.5px; cursor: pointer; color: var(--ink); font-family: inherit; }
+  .action-btn { display: flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 9px 15px; font-weight: 600; font-size: 13.5px; cursor: pointer; color: var(--ink); font-family: inherit; text-decoration: none; }
   .account-wrap { position: relative; }
   .account-btn { display: flex; align-items: center; gap: 8px; border: none; background: none; cursor: pointer; font-family: inherit; padding: 4px; border-radius: 10px; }
   .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand-tint); color: var(--brand-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
@@ -206,7 +206,7 @@
   body.onboarding-mode header.topbar, body.onboarding-mode footer.foot-bar { display: none; }
   .onboarding-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(160deg, var(--brand-tint), #fff 55%); padding: 40px 20px; }
   .onboarding-card { background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(16,24,40,.12); padding: 40px 44px; width: 100%; max-width: 560px; }
-  .onboarding-card h1 { font-size: 22px; text-align: center; margin: 0 0 6px; }
+  .onboarding-card h1 { font-size: 24px; text-align: center; margin: 0 0 6px; }
 
   /* Profile view */
   .profile-layout { display: grid; grid-template-columns: 320px 1fr; gap: 22px; align-items: start; }
@@ -247,8 +247,8 @@
   .pay-validation.warn { background: var(--amber-bg); color: var(--amber-fg); }
 
   .field-row { margin-bottom: 12px; }
-  .field-row label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 5px; color: var(--ink); }
-  .field-row input, .field-row select { width: 100%; border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; font-size: 13.5px; font-family: inherit; }
+  .field-row label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 5px; color: var(--ink); }
+  .field-row input, .field-row select { width: 100%; border: 1px solid var(--line); border-radius: 9px; padding: 11px 13px; font-size: 14.5px; font-family: inherit; }
   .field-row input.invalid { border-color: var(--red-fg); }
   .field-error { color: var(--red-fg); font-size: 11.5px; margin-top: 4px; }
   .field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -259,19 +259,28 @@
   .modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
   .modal.wide { max-width: 620px; }
   .modal.pay-modal { max-width: 920px; padding: 0; }
+
+  /* Review Cart drawer (Addendum 014) — slides in from the right, full height */
+  .cart-drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 460px; max-width: 92vw; background: #fff; z-index: 41; box-shadow: -20px 0 60px rgba(0,0,0,.18); transform: translateX(100%); transition: transform .28s cubic-bezier(.32,.72,0,1); display: flex; flex-direction: column; opacity: 1; pointer-events: none; }
+  .cart-drawer.show { transform: translateX(0); pointer-events: auto; }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px 6px; flex: none; }
+  .drawer-head h2 { margin: 0; font-size: 21px; }
+  .drawer-close { width: 34px; height: 34px; border-radius: 50%; border: none; background: #f0f1f3; cursor: pointer; font-size: 14px; color: var(--muted); }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 8px 24px; max-height: none; }
+  .drawer-footer { padding: 16px 24px 22px; border-top: 1px solid var(--line); flex: none; }
   .modal-x { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; border-radius: 50%; border: none; background: #f0f1f3; cursor: pointer; font-size: 13px; color: var(--muted); z-index: 2; }
   .pay-flow-layout { display: grid; grid-template-columns: 1fr 320px; }
   .pay-flow-left { padding: 26px 28px; border-right: 1px solid var(--line); max-height: 82vh; overflow-y: auto; }
-  .pay-flow-left h2 { font-size: 19px; }
+  .pay-flow-left h2 { font-size: 21px; }
   .pay-flow-right { padding: 26px 24px; background: #fafbfa; border-radius: 0 16px 16px 0; display: flex; flex-direction: column; }
   @media (max-width: 760px) { .pay-flow-layout { grid-template-columns: 1fr; } .pay-flow-left { border-right: none; border-bottom: 1px solid var(--line); } .pay-flow-right { border-radius: 0 0 16px 16px; } }
 
   .outstanding-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
   .outstanding-box { border: 1px solid var(--line); border-radius: 10px; padding: 12px; text-align: center; background: #fafbfc; }
   .outstanding-box.active { background: #eef6ff; border-color: #bfdcff; }
-  .ob-label { font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .ob-label { font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
   .outstanding-box.active .ob-label { color: #1d6fd6; }
-  .ob-val { font-weight: 700; font-size: 18px; margin-top: 6px; }
+  .ob-val { font-weight: 700; font-size: 20px; margin-top: 6px; }
   .ob-note { color: var(--muted); font-size: 11px; margin-top: 3px; }
 
   .split-toggle-bar { display: flex; align-items: center; gap: 10px; background: #f4f0ff; border: 1px solid #e3d9ff; border-radius: 10px; padding: 11px 14px; margin: 14px 0 10px; }
@@ -286,15 +295,15 @@
   .pay-method-card.selected .pm-radio { border-color: var(--brand); }
   .pay-method-card.selected .pm-radio::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--brand); }
   .pm-icon { width: 40px; height: 40px; border-radius: 10px; background: #fff; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-  .pay-method-card strong { font-size: 14px; display: block; }
-  .pay-method-card small { color: var(--muted); font-size: 12px; }
+  .pay-method-card strong { font-size: 15.5px; display: block; }
+  .pay-method-card small { color: var(--muted); font-size: 13px; }
   .pm-badge { background: var(--brand-tint); color: var(--brand-dark); font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; margin-left: 8px; }
   .pm-amount-row { grid-column: 1 / -1; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); display: flex; align-items: center; gap: 10px; }
   .pm-amount-row label { font-size: 12px; color: var(--muted); font-weight: 600; }
   .pm-amount-row input { flex: 1; border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; font-size: 14px; font-family: inherit; }
 
   .allocation-bar-wrap { margin-top: 16px; }
-  .allocation-row { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; }
+  .allocation-row { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
   .allocation-track { height: 8px; border-radius: 999px; background: #eceff1; overflow: hidden; }
   .allocation-fill { height: 100%; background: var(--brand); border-radius: 999px; transition: width .15s ease; }
   .allocation-fill.over { background: var(--red-fg); }
@@ -305,16 +314,16 @@
   .equal-split-btn { border: none; background: none; color: var(--brand-dark); font-weight: 700; cursor: pointer; font-family: inherit; font-size: 12.5px; }
   .secure-note { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; margin-top: 18px; }
 
-  .order-summary-head { font-weight: 700; font-size: 15px; margin-bottom: 16px; }
+  .order-summary-head { font-weight: 700; font-size: 16.5px; margin-bottom: 16px; }
   .summary-customer { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; }
   .cust-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand-tint); color: var(--brand-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex: none; }
-  .summary-customer strong { font-size: 13.5px; }
+  .summary-customer strong { font-size: 14.5px; }
   .summary-customer .muted { font-size: 11.5px; }
   .summary-units { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; font-size: 12.5px; }
   .summary-units small { color: var(--muted); display: block; font-size: 11px; }
   .summary-units strong { margin-left: auto; font-size: 15px; }
-  .pay-flow-right .summary-row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 7px 0; }
-  .pay-flow-right .summary-row.total { font-weight: 700; font-size: 17px; color: var(--brand-dark); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 6px; }
+  .pay-flow-right .summary-row { display: flex; justify-content: space-between; font-size: 14.5px; padding: 7px 0; }
+  .pay-flow-right .summary-row.total { font-weight: 700; font-size: 19px; color: var(--brand-dark); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 6px; }
   .pay-flow-right .btn.full { margin-top: 20px; }
 
   .modal h2 { margin: 0 0 4px; font-size: 18px; }
@@ -375,12 +384,20 @@
     .pills { gap: 18px; margin-bottom: 20px; flex-wrap: nowrap; }
     .pill { min-width: 92px; border-radius: 10px; padding: 12px 16px; font-weight: 500; }
     .product-grid { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; }
-    .product-card { min-height: 320px; border: 1px solid var(--line); padding: 16px; gap: 5px; }
-    .product-photo { width: 120px; height: 125px; }
-    .p-name { font-size: 15px; }
-    .p-brand { color: var(--ink); font-size: 12px; }
-    .p-price { font-size: 17px; }
-    .p-avail { font-size: 13px; margin-top: 8px; }
+    .product-card { min-height: 358px; border: 1px solid var(--line); padding: 16px; gap: 6px; }
+    /* Bigger product photo — scaled up from the Addendum-008-fixed crop
+       (120x125 @ 1536x1024) by 1.3x so the sprite crop stays centred on the
+       same bottle instead of bleeding into its neighbour. */
+    .product-photo { width: 156px; height: 163px; background-size: 1997px 1331px; }
+    .product-photo.kinley { background-position: -121px -745px; }
+    .product-photo.coke { background-position: -445px -745px; }
+    .product-photo.sprite { background-position: -764px -745px; }
+    .product-photo.fanta { background-position: -1080px -745px; }
+    .product-photo.juice, .product-photo.energy, .product-photo.limca { background-position: -764px -745px; }
+    .p-name { font-size: 16px; }
+    .p-brand { color: var(--ink); font-size: 13px; }
+    .p-price { font-size: 18px; }
+    .p-avail { font-size: 13.5px; margin-top: 8px; }
     .stepper { border: 1px solid var(--line); border-radius: 999px; gap: 15px; padding: 2px; }
     .stepper button { width: 28px; height: 28px; }
     .add-btn { padding: 8px 20px; font-size: 13px; }
@@ -471,6 +488,8 @@
       </div>
     </div>
     <div class="top-actions">
+      <a class="action-btn" id="callBtn"><span class="ui-icon" data-icon="phone"></span> Call</a>
+      <a class="action-btn" id="waBtn" target="_blank" rel="noopener"><span class="ui-icon" data-icon="message-circle"></span> WhatsApp</a>
       <button class="action-btn" id="infoBtn"><span class="ui-icon" data-icon="info"></span> Store info</button>
       <div class="account-wrap">
         <button class="account-btn" id="accountBtn"><span class="avatar" id="accInitials"></span><span class="account-name" id="accName"></span> ▾</button>
@@ -489,7 +508,6 @@
       <button data-view="purchases"><span class="ui-icon" data-icon="clipboard"></span> My purchases</button>
       <button data-view="payments"><span class="ui-icon" data-icon="credit-card"></span> Payments</button>
       <button data-view="help"><span class="ui-icon" data-icon="circle-help"></span> Help & queries</button>
-      <button data-view="profile"><span class="ui-icon" data-icon="user"></span> Profile</button>
     </div>
     <div class="cart-pill" id="cartPill"><span class="ui-icon" data-icon="shopping-cart"></span> <span id="cartCount">0 items</span> <span id="cartTotal">₹0</span> ›</div>
   </nav>
@@ -694,14 +712,6 @@
   </section>
 </main>
 
-<footer class="foot-bar">
-  <div class="foot-inner">
-    <span id="footContext"><span class="ui-icon" data-icon="shield"></span> <span id="footContextText">You are shopping with </span><strong id="footStoreName"></strong></span>
-    <span>Support: <span id="footHours"></span></span>
-    <span id="footYear"></span>
-  </div>
-</footer>
-
 <div class="backdrop" id="backdrop"></div>
 
 <!-- Store Details (Addendum 011 item 9 — Call/WhatsApp moved here, real tel:/wa.me links) -->
@@ -722,17 +732,20 @@
 </div>
 
 <!-- Review Cart (Addendum 011 items 5 & 10 — redesigned + renamed) -->
-<div class="modal" id="cartModal">
-  <h2>Review Cart</h2>
-  <p class="muted" id="cartCountLine"></p>
-  <div class="cart-items-scroll" id="cartLines"></div>
-  <div class="pay-summary-row"><span>Subtotal</span><span id="cartSubtotal"></span></div>
-  <div class="pay-summary-row" id="cartSavingsRow"><span>You saved</span><span id="cartSavings" style="color:var(--brand-dark); font-weight:600;"></span></div>
-  <div class="pay-summary-row"><span>Delivery charge</span><span id="cartDelivery"></span></div>
-  <div class="pay-summary-row total"><span>Total</span><span id="cartModalTotal"></span></div>
-  <div class="btn-row">
-    <button class="btn-text" data-close>Back to Shop</button>
-    <button class="btn btn-primary full" id="proceedPaymentBtn">Proceed to Payment →</button>
+<!-- Review Cart as a right-side drawer (Addendum 014) — desktop only -->
+<div class="cart-drawer" id="cartModal">
+  <div class="drawer-head"><h2>Review Cart</h2><button class="drawer-close" data-close title="Close">✕</button></div>
+  <p class="muted" id="cartCountLine" style="padding: 0 24px;"></p>
+  <div class="cart-items-scroll drawer-body" id="cartLines"></div>
+  <div class="drawer-footer">
+    <div class="pay-summary-row"><span>Subtotal</span><span id="cartSubtotal"></span></div>
+    <div class="pay-summary-row" id="cartSavingsRow"><span>You saved</span><span id="cartSavings" style="color:var(--brand-dark); font-weight:600;"></span></div>
+    <div class="pay-summary-row"><span>Delivery charge</span><span id="cartDelivery"></span></div>
+    <div class="pay-summary-row total"><span>Total</span><span id="cartModalTotal"></span></div>
+    <div class="btn-row">
+      <button class="btn-text" data-close>Back to Shop</button>
+      <button class="btn btn-primary full" id="proceedPaymentBtn">Proceed to Payment →</button>
+    </div>
   </div>
 </div>
 
@@ -910,7 +923,6 @@ function init() {
   renderPayments();
   renderHelp();
   renderProfile();
-  renderFooter();
   updateCartPill();
   wireEvents();
   hydrateIcons();
@@ -930,6 +942,8 @@ function renderHeader() {
   el('storeCallLink').href = 'tel:' + s.phone.replace(/\s+/g, '');
   el('storeWaLink').href = 'https://wa.me/' + s.whatsapp.replace(/\D/g, '');
   el('storeMapLink').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(seed5.storeDetails.mapQuery);
+  el('callBtn').href = 'tel:' + s.phone.replace(/\s+/g, '');
+  el('waBtn').href = 'https://wa.me/' + s.whatsapp.replace(/\D/g, '');
   el('accInitials').textContent = seed5.customer.avatarInitials;
   el('accName').textContent = 'My account';
 }
@@ -1228,13 +1242,6 @@ function renderTrustBadges() {
   el('trustBadges').innerHTML = seed2.trustBadges.map((b, i) => `<div class="badge-card"><div class="ic">${svgIcon(icons[i])}</div>${b.title}</div>`).join('');
 }
 
-function renderFooter() {
-  const s = seed2.store;
-  el('footStoreName').textContent = s.name;
-  el('footHours').textContent = s.supportHours;
-  el('footYear').textContent = `© ${s.year} ${s.name}`;
-}
-
 function renderPayments() {
   const p = seed2.payments;
   el('statPurchased').textContent = fmt(p.purchasedThisMonth);
@@ -1294,12 +1301,11 @@ function renderProfile() {
 function switchView(view) {
   ['shop', 'purchases', 'payments', 'help', 'profile', 'onboarding'].forEach((v) => el('view-' + v).classList.toggle('hidden', v !== view));
   document.querySelectorAll('.toptabs button').forEach((t) => t.classList.toggle('active', t.dataset.view === view));
-  el('footContextText').textContent = view === 'payments' ? 'You are managing ' : 'You are shopping with ';
   document.body.classList.toggle('onboarding-mode', view === 'onboarding');
 }
 
 function openModal(id) { el('backdrop').classList.add('show'); el(id).classList.add('show'); }
-function closeModals() { el('backdrop').classList.remove('show'); document.querySelectorAll('.modal').forEach((m) => m.classList.remove('show')); el('accountMenu').classList.remove('show'); }
+function closeModals() { el('backdrop').classList.remove('show'); document.querySelectorAll('.modal, .cart-drawer').forEach((m) => m.classList.remove('show')); el('accountMenu').classList.remove('show'); }
 
 function showToast(msg) {
   const t = el('toast');
