@@ -100,14 +100,12 @@
   .cart-bar { position: absolute; left: 16px; right: 16px; bottom: 82px; background: #fff; border: 1px solid var(--line); color: var(--ink); border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 24px rgba(0,0,0,.14); z-index: 20; transition: all .18s ease; }
   .cart-bar.hidden { display: none; }
   .cart-left { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-  .cart-badge { position: relative; width: 30px; height: 30px; border-radius: 9px; background: var(--brand-tint); display: flex; align-items: center; justify-content: center; flex: none; }
-  .cart-badge span { position: absolute; top: -5px; right: -5px; background: var(--orange); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
+  .cart-badge { position: relative; width: 34px; height: 30px; display: flex; align-items: center; justify-content: center; flex: none; color: var(--brand); }
+  .cart-badge .ui-icon { width: 27px; height: 27px; display: inline-flex; align-items: center; justify-content: center; }
+  .cart-badge .ui-icon svg { width: 27px; height: 27px; stroke-width: 2.2; }
+  .cart-badge #cartCount { position: absolute; top: -7px; right: -7px; background: var(--orange); color: #fff; font-size: 10px; line-height: 17px; min-width: 17px; height: 17px; text-align: center; font-weight: 700; border-radius: 999px; padding: 0 4px; }
   .cart-total { font-weight: 700; font-size: 14px; }
   .cart-bar button { background: var(--brand); color: #fff; border: none; border-radius: 10px; padding: 9px 14px; font-weight: 700; font-size: 12.5px; cursor: pointer; font-family: inherit; }
-  .cart-bar.collapsed { left: auto; right: 16px; width: 56px; height: 56px; padding: 0; border-radius: 50%; justify-content: center; }
-  .cart-bar.collapsed .cart-total, .cart-bar.collapsed #reviewCartBtn { display: none; }
-  .cart-bar.collapsed .cart-left { gap: 0; width: 56px; height: 56px; }
-  .cart-bar.collapsed .cart-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--brand); color: #fff; }
 
   .filter-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
   .filter-scroll::-webkit-scrollbar { display: none; }
@@ -430,7 +428,7 @@
       </div>
     </div>
 
-    <div class="cart-bar hidden collapsed" id="cartBar">
+    <div class="cart-bar hidden" id="cartBar">
       <div class="cart-left" id="cartBarToggle">
         <div class="cart-badge"><span class="ui-icon" data-icon="shopping-cart"></span><span id="cartCount">0</span></div>
         <div class="cart-total" id="cartTotal">₹0</div>
@@ -1085,7 +1083,7 @@ function wireEvents() {
   el('storeNameBtn').addEventListener('click', () => openSheet('storeSheet'));
 
   el('reviewCartBtn').addEventListener('click', () => { renderReviewCart(); openSheet('reviewSheet'); });
-  el('cartBarToggle').addEventListener('click', () => { el('cartBar').classList.toggle('collapsed'); });
+  el('cartBarToggle').addEventListener('click', () => { renderReviewCart(); openSheet('reviewSheet'); });
   el('proceedPaymentBtn').addEventListener('click', () => { closeSheets(); openPaymentFlow(); });
   el('backdrop').addEventListener('click', closeSheets);
   document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeSheets));
