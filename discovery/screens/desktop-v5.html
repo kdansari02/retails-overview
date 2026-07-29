@@ -542,12 +542,13 @@
             <input type="text" id="searchInput" placeholder="Search products by name, brand or SKU..." />
           </div>
           <select class="sort-select" id="sortSelect">
-            <option value="relevance">Recommended for retailers</option>
-            <option value="margin-desc">Best retailer margin</option>
-            <option value="stock-desc">Stock availability</option>
-            <option value="price-asc">Wholesale price: Low to High</option>
-            <option value="price-desc">Wholesale price: High to Low</option>
-            <option value="newest">New stock first</option>
+            <option value="relevance">Sort: Relevance</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A to Z</option>
+            <option value="name-desc">Name: Z to A</option>
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
           </select>
         </div>
         <div class="pills" id="pills"></div>
@@ -984,8 +985,6 @@ function filteredProducts() {
   list = list.slice();
   if (sortKey === 'price-asc') list.sort((a, b) => a.price - b.price);
   else if (sortKey === 'price-desc') list.sort((a, b) => b.price - a.price);
-  else if (sortKey === 'margin-desc') list.sort((a, b) => b.discount - a.discount);
-  else if (sortKey === 'stock-desc') list.sort((a, b) => b.available - a.available);
   else if (sortKey === 'name-asc') list.sort((a, b) => a.name.localeCompare(b.name));
   else if (sortKey === 'name-desc') list.sort((a, b) => b.name.localeCompare(a.name));
   else if (sortKey === 'newest') list.sort((a, b) => new Date(b.addedDate) - new Date(a.addedDate));
