@@ -97,20 +97,17 @@
   .view-all-btn { border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 10px 22px; font-weight: 600; font-size: 13px; cursor: pointer; }
   .view-all-note { color: var(--muted); font-size: 12px; margin-top: 8px; }
 
-  .cart-bar { position: absolute; left: 16px; right: 16px; bottom: 82px; background: #fff; border: 1px solid var(--line); color: var(--ink); border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 24px rgba(0,0,0,.14); z-index: 20; }
+  .cart-bar { position: absolute; left: 16px; right: 16px; bottom: 82px; background: #fff; border: 1px solid var(--line); color: var(--ink); border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 24px rgba(0,0,0,.14); z-index: 20; transition: all .18s ease; }
   .cart-bar.hidden { display: none; }
-  .cart-left { display: flex; align-items: center; gap: 10px; }
-  .cart-badge { position: relative; width: 30px; height: 30px; border-radius: 9px; background: var(--brand-tint); display: flex; align-items: center; justify-content: center; }
+  .cart-left { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .cart-badge { position: relative; width: 30px; height: 30px; border-radius: 9px; background: var(--brand-tint); display: flex; align-items: center; justify-content: center; flex: none; }
   .cart-badge span { position: absolute; top: -5px; right: -5px; background: var(--orange); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
   .cart-total { font-weight: 700; font-size: 14px; }
   .cart-bar button { background: var(--brand); color: #fff; border: none; border-radius: 10px; padding: 9px 14px; font-weight: 700; font-size: 12.5px; cursor: pointer; font-family: inherit; }
-
-  .stats-strip { display: flex; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin: 10px 0 12px; overflow: hidden; flex-wrap: wrap; }
-  .stats-strip > div { flex: 1 1 50%; padding: 10px 12px; min-width: 44%; }
-  .stats-strip > div:nth-child(odd) { border-right: 1px solid var(--line); }
-  .stats-strip > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
-  .stats-strip .label { color: var(--muted); font-size: 10.5px; }
-  .stats-strip .value { font-weight: 700; font-size: 15px; margin-top: 2px; }
+  .cart-bar.collapsed { left: auto; right: 16px; width: 56px; height: 56px; padding: 0; border-radius: 50%; justify-content: center; }
+  .cart-bar.collapsed .cart-total, .cart-bar.collapsed #reviewCartBtn { display: none; }
+  .cart-bar.collapsed .cart-left { gap: 0; width: 56px; height: 56px; }
+  .cart-bar.collapsed .cart-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--brand); color: #fff; }
 
   .filter-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
   .filter-scroll::-webkit-scrollbar { display: none; }
@@ -341,12 +338,7 @@
     <main class="view hidden" id="view-purchases">
       <div class="page-header"><span class="title">My purchases</span></div>
       <div class="content">
-        <div class="stats-strip">
-          <div><div class="label">This month</div><div class="value" id="purchThisMonth"></div></div>
-          <div><div class="label">Open orders</div><div class="value" id="purchOpenOrders"></div></div>
-          <div><div class="label">Delivered</div><div class="value" id="purchDelivered"></div></div>
-          <div><div class="label">Pending/Active</div><div class="value" id="purchPendingActive"></div></div>
-        </div>
+        <input class="order-search" id="orderSearch" placeholder="Search by Order ID or product…" />
         <div class="filter-scroll">
           <button class="status-filter active" data-filter="all">All</button>
           <button class="status-filter" data-filter="active">Active</button>
@@ -354,7 +346,6 @@
           <button class="status-filter" data-filter="pending">Pending</button>
           <button class="status-filter" data-filter="cancelled">Cancelled</button>
         </div>
-        <input class="order-search" id="orderSearch" placeholder="Search by Order ID or product…" />
         <div id="ordersList"></div>
       </div>
     </main>
@@ -439,8 +430,8 @@
       </div>
     </div>
 
-    <div class="cart-bar hidden" id="cartBar">
-      <div class="cart-left">
+    <div class="cart-bar hidden collapsed" id="cartBar">
+      <div class="cart-left" id="cartBarToggle">
         <div class="cart-badge"><span class="ui-icon" data-icon="shopping-cart"></span><span id="cartCount">0</span></div>
         <div class="cart-total" id="cartTotal">₹0</div>
       </div>
@@ -950,11 +941,6 @@ function ordersMatchingFilters() {
 }
 
 function renderPurchases() {
-  const p = seed5.purchasesV5;
-  el('purchThisMonth').textContent = fmt(p.thisMonthTotal);
-  el('purchOpenOrders').textContent = p.openOrders;
-  el('purchDelivered').textContent = p.delivered;
-  el('purchPendingActive').textContent = p.pendingActive;
   renderOrdersList();
 }
 
@@ -1099,6 +1085,7 @@ function wireEvents() {
   el('storeNameBtn').addEventListener('click', () => openSheet('storeSheet'));
 
   el('reviewCartBtn').addEventListener('click', () => { renderReviewCart(); openSheet('reviewSheet'); });
+  el('cartBarToggle').addEventListener('click', () => { el('cartBar').classList.toggle('collapsed'); });
   el('proceedPaymentBtn').addEventListener('click', () => { closeSheets(); openPaymentFlow(); });
   el('backdrop').addEventListener('click', closeSheets);
   document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeSheets));
