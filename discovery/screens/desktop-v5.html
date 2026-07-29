@@ -202,6 +202,12 @@
   .btn-row-2 { display: flex; gap: 10px; margin-top: 10px; }
   .btn-row-2 .btn { flex: 1; }
 
+  /* Dedicated onboarding page (Addendum 013) — full-bleed, header hidden */
+  body.onboarding-mode header.topbar, body.onboarding-mode footer.foot-bar { display: none; }
+  .onboarding-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(160deg, var(--brand-tint), #fff 55%); padding: 40px 20px; }
+  .onboarding-card { background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(16,24,40,.12); padding: 40px 44px; width: 100%; max-width: 560px; }
+  .onboarding-card h1 { font-size: 22px; text-align: center; margin: 0 0 6px; }
+
   /* Profile view */
   .profile-layout { display: grid; grid-template-columns: 320px 1fr; gap: 22px; align-items: start; }
   @media (max-width: 900px) { .profile-layout { grid-template-columns: 1fr; } }
@@ -252,6 +258,65 @@
   .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%); width: 92%; max-width: 480px; background: #fff; border-radius: 16px; padding: 22px 24px; z-index: 41; box-shadow: 0 30px 70px rgba(0,0,0,.3); opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease; max-height: 86vh; overflow-y: auto; }
   .modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
   .modal.wide { max-width: 620px; }
+  .modal.pay-modal { max-width: 920px; padding: 0; }
+  .modal-x { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; border-radius: 50%; border: none; background: #f0f1f3; cursor: pointer; font-size: 13px; color: var(--muted); z-index: 2; }
+  .pay-flow-layout { display: grid; grid-template-columns: 1fr 320px; }
+  .pay-flow-left { padding: 26px 28px; border-right: 1px solid var(--line); max-height: 82vh; overflow-y: auto; }
+  .pay-flow-left h2 { font-size: 19px; }
+  .pay-flow-right { padding: 26px 24px; background: #fafbfa; border-radius: 0 16px 16px 0; display: flex; flex-direction: column; }
+  @media (max-width: 760px) { .pay-flow-layout { grid-template-columns: 1fr; } .pay-flow-left { border-right: none; border-bottom: 1px solid var(--line); } .pay-flow-right { border-radius: 0 0 16px 16px; } }
+
+  .outstanding-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+  .outstanding-box { border: 1px solid var(--line); border-radius: 10px; padding: 12px; text-align: center; background: #fafbfc; }
+  .outstanding-box.active { background: #eef6ff; border-color: #bfdcff; }
+  .ob-label { font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .outstanding-box.active .ob-label { color: #1d6fd6; }
+  .ob-val { font-weight: 700; font-size: 18px; margin-top: 6px; }
+  .ob-note { color: var(--muted); font-size: 11px; margin-top: 3px; }
+
+  .split-toggle-bar { display: flex; align-items: center; gap: 10px; background: #f4f0ff; border: 1px solid #e3d9ff; border-radius: 10px; padding: 11px 14px; margin: 14px 0 10px; }
+  .split-toggle-bar strong { color: #6d3fd6; font-size: 13.5px; }
+  .split-icon { font-size: 15px; }
+  .split-close { margin-left: auto; border: none; background: none; color: #6d3fd6; cursor: pointer; font-size: 13px; }
+  .split-reopen { width: 100%; text-align: left; border: 1px dashed var(--line); background: none; border-radius: 10px; padding: 11px 14px; margin: 14px 0 10px; cursor: pointer; color: var(--brand-dark); font-weight: 600; font-size: 13.5px; font-family: inherit; }
+
+  .pay-method-card { display: grid; grid-template-columns: 20px 40px 1fr auto; align-items: center; gap: 12px; border: 1.5px solid var(--line); border-radius: 12px; padding: 13px 14px; margin-bottom: 10px; cursor: pointer; }
+  .pay-method-card.selected { border-color: var(--brand); background: var(--brand-tint); }
+  .pm-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); position: relative; }
+  .pay-method-card.selected .pm-radio { border-color: var(--brand); }
+  .pay-method-card.selected .pm-radio::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--brand); }
+  .pm-icon { width: 40px; height: 40px; border-radius: 10px; background: #fff; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .pay-method-card strong { font-size: 14px; display: block; }
+  .pay-method-card small { color: var(--muted); font-size: 12px; }
+  .pm-badge { background: var(--brand-tint); color: var(--brand-dark); font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; margin-left: 8px; }
+  .pm-amount-row { grid-column: 1 / -1; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); display: flex; align-items: center; gap: 10px; }
+  .pm-amount-row label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .pm-amount-row input { flex: 1; border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; font-size: 14px; font-family: inherit; }
+
+  .allocation-bar-wrap { margin-top: 16px; }
+  .allocation-row { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; }
+  .allocation-track { height: 8px; border-radius: 999px; background: #eceff1; overflow: hidden; }
+  .allocation-fill { height: 100%; background: var(--brand); border-radius: 999px; transition: width .15s ease; }
+  .allocation-fill.over { background: var(--red-fg); }
+  .allocation-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 12.5px; }
+  .allocation-actions .ok { color: var(--brand-dark); font-weight: 700; }
+  .allocation-actions .warn { color: var(--amber-fg); font-weight: 700; }
+  .allocation-actions .error { color: var(--red-fg); font-weight: 700; }
+  .equal-split-btn { border: none; background: none; color: var(--brand-dark); font-weight: 700; cursor: pointer; font-family: inherit; font-size: 12.5px; }
+  .secure-note { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; margin-top: 18px; }
+
+  .order-summary-head { font-weight: 700; font-size: 15px; margin-bottom: 16px; }
+  .summary-customer { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; }
+  .cust-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand-tint); color: var(--brand-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex: none; }
+  .summary-customer strong { font-size: 13.5px; }
+  .summary-customer .muted { font-size: 11.5px; }
+  .summary-units { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; font-size: 12.5px; }
+  .summary-units small { color: var(--muted); display: block; font-size: 11px; }
+  .summary-units strong { margin-left: auto; font-size: 15px; }
+  .pay-flow-right .summary-row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 7px 0; }
+  .pay-flow-right .summary-row.total { font-weight: 700; font-size: 17px; color: var(--brand-dark); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 6px; }
+  .pay-flow-right .btn.full { margin-top: 20px; }
+
   .modal h2 { margin: 0 0 4px; font-size: 18px; }
   .modal .muted { color: var(--muted); font-size: 12.5px; }
   .sheet-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
@@ -424,6 +489,7 @@
       <button data-view="purchases"><span class="ui-icon" data-icon="clipboard"></span> My purchases</button>
       <button data-view="payments"><span class="ui-icon" data-icon="credit-card"></span> Payments</button>
       <button data-view="help"><span class="ui-icon" data-icon="circle-help"></span> Help & queries</button>
+      <button data-view="profile"><span class="ui-icon" data-icon="user"></span> Profile</button>
     </div>
     <div class="cart-pill" id="cartPill"><span class="ui-icon" data-icon="shopping-cart"></span> <span id="cartCount">0 items</span> <span id="cartTotal">₹0</span> ›</div>
   </nav>
@@ -597,6 +663,35 @@
       </div>
     </div>
   </section>
+
+  <!-- Dedicated onboarding page (Addendum 013) — shown first on entry when the
+       profile isn't complete, and reused if checkout is reached without one. -->
+  <section class="view hidden" id="view-onboarding">
+    <div class="onboarding-wrap">
+      <div class="onboarding-card">
+        <div class="logo-mark" style="margin: 0 auto 18px;"></div>
+        <h1 id="onboardingTitle">Welcome to Gupta Wholesale Store</h1>
+        <p class="muted" style="text-align:center; margin-bottom: 22px;">Tell us a little about yourself and where to deliver — it only takes a minute.</p>
+        <div class="field-grid-2">
+          <div class="field-row"><label>Full name *</label><input id="pfName" /><div class="field-error hidden" id="err-pfName"></div></div>
+          <div class="field-row"><label>Mobile number *</label><input id="pfMobile" maxlength="10" /><div class="field-error hidden" id="err-pfMobile"></div></div>
+        </div>
+        <div class="field-row"><label>Email address</label><input id="pfEmail" /><div class="field-error hidden" id="err-pfEmail"></div></div>
+        <div class="field-row"><label>Delivery address *</label><input id="pfAddress" placeholder="House / street / area" /><div class="field-error hidden" id="err-pfAddress"></div></div>
+        <div class="field-grid-2">
+          <div class="field-row"><label>City *</label><input id="pfCity" /><div class="field-error hidden" id="err-pfCity"></div></div>
+          <div class="field-row"><label>State *</label><input id="pfState" /><div class="field-error hidden" id="err-pfState"></div></div>
+        </div>
+        <div class="field-grid-2">
+          <div class="field-row"><label>Postal code *</label><input id="pfPostal" maxlength="6" /><div class="field-error hidden" id="err-pfPostal"></div></div>
+          <div class="field-row"><label>Landmark</label><input id="pfLandmark" /></div>
+        </div>
+        <div id="profileGateMsg"></div>
+        <button class="btn btn-primary full" id="profileGateSave">Save &amp; Continue</button>
+        <button class="btn-text" id="profileGateLater" style="display:block; width:100%; text-align:center; margin-top:12px;">Skip for now</button>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="foot-bar">
@@ -632,6 +727,7 @@
   <p class="muted" id="cartCountLine"></p>
   <div class="cart-items-scroll" id="cartLines"></div>
   <div class="pay-summary-row"><span>Subtotal</span><span id="cartSubtotal"></span></div>
+  <div class="pay-summary-row" id="cartSavingsRow"><span>You saved</span><span id="cartSavings" style="color:var(--brand-dark); font-weight:600;"></span></div>
   <div class="pay-summary-row"><span>Delivery charge</span><span id="cartDelivery"></span></div>
   <div class="pay-summary-row total"><span>Total</span><span id="cartModalTotal"></span></div>
   <div class="btn-row">
@@ -640,18 +736,51 @@
   </div>
 </div>
 
-<!-- Payment flow (Addendum 011 item 7 — cash/UPI/card/credit, split + partial, validated) -->
-<div class="modal" id="paymentModal">
-  <h2>Payment</h2>
-  <p class="muted">Total payable <strong id="payTotalPayable"></strong></p>
-  <div id="paymentRows"></div>
-  <button class="add-method-btn" id="addPaymentRowBtn">+ Add another payment method</button>
-  <div class="pay-summary-row"><span>Amount entered</span><span id="payEntered"></span></div>
-  <div class="pay-summary-row"><span>Remaining</span><span id="payRemaining"></span></div>
-  <div id="payValidationMsg"></div>
-  <div class="btn-row">
-    <button class="btn-text" data-close>Cancel</button>
-    <button class="btn btn-primary full" id="confirmPaymentBtn">Confirm Payment</button>
+<!-- Payment flow (Addendum 013 — redesigned against the supplied Choose
+     Payment Method / Order Summary reference: outstanding stats, split
+     payment toggle, per-method allocation, order-summary rail. No Tax line —
+     the no-GST rule from Addendum 011 still applies. -->
+<div class="modal wide pay-modal" id="paymentModal">
+  <button class="modal-x" data-close>✕</button>
+  <div class="pay-flow-layout">
+    <div class="pay-flow-left">
+      <h2>Choose Payment Method</h2>
+      <p class="muted">Select how you'd like to pay for this order</p>
+
+      <div class="outstanding-stats">
+        <div class="outstanding-box"><div class="ob-label">Previous Outstanding</div><div class="ob-val" id="obPrevious"></div><div class="ob-note">Before this order</div></div>
+        <div class="outstanding-box active"><div class="ob-label">This Order</div><div class="ob-val" id="obThisOrder"></div><div class="ob-note" id="obThisOrderNote"></div></div>
+        <div class="outstanding-box"><div class="ob-label">Total Outstanding</div><div class="ob-val" id="obAfter"></div><div class="ob-note">After this order</div></div>
+      </div>
+
+      <div class="split-toggle-bar" id="splitToggleBar">
+        <span class="split-icon">⧉</span>
+        <div><strong>Split Payment</strong> <span class="muted">— select methods &amp; enter amounts</span></div>
+        <button class="split-close" id="splitCloseBtn" title="Turn off split payment">✕</button>
+      </div>
+      <button class="split-reopen hidden" id="splitReopenBtn">⧉ Split this payment across methods</button>
+
+      <div id="paymentMethodCards"></div>
+
+      <div class="allocation-bar-wrap">
+        <div class="allocation-row"><span>Allocated</span><span id="allocatedText"></span></div>
+        <div class="allocation-track"><div class="allocation-fill" id="allocationFill"></div></div>
+        <div class="allocation-actions"><span id="allocationStatus"></span><button class="equal-split-btn" id="equalSplitBtn">↺ Equal split</button></div>
+      </div>
+
+      <div class="secure-note">🛡 All transactions are secure and encrypted</div>
+    </div>
+
+    <div class="pay-flow-right">
+      <div class="order-summary-head">Order Summary</div>
+      <div class="summary-customer"><span class="cust-avatar" id="custAvatar"></span><div><strong id="custName"></strong><div class="muted" id="custPhone"></div></div></div>
+      <div class="summary-units"><span class="units-ic">📦</span><div><div>Total Units</div><small>Total quantity of items</small></div><strong id="summaryUnits"></strong></div>
+      <div class="summary-row"><span>Subtotal</span><span id="paySubtotal"></span></div>
+      <div class="summary-row"><span>Discount</span><span id="payDiscount"></span></div>
+      <div class="summary-row"><span>Delivery</span><span id="payDeliveryFee"></span></div>
+      <div class="summary-row total"><span>Grand Total</span><span id="payGrandTotal"></span></div>
+      <button class="btn btn-primary full" id="confirmPaymentBtn">Place Order</button>
+    </div>
   </div>
 </div>
 
@@ -680,31 +809,6 @@
   <p class="muted" id="topicSub"></p>
   <textarea id="topicMessage" placeholder="Describe your query…" rows="4" style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px; font-family:inherit; font-size:13.5px; margin-top:10px; resize:none;"></textarea>
   <div class="btn-row"><button class="btn btn-secondary" data-close>Cancel</button><button class="btn btn-primary" id="topicSubmit">Submit query</button></div>
-</div>
-
-<!-- First-login profile completion gate (Addendum 011 item 11) -->
-<div class="modal wide" id="profileGateModal">
-  <h2 id="profileGateTitle">Welcome! Let's set up your profile</h2>
-  <p class="muted">We need a few details before you can place an order.</p>
-  <div class="field-grid-2">
-    <div class="field-row"><label>Full name *</label><input id="pfName" /><div class="field-error hidden" id="err-pfName"></div></div>
-    <div class="field-row"><label>Mobile number *</label><input id="pfMobile" maxlength="10" /><div class="field-error hidden" id="err-pfMobile"></div></div>
-  </div>
-  <div class="field-row"><label>Email address</label><input id="pfEmail" /><div class="field-error hidden" id="err-pfEmail"></div></div>
-  <div class="field-row"><label>Delivery address *</label><input id="pfAddress" placeholder="House / street / area" /><div class="field-error hidden" id="err-pfAddress"></div></div>
-  <div class="field-grid-2">
-    <div class="field-row"><label>City *</label><input id="pfCity" /><div class="field-error hidden" id="err-pfCity"></div></div>
-    <div class="field-row"><label>State *</label><input id="pfState" /><div class="field-error hidden" id="err-pfState"></div></div>
-  </div>
-  <div class="field-grid-2">
-    <div class="field-row"><label>Postal code *</label><input id="pfPostal" maxlength="6" /><div class="field-error hidden" id="err-pfPostal"></div></div>
-    <div class="field-row"><label>Landmark</label><input id="pfLandmark" /></div>
-  </div>
-  <div id="profileGateMsg"></div>
-  <div class="btn-row stack">
-    <button class="btn btn-primary full" id="profileGateSave">Save &amp; Continue</button>
-    <button class="btn-text" id="profileGateLater">Complete later</button>
-  </div>
 </div>
 
 <div class="modal" id="addAddressModal">
@@ -739,7 +843,8 @@ const iconPaths = {
   lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
   book:'<path d="M4 3h12a3 3 0 0 1 3 3v15H7a3 3 0 0 1-3-3Z"/><path d="M7 17h12"/>',
   wallet:'<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M16 12h5M7 6V4h10v2"/>',
-  box:'<path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="M4 7v10l8 4 8-4V7M12 11v10"/>'
+  box:'<path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="M4 7v10l8 4 8-4V7M12 11v10"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'
 };
 const svgIcon = (name) => `<span class="ui-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[name] || iconPaths['circle-help']}</svg></span>`;
 function hydrateIcons() {
@@ -774,8 +879,18 @@ let visibleCount = PAGE_SIZE;
 let orderFilter = 'all';
 let orderSearchTerm = '';
 const cart = { 'v2-natural-water': 2, 'v2-coke-500': 1 };
-let paymentRows = [];
+let splitMode = true;
+let selectedMethods = {};
+let orderThisAmount = 0;
+let orderDiscount = 0;
+const methodMeta = {
+  cash: { icon: '🚚', subtitle: 'Pay in cash upon delivery', online: false },
+  upi: { icon: '📱', subtitle: 'Pay using UPI apps — GPay, PhonePe, Paytm', online: true },
+  card: { icon: '💳', subtitle: 'Credit or debit card', online: true },
+  credit: { icon: '🧾', subtitle: 'Use your approved credit / outstanding balance', online: false }
+};
 let pendingCheckout = false;
+let onboardingReturnView = 'shop';
 
 function el(id) { return document.getElementById(id); }
 
@@ -799,7 +914,7 @@ function init() {
   updateCartPill();
   wireEvents();
   hydrateIcons();
-  if (!seed5.customer.profileComplete) openProfileGate(false);
+  if (!seed5.customer.profileComplete) openOnboarding(false);
 }
 
 function renderHeader() {
@@ -908,60 +1023,141 @@ function renderReviewCart() {
       <div><div class="name">${l.name}</div><div class="price">${fmt(l.price)} × ${l.qty}</div></div>
       <div class="line-total">${fmt(l.total)}</div></div>`;
   }).join('') : '<p class="muted">Your cart is empty.</p>';
+  const savings = lines.reduce((s, l) => { const p = seed5.productsV5.find((x) => x.id === l.id); return s + (p.mrp - p.price) * l.qty; }, 0);
   el('cartSubtotal').textContent = fmt(subtotal);
+  el('cartSavings').textContent = fmt(savings);
+  el('cartSavingsRow').classList.toggle('hidden', savings <= 0);
   el('cartDelivery').textContent = delivery === 0 ? 'Free' : fmt(delivery);
   el('cartModalTotal').textContent = fmt(subtotal + delivery);
   el('proceedPaymentBtn').disabled = !lines.length;
 }
 
 function openPaymentFlow() {
-  if (!seed5.customer.profileComplete) { closeModals(); openProfileGate(true); return; }
+  if (!seed5.customer.profileComplete) { closeModals(); openOnboarding(true); return; }
   const lines = cartLines();
   if (!lines.length) return;
   const subtotal = lines.reduce((s, l) => s + l.total, 0);
-  const total = subtotal + cartDeliveryCharge(subtotal);
-  paymentRows = [{ mode: 'upi', amount: total }];
-  el('payTotalPayable').textContent = fmt(total);
-  renderPaymentRows();
+  const delivery = cartDeliveryCharge(subtotal);
+  orderThisAmount = subtotal + delivery;
+  orderDiscount = lines.reduce((s, l) => { const p = seed5.productsV5.find((x) => x.id === l.id); return s + (p.mrp - p.price) * l.qty; }, 0);
+  splitMode = true;
+  selectedMethods = { [seed5.paymentConfig.methods[0].id]: orderThisAmount };
+
+  el('custAvatar').textContent = seed5.customer.avatarInitials;
+  el('custName').textContent = seed5.customer.name || 'Guest customer';
+  el('custPhone').textContent = seed5.customer.mobile || '—';
+  el('summaryUnits').textContent = lines.reduce((s, l) => s + l.qty, 0);
+  el('paySubtotal').textContent = fmt(subtotal);
+  el('payDiscount').textContent = orderDiscount > 0 ? '−' + fmt(orderDiscount) : '₹0';
+  el('payDeliveryFee').textContent = delivery === 0 ? 'Free' : fmt(delivery);
+  el('payGrandTotal').textContent = fmt(orderThisAmount);
+  el('splitToggleBar').classList.remove('hidden');
+  el('splitReopenBtn').classList.add('hidden');
+
+  renderPaymentMethodCards();
+  updateAllocation();
   openModal('paymentModal');
 }
 
-function renderPaymentRows() {
-  const wrap = el('paymentRows');
-  wrap.innerHTML = paymentRows.map((row, i) => `
-    <div class="pay-row-form" data-idx="${i}">
-      <select class="pr-mode">${seed5.paymentConfig.methods.map((m) => `<option value="${m.id}" ${m.id === row.mode ? 'selected' : ''}>${m.label}</option>`).join('')}</select>
-      <input class="pr-amount" type="number" min="0" value="${row.amount}" />
-      ${paymentRows.length > 1 ? '<button class="remove-row" title="Remove">✕</button>' : '<span></span>'}
-    </div>`).join('');
-  wrap.querySelectorAll('.pr-mode').forEach((s, i) => s.addEventListener('change', (e) => { paymentRows[i].mode = e.target.value; }));
-  wrap.querySelectorAll('.pr-amount').forEach((s, i) => s.addEventListener('input', (e) => { paymentRows[i].amount = Number(e.target.value) || 0; updatePaymentSummary(); }));
-  wrap.querySelectorAll('.remove-row').forEach((btn, i) => btn.addEventListener('click', () => { paymentRows.splice(i, 1); renderPaymentRows(); updatePaymentSummary(); }));
-  updatePaymentSummary();
+function selectMethod(id) {
+  if (splitMode) {
+    if (id in selectedMethods) delete selectedMethods[id];
+    else selectedMethods[id] = 0;
+  } else {
+    selectedMethods = { [id]: orderThisAmount };
+  }
+  renderPaymentMethodCards();
+  updateAllocation();
 }
 
-function updatePaymentSummary() {
-  const totalPayable = Number(el('payTotalPayable').textContent.replace(/[^0-9.]/g, ''));
-  const entered = paymentRows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
-  const remaining = totalPayable - entered;
-  el('payEntered').textContent = fmt(entered);
-  el('payRemaining').textContent = fmt(Math.max(0, remaining));
-  const msg = el('payValidationMsg');
+function turnOffSplit() {
+  splitMode = false;
+  const firstId = Object.keys(selectedMethods)[0] || seed5.paymentConfig.methods[0].id;
+  selectedMethods = { [firstId]: orderThisAmount };
+  el('splitToggleBar').classList.add('hidden');
+  el('splitReopenBtn').classList.remove('hidden');
+  renderPaymentMethodCards();
+  updateAllocation();
+}
+
+function turnOnSplit() {
+  splitMode = true;
+  el('splitToggleBar').classList.remove('hidden');
+  el('splitReopenBtn').classList.add('hidden');
+  renderPaymentMethodCards();
+  updateAllocation();
+}
+
+function equalSplitAmounts() {
+  const ids = Object.keys(selectedMethods);
+  if (!ids.length) return;
+  const each = Math.floor((orderThisAmount / ids.length) * 100) / 100;
+  let remainder = orderThisAmount;
+  ids.forEach((id, i) => {
+    if (i === ids.length - 1) selectedMethods[id] = Math.round(remainder * 100) / 100;
+    else { selectedMethods[id] = each; remainder -= each; }
+  });
+  renderPaymentMethodCards();
+  updateAllocation();
+}
+
+function renderPaymentMethodCards() {
+  const wrap = el('paymentMethodCards');
+  wrap.innerHTML = seed5.paymentConfig.methods.map((m) => {
+    const meta = methodMeta[m.id] || {};
+    const isSelected = m.id in selectedMethods;
+    const amount = selectedMethods[m.id] || 0;
+    return `
+    <div class="pay-method-card ${isSelected ? 'selected' : ''}" data-mode="${m.id}">
+      <span class="pm-radio"></span>
+      <span class="pm-icon">${meta.icon || '💰'}</span>
+      <div><strong>${m.label}${meta.online ? '<span class="pm-badge">Online</span>' : ''}</strong><small>${meta.subtitle || ''}</small></div>
+      <span></span>
+      ${isSelected ? `<div class="pm-amount-row"><label>Amount</label><input type="number" min="0" class="pm-amount-input" data-mode="${m.id}" value="${amount}" /></div>` : ''}
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('.pay-method-card').forEach((card) => card.addEventListener('click', (e) => {
+    if (e.target.classList.contains('pm-amount-input')) return;
+    selectMethod(card.dataset.mode);
+  }));
+  wrap.querySelectorAll('.pm-amount-input').forEach((input) => {
+    input.addEventListener('click', (e) => e.stopPropagation());
+    input.addEventListener('input', (e) => { selectedMethods[e.target.dataset.mode] = Number(e.target.value) || 0; updateAllocation(); });
+  });
+}
+
+function updateAllocation() {
+  const entered = Object.values(selectedMethods).reduce((s, v) => s + (Number(v) || 0), 0);
+  const remaining = orderThisAmount - entered;
+  const previous = seed2.payments.balanceDue;
+  el('obPrevious').textContent = fmt(previous);
+  el('obThisOrder').textContent = fmt(orderThisAmount);
+  el('obThisOrderNote').textContent = fmt(entered) + ' paid now';
+  el('obAfter').textContent = fmt(previous + Math.max(0, remaining));
+  el('allocatedText').textContent = fmt(entered) + ' / ' + fmt(orderThisAmount);
+  const pct = orderThisAmount > 0 ? (entered / orderThisAmount) * 100 : 0;
+  const fill = el('allocationFill');
+  fill.style.width = Math.min(100, pct) + '%';
+  fill.classList.toggle('over', entered > orderThisAmount + 0.5);
+  const statusEl = el('allocationStatus');
   const confirmBtn = el('confirmPaymentBtn');
-  if (remaining < -0.5) {
-    msg.innerHTML = `<div class="pay-validation error">Amount entered exceeds the total payable. Please reduce it.</div>`;
+  if (entered > orderThisAmount + 0.5) {
+    statusEl.innerHTML = '<span class="error">⚠ Over-allocated by ' + fmt(entered - orderThisAmount) + '</span>';
     confirmBtn.disabled = true;
-  } else if (remaining > 0.5) {
+  } else if (Math.abs(entered - orderThisAmount) < 0.5) {
+    statusEl.innerHTML = '<span class="ok">✓ Fully allocated</span>';
+    confirmBtn.disabled = entered <= 0;
+  } else if (entered > 0) {
     if (seed5.paymentConfig.allowPartialPayment) {
-      msg.innerHTML = `<div class="pay-validation warn">Partial payment — ${fmt(remaining)} will be added to your balance due.</div>`;
-      confirmBtn.disabled = entered <= 0;
+      statusEl.innerHTML = '<span class="warn">Partially allocated — ' + fmt(Math.max(0, remaining)) + ' remaining</span>';
+      confirmBtn.disabled = false;
     } else {
-      msg.innerHTML = `<div class="pay-validation error">Full payment of the total amount is required.</div>`;
+      statusEl.innerHTML = '<span class="error">Full payment required</span>';
       confirmBtn.disabled = true;
     }
   } else {
-    msg.innerHTML = `<div class="pay-validation ok">Amount fully covers this order.</div>`;
-    confirmBtn.disabled = false;
+    statusEl.innerHTML = '<span class="error">Select a payment method</span>';
+    confirmBtn.disabled = true;
   }
 }
 
@@ -1096,9 +1292,10 @@ function renderProfile() {
 }
 
 function switchView(view) {
-  ['shop', 'purchases', 'payments', 'help', 'profile'].forEach((v) => el('view-' + v).classList.toggle('hidden', v !== view));
+  ['shop', 'purchases', 'payments', 'help', 'profile', 'onboarding'].forEach((v) => el('view-' + v).classList.toggle('hidden', v !== view));
   document.querySelectorAll('.toptabs button').forEach((t) => t.classList.toggle('active', t.dataset.view === view));
   el('footContextText').textContent = view === 'payments' ? 'You are managing ' : 'You are shopping with ';
+  document.body.classList.toggle('onboarding-mode', view === 'onboarding');
 }
 
 function openModal(id) { el('backdrop').classList.add('show'); el(id).classList.add('show'); }
@@ -1119,10 +1316,13 @@ function openTopic(id) {
   openModal('topicModal');
 }
 
-/* --- First-login profile gate (item 11) --- */
-function openProfileGate(isCheckoutRedirect) {
-  el('profileGateTitle').textContent = isCheckoutRedirect ? 'Complete your profile to place an order' : "Welcome! Let's set up your profile";
+/* --- Dedicated onboarding page (Addendum 013), replaces the old modal gate --- */
+function openOnboarding(isCheckoutRedirect, returnView) {
   pendingCheckout = !!isCheckoutRedirect;
+  onboardingReturnView = returnView || 'shop';
+  el('onboardingTitle').textContent = isCheckoutRedirect
+    ? 'Complete your profile to place an order'
+    : (seed5.customer.profileComplete ? 'Update your profile' : 'Welcome to ' + seed2.store.name);
   const c = seed5.customer;
   el('pfName').value = c.name; el('pfMobile').value = c.mobile; el('pfEmail').value = c.email;
   const addr = c.addresses[0];
@@ -1132,7 +1332,7 @@ function openProfileGate(isCheckoutRedirect) {
   el('pfPostal').value = addr ? addr.postal || '' : '';
   el('pfLandmark').value = addr ? addr.landmark || '' : '';
   el('profileGateMsg').innerHTML = '';
-  openModal('profileGateModal');
+  switchView('onboarding');
 }
 
 function validateProfileGate() {
@@ -1190,27 +1390,25 @@ function wireEvents() {
   el('backdrop').addEventListener('click', closeModals);
   document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeModals));
 
-  el('addPaymentRowBtn').addEventListener('click', () => {
-    const totalPayable = Number(el('payTotalPayable').textContent.replace(/[^0-9.]/g, ''));
-    const entered = paymentRows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
-    paymentRows.push({ mode: 'cash', amount: Math.max(0, totalPayable - entered) });
-    renderPaymentRows();
-  });
+  el('splitCloseBtn').addEventListener('click', turnOffSplit);
+  el('splitReopenBtn').addEventListener('click', turnOnSplit);
+  el('equalSplitBtn').addEventListener('click', equalSplitAmounts);
 
   el('confirmPaymentBtn').addEventListener('click', () => {
     const lines = cartLines();
     const subtotal = lines.reduce((s, l) => s + l.total, 0);
     const delivery = cartDeliveryCharge(subtotal);
-    const total = subtotal + delivery;
-    const entered = paymentRows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+    const total = orderThisAmount;
+    const entered = Object.values(selectedMethods).reduce((s, v) => s + (Number(v) || 0), 0);
     const remaining = Math.max(0, total - entered);
-    const modeLabel = paymentRows.filter((r) => r.amount > 0).map((r) => seed5.paymentConfig.methods.find((m) => m.id === r.mode).label).join(' + ');
+    const usedIds = Object.keys(selectedMethods).filter((id) => selectedMethods[id] > 0);
+    const modeLabel = usedIds.map((id) => seed5.paymentConfig.methods.find((m) => m.id === id).label).join(' + ') || '—';
     const id = 'ORD-2025-' + String(10000 + Math.floor(Math.random() * 89999)).slice(-5);
     const now = new Date();
     seed5.purchasesV5.orders.push({
       id, date: now.toISOString().slice(0, 10), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-      status: 'Active', total, subtotal, discount: 0, deliveryCharge: delivery,
-      paymentMode: modeLabel + (remaining > 0 ? ' (partial)' : paymentRows.length > 1 ? ' (split)' : ''),
+      status: 'Active', total, subtotal, discount: orderDiscount, deliveryCharge: delivery,
+      paymentMode: modeLabel + (remaining > 0 ? ' (partial)' : usedIds.length > 1 ? ' (split)' : ''),
       paymentStatus: remaining > 0 ? 'Partially Paid' : 'Paid',
       deliveryAddress: seed5.customer.addresses.find((a) => a.default)?.detail || seed5.customer.addresses[0]?.detail || 'Address on file',
       items: lines.map((l) => ({ name: l.name, qty: l.qty, price: l.price, total: l.total })),
@@ -1248,7 +1446,7 @@ function wireEvents() {
   }));
   el('orderSearch').addEventListener('input', (e) => { orderSearchTerm = e.target.value.trim().toLowerCase(); renderOrdersTable(); });
 
-  el('editProfileBtn').addEventListener('click', () => openProfileGate(false));
+  el('editProfileBtn').addEventListener('click', () => openOnboarding(false, 'profile'));
   el('profOrdersLink').addEventListener('click', () => switchView('purchases'));
   ['notifOrders', 'notifPromo'].forEach((id, i) => el(id).addEventListener('click', () => {
     const key = i === 0 ? 'orderUpdates' : 'promotions';
@@ -1280,11 +1478,11 @@ function wireEvents() {
     else c.addresses.push({ label: 'Default', detail: addressDetail, default: true });
     c.profileComplete = true;
     renderHeader(); renderProfile();
-    closeModals();
     showToast('Profile saved');
-    if (pendingCheckout) { pendingCheckout = false; openPaymentFlow(); }
+    if (pendingCheckout) { pendingCheckout = false; switchView('shop'); openPaymentFlow(); }
+    else switchView(onboardingReturnView);
   });
-  el('profileGateLater').addEventListener('click', () => { closeModals(); pendingCheckout = false; });
+  el('profileGateLater').addEventListener('click', () => { pendingCheckout = false; switchView('shop'); });
 }
 </script>
 

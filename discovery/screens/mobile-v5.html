@@ -213,14 +213,61 @@
   .pay-summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; }
   .pay-summary-row.total { font-weight: 700; font-size: 15px; border-top: 1px solid var(--line); padding-top: 9px; margin-top: 3px; }
 
-  .pay-row-form { display: grid; grid-template-columns: 1fr 90px 30px; gap: 6px; align-items: center; margin-bottom: 8px; }
-  .pay-row-form select, .pay-row-form input { border: 1px solid var(--line); border-radius: 8px; padding: 8px 8px; font-size: 12.5px; font-family: inherit; width: 100%; }
-  .pay-row-form .remove-row { border: none; background: #f0f1f3; border-radius: 8px; height: 32px; cursor: pointer; color: var(--red-fg); font-weight: 700; }
-  .add-method-btn { border: 1px dashed var(--line); background: none; border-radius: 9px; padding: 8px; width: 100%; font-weight: 600; font-size: 12.5px; cursor: pointer; color: var(--brand-dark); margin-top: 2px; }
+  /* Payment flow (Addendum 013) */
+  .outstanding-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+  .outstanding-box { border: 1px solid var(--line); border-radius: 10px; padding: 9px 6px; text-align: center; background: #fafbfc; }
+  .outstanding-box.active { background: #eef6ff; border-color: #bfdcff; }
+  .ob-label { font-size: 9px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--muted); }
+  .outstanding-box.active .ob-label { color: #1d6fd6; }
+  .ob-val { font-weight: 700; font-size: 14px; margin-top: 4px; }
+
+  .split-toggle-bar { display: flex; align-items: center; gap: 8px; background: #f4f0ff; border: 1px solid #e3d9ff; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 12.5px; }
+  .split-toggle-bar strong { color: #6d3fd6; }
+  .split-icon { font-size: 14px; }
+  .split-close { margin-left: auto; border: none; background: none; color: #6d3fd6; cursor: pointer; font-size: 12px; }
+  .split-reopen { width: 100%; text-align: left; border: 1px dashed var(--line); background: none; border-radius: 10px; padding: 10px 12px; margin: 10px 0; cursor: pointer; color: var(--brand-dark); font-weight: 600; font-size: 12.5px; font-family: inherit; }
+
+  .pay-method-card { display: grid; grid-template-columns: 16px 32px 1fr; align-items: center; gap: 10px; border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 12px; margin-bottom: 8px; cursor: pointer; }
+  .pay-method-card.selected { border-color: var(--brand); background: var(--brand-tint); }
+  .pm-radio { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--line); position: relative; }
+  .pay-method-card.selected .pm-radio { border-color: var(--brand); }
+  .pay-method-card.selected .pm-radio::after { content: ""; position: absolute; inset: 2px; border-radius: 50%; background: var(--brand); }
+  .pm-icon { width: 32px; height: 32px; border-radius: 9px; background: #fff; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .pay-method-card strong { font-size: 13px; display: block; }
+  .pay-method-card small { color: var(--muted); font-size: 11px; }
+  .pm-badge { background: var(--brand-tint); color: var(--brand-dark); font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px; }
+  .pm-amount-row { grid-column: 1 / -1; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); display: flex; align-items: center; gap: 8px; }
+  .pm-amount-row label { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .pm-amount-row input { flex: 1; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 13px; font-family: inherit; }
+
+  .allocation-bar-wrap { margin-top: 12px; }
+  .allocation-row { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; margin-bottom: 5px; }
+  .allocation-track { height: 7px; border-radius: 999px; background: #eceff1; overflow: hidden; }
+  .allocation-fill { height: 100%; background: var(--brand); border-radius: 999px; }
+  .allocation-fill.over { background: var(--red-fg); }
+  .allocation-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 7px; font-size: 11.5px; }
+  .allocation-actions .ok { color: var(--brand-dark); font-weight: 700; }
+  .allocation-actions .warn { color: var(--amber-fg); font-weight: 700; }
+  .allocation-actions .error { color: var(--red-fg); font-weight: 700; }
+  .equal-split-btn { border: none; background: none; color: var(--brand-dark); font-weight: 700; cursor: pointer; font-family: inherit; font-size: 11.5px; }
+  .secure-note { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 11px; margin-top: 12px; }
+
+  .order-summary-head { font-weight: 700; font-size: 14px; margin-bottom: 10px; }
+  .summary-customer { display: flex; align-items: center; gap: 9px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; margin-bottom: 8px; }
+  .cust-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--brand-tint); color: var(--brand-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex: none; }
+  .summary-customer strong { font-size: 12.5px; }
+  .summary-customer .muted { font-size: 11px; }
+
   .pay-validation { font-size: 12px; padding: 8px 10px; border-radius: 8px; margin-top: 8px; }
   .pay-validation.error { background: var(--red-bg); color: var(--red-fg); }
   .pay-validation.ok { background: var(--green-bg); color: var(--green-fg); }
   .pay-validation.warn { background: var(--amber-bg); color: var(--amber-fg); }
+
+  /* Dedicated onboarding page */
+  .device.onboarding-mode .shop-header, .device.onboarding-mode .page-header, .device.onboarding-mode nav.tabbar, .device.onboarding-mode .home-indicator, .device.onboarding-mode .cart-bar { display: none !important; }
+  .onboarding-scroll { padding: 0 20px 24px; }
+  .onboarding-scroll .logo-mark { width: 52px; height: 52px; }
+  .onboarding-scroll h1 { font-size: 18px; text-align: center; margin: 0; }
 
   .field-row { margin-bottom: 10px; }
   .field-row label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
@@ -358,6 +405,31 @@
       </div>
     </main>
 
+    <!-- Dedicated onboarding page (Addendum 013) — shown first on entry when
+         the profile isn't complete, reused if checkout is reached without one. -->
+    <main class="view hidden" id="view-onboarding">
+      <div class="onboarding-scroll">
+        <div class="logo-mark" style="margin: 24px auto 14px;"></div>
+        <h1 id="onboardingTitle">Welcome to Gupta Wholesale Store</h1>
+        <p class="muted" style="text-align:center; margin: 4px 0 18px;">Tell us a little about yourself and where to deliver.</p>
+        <div class="field-row"><label>Full name *</label><input id="pfName" /><div class="field-error hidden" id="err-pfName"></div></div>
+        <div class="field-row"><label>Mobile number *</label><input id="pfMobile" maxlength="10" /><div class="field-error hidden" id="err-pfMobile"></div></div>
+        <div class="field-row"><label>Email address</label><input id="pfEmail" /><div class="field-error hidden" id="err-pfEmail"></div></div>
+        <div class="field-row"><label>Delivery address *</label><input id="pfAddress" /><div class="field-error hidden" id="err-pfAddress"></div></div>
+        <div class="field-grid-2">
+          <div class="field-row"><label>City *</label><input id="pfCity" /><div class="field-error hidden" id="err-pfCity"></div></div>
+          <div class="field-row"><label>State *</label><input id="pfState" /><div class="field-error hidden" id="err-pfState"></div></div>
+        </div>
+        <div class="field-grid-2">
+          <div class="field-row"><label>Postal code *</label><input id="pfPostal" maxlength="6" /><div class="field-error hidden" id="err-pfPostal"></div></div>
+          <div class="field-row"><label>Landmark</label><input id="pfLandmark" /></div>
+        </div>
+        <div id="profileGateMsg"></div>
+        <button class="btn btn-primary full" id="profileGateSave">Save &amp; Continue</button>
+        <button class="btn-text" id="profileGateLater" style="display:block; width:100%; text-align:center; margin-top:10px;">Skip for now</button>
+      </div>
+    </main>
+
     <div class="cart-bar hidden" id="cartBar">
       <div class="cart-left">
         <div class="cart-badge"><span class="ui-icon" data-icon="shopping-cart"></span><span id="cartCount">0</span></div>
@@ -404,6 +476,7 @@
       <p class="muted" id="cartCountLine"></p>
       <div class="cart-items-scroll" id="reviewLines"></div>
       <div class="pay-summary-row"><span>Subtotal</span><span id="reviewSubtotal"></span></div>
+      <div class="pay-summary-row hidden" id="reviewSavingsRow"><span>You saved</span><span id="reviewSavings" style="color:var(--brand-dark); font-weight:600;"></span></div>
       <div class="pay-summary-row"><span>Delivery charge</span><span id="reviewDelivery"></span></div>
       <div class="pay-summary-row total"><span>Total</span><span id="reviewTotal"></span></div>
       <div class="btn-row stack">
@@ -412,18 +485,38 @@
       </div>
     </div>
 
-    <!-- Payment flow (item 7) -->
+    <!-- Payment flow (Addendum 013 — redesigned against the supplied reference) -->
     <div class="sheet" id="paymentSheet">
       <div class="handle"></div>
-      <h2>Payment</h2>
-      <p class="muted">Total payable <strong id="payTotalPayable"></strong></p>
-      <div id="paymentRows"></div>
-      <button class="add-method-btn" id="addPaymentRowBtn">+ Add another payment method</button>
-      <div class="pay-summary-row"><span>Amount entered</span><span id="payEntered"></span></div>
-      <div class="pay-summary-row"><span>Remaining</span><span id="payRemaining"></span></div>
-      <div id="payValidationMsg"></div>
+      <h2>Choose Payment Method</h2>
+      <p class="muted">Select how you'd like to pay for this order</p>
+      <div class="outstanding-stats">
+        <div class="outstanding-box"><div class="ob-label">Previous</div><div class="ob-val" id="obPrevious"></div></div>
+        <div class="outstanding-box active"><div class="ob-label">This order</div><div class="ob-val" id="obThisOrder"></div></div>
+        <div class="outstanding-box"><div class="ob-label">After order</div><div class="ob-val" id="obAfter"></div></div>
+      </div>
+      <div class="split-toggle-bar" id="splitToggleBar">
+        <span class="split-icon">⧉</span>
+        <div><strong>Split Payment</strong><span class="muted"> — multiple methods</span></div>
+        <button class="split-close" id="splitCloseBtn">✕</button>
+      </div>
+      <button class="split-reopen hidden" id="splitReopenBtn">⧉ Split this payment</button>
+      <div id="paymentMethodCards"></div>
+      <div class="allocation-bar-wrap">
+        <div class="allocation-row"><span>Allocated</span><span id="allocatedText"></span></div>
+        <div class="allocation-track"><div class="allocation-fill" id="allocationFill"></div></div>
+        <div class="allocation-actions"><span id="allocationStatus"></span><button class="equal-split-btn" id="equalSplitBtn">↺ Equal split</button></div>
+      </div>
+      <div class="order-summary-head" style="margin-top:16px;">Order Summary</div>
+      <div class="summary-customer"><span class="cust-avatar" id="custAvatar"></span><div><strong id="custName"></strong><div class="muted" id="custPhone"></div></div></div>
+      <div class="pay-summary-row"><span>Total Units</span><span id="summaryUnits"></span></div>
+      <div class="pay-summary-row"><span>Subtotal</span><span id="paySubtotal"></span></div>
+      <div class="pay-summary-row"><span>Discount</span><span id="payDiscount"></span></div>
+      <div class="pay-summary-row"><span>Delivery</span><span id="payDeliveryFee"></span></div>
+      <div class="pay-summary-row total"><span>Grand Total</span><span id="payGrandTotal"></span></div>
+      <div class="secure-note">🛡 All transactions are secure and encrypted</div>
       <div class="btn-row stack">
-        <button class="btn btn-primary full" id="confirmPaymentBtn">Confirm Payment</button>
+        <button class="btn btn-primary full" id="confirmPaymentBtn">Place Order</button>
         <button class="btn-text" data-close>Cancel</button>
       </div>
     </div>
@@ -453,30 +546,6 @@
       <p class="muted" id="topicSub"></p>
       <textarea id="topicMessage" placeholder="Describe your query…" rows="4" style="width:100%; border:1px solid var(--line); border-radius:12px; padding:12px; font-family:inherit; font-size:13.5px; margin-top:10px; resize:none;"></textarea>
       <div class="btn-row"><button class="btn btn-secondary" data-close>Cancel</button><button class="btn btn-primary" id="topicSubmit">Submit query</button></div>
-    </div>
-
-    <!-- First-login profile gate (item 11) -->
-    <div class="sheet" id="profileGateSheet">
-      <div class="handle"></div>
-      <h2 id="profileGateTitle">Welcome!</h2>
-      <p class="muted">We need a few details before you can place an order.</p>
-      <div class="field-row"><label>Full name *</label><input id="pfName" /><div class="field-error hidden" id="err-pfName"></div></div>
-      <div class="field-row"><label>Mobile number *</label><input id="pfMobile" maxlength="10" /><div class="field-error hidden" id="err-pfMobile"></div></div>
-      <div class="field-row"><label>Email address</label><input id="pfEmail" /><div class="field-error hidden" id="err-pfEmail"></div></div>
-      <div class="field-row"><label>Delivery address *</label><input id="pfAddress" /><div class="field-error hidden" id="err-pfAddress"></div></div>
-      <div class="field-grid-2">
-        <div class="field-row"><label>City *</label><input id="pfCity" /><div class="field-error hidden" id="err-pfCity"></div></div>
-        <div class="field-row"><label>State *</label><input id="pfState" /><div class="field-error hidden" id="err-pfState"></div></div>
-      </div>
-      <div class="field-grid-2">
-        <div class="field-row"><label>Postal code *</label><input id="pfPostal" maxlength="6" /><div class="field-error hidden" id="err-pfPostal"></div></div>
-        <div class="field-row"><label>Landmark</label><input id="pfLandmark" /></div>
-      </div>
-      <div id="profileGateMsg"></div>
-      <div class="btn-row stack">
-        <button class="btn btn-primary full" id="profileGateSave">Save &amp; Continue</button>
-        <button class="btn-text" id="profileGateLater">Complete later</button>
-      </div>
     </div>
 
     <div class="sheet" id="addAddressSheet">
@@ -540,8 +609,18 @@ let visibleCount = PAGE_SIZE;
 let orderFilter = 'all';
 let orderSearchTerm = '';
 const cart = { 'v2-natural-water': 2, 'v2-coke-500': 1 };
-let paymentRows = [];
+let splitMode = true;
+let selectedMethods = {};
+let orderThisAmount = 0;
+let orderDiscount = 0;
 let pendingCheckout = false;
+let onboardingReturnView = 'shop';
+const methodMeta = {
+  cash: { icon: '🚚', subtitle: 'Pay in cash upon delivery', online: false },
+  upi: { icon: '📱', subtitle: 'GPay, PhonePe, Paytm', online: true },
+  card: { icon: '💳', subtitle: 'Credit or debit card', online: true },
+  credit: { icon: '🧾', subtitle: 'Use your credit balance', online: false }
+};
 
 function el(id) { return document.getElementById(id); }
 
@@ -562,7 +641,7 @@ function init() {
   updateCartBar();
   wireEvents();
   hydrateIcons();
-  if (!seed5.customer.profileComplete) openProfileGate(false);
+  if (!seed5.customer.profileComplete) openOnboarding(false);
 }
 
 function renderStoreHeader() {
@@ -666,6 +745,7 @@ function renderReviewCart() {
   const lines = cartLines();
   const subtotal = lines.reduce((s, l) => s + l.total, 0);
   const delivery = cartDeliveryCharge(subtotal);
+  const savings = lines.reduce((s, l) => { const p = seed5.productsV5.find((x) => x.id === l.id); return s + (p.mrp - p.price) * l.qty; }, 0);
   el('cartCountLine').textContent = lines.reduce((s, l) => s + l.qty, 0) + ' item(s) in your cart';
   el('reviewLines').innerHTML = lines.length ? lines.map((l) => {
     const p = seed5.productsV5.find((x) => x.id === l.id);
@@ -673,59 +753,137 @@ function renderReviewCart() {
     return `<div class="cart-row-line"><div class="thumb" style="background-position:${pos};"></div><div><div class="name">${l.name}</div><div class="price">${fmt(l.price)} × ${l.qty}</div></div><div class="line-total">${fmt(l.total)}</div></div>`;
   }).join('') : '<p class="muted">Your cart is empty.</p>';
   el('reviewSubtotal').textContent = fmt(subtotal);
+  el('reviewSavings').textContent = fmt(savings);
+  el('reviewSavingsRow').classList.toggle('hidden', savings <= 0);
   el('reviewDelivery').textContent = delivery === 0 ? 'Free' : fmt(delivery);
   el('reviewTotal').textContent = fmt(subtotal + delivery);
   el('proceedPaymentBtn').disabled = !lines.length;
 }
 
 function openPaymentFlow() {
-  if (!seed5.customer.profileComplete) { closeSheets(); openProfileGate(true); return; }
+  if (!seed5.customer.profileComplete) { closeSheets(); openOnboarding(true); return; }
   const lines = cartLines();
   if (!lines.length) return;
   const subtotal = lines.reduce((s, l) => s + l.total, 0);
-  const total = subtotal + cartDeliveryCharge(subtotal);
-  paymentRows = [{ mode: 'upi', amount: total }];
-  el('payTotalPayable').textContent = fmt(total);
-  renderPaymentRows();
+  const delivery = cartDeliveryCharge(subtotal);
+  orderThisAmount = subtotal + delivery;
+  orderDiscount = lines.reduce((s, l) => { const p = seed5.productsV5.find((x) => x.id === l.id); return s + (p.mrp - p.price) * l.qty; }, 0);
+  splitMode = true;
+  selectedMethods = { [seed5.paymentConfig.methods[0].id]: orderThisAmount };
+
+  el('custAvatar').textContent = seed5.customer.avatarInitials;
+  el('custName').textContent = seed5.customer.name || 'Guest customer';
+  el('custPhone').textContent = seed5.customer.mobile || '—';
+  el('summaryUnits').textContent = lines.reduce((s, l) => s + l.qty, 0);
+  el('paySubtotal').textContent = fmt(subtotal);
+  el('payDiscount').textContent = orderDiscount > 0 ? '−' + fmt(orderDiscount) : '₹0';
+  el('payDeliveryFee').textContent = delivery === 0 ? 'Free' : fmt(delivery);
+  el('payGrandTotal').textContent = fmt(orderThisAmount);
+  el('splitToggleBar').classList.remove('hidden');
+  el('splitReopenBtn').classList.add('hidden');
+
+  renderPaymentMethodCards();
+  updateAllocation();
   openSheet('paymentSheet');
 }
 
-function renderPaymentRows() {
-  const wrap = el('paymentRows');
-  wrap.innerHTML = paymentRows.map((row, i) => `
-    <div class="pay-row-form" data-idx="${i}">
-      <select class="pr-mode">${seed5.paymentConfig.methods.map((m) => `<option value="${m.id}" ${m.id === row.mode ? 'selected' : ''}>${m.label}</option>`).join('')}</select>
-      <input class="pr-amount" type="number" min="0" value="${row.amount}" />
-      ${paymentRows.length > 1 ? '<button class="remove-row">✕</button>' : '<span></span>'}
-    </div>`).join('');
-  wrap.querySelectorAll('.pr-mode').forEach((s, i) => s.addEventListener('change', (e) => { paymentRows[i].mode = e.target.value; }));
-  wrap.querySelectorAll('.pr-amount').forEach((s, i) => s.addEventListener('input', (e) => { paymentRows[i].amount = Number(e.target.value) || 0; updatePaymentSummary(); }));
-  wrap.querySelectorAll('.remove-row').forEach((btn, i) => btn.addEventListener('click', () => { paymentRows.splice(i, 1); renderPaymentRows(); updatePaymentSummary(); }));
-  updatePaymentSummary();
+function selectMethod(id) {
+  if (splitMode) {
+    if (id in selectedMethods) delete selectedMethods[id];
+    else selectedMethods[id] = 0;
+  } else {
+    selectedMethods = { [id]: orderThisAmount };
+  }
+  renderPaymentMethodCards();
+  updateAllocation();
 }
 
-function updatePaymentSummary() {
-  const totalPayable = Number(el('payTotalPayable').textContent.replace(/[^0-9.]/g, ''));
-  const entered = paymentRows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
-  const remaining = totalPayable - entered;
-  el('payEntered').textContent = fmt(entered);
-  el('payRemaining').textContent = fmt(Math.max(0, remaining));
-  const msg = el('payValidationMsg');
+function turnOffSplit() {
+  splitMode = false;
+  const firstId = Object.keys(selectedMethods)[0] || seed5.paymentConfig.methods[0].id;
+  selectedMethods = { [firstId]: orderThisAmount };
+  el('splitToggleBar').classList.add('hidden');
+  el('splitReopenBtn').classList.remove('hidden');
+  renderPaymentMethodCards();
+  updateAllocation();
+}
+
+function turnOnSplit() {
+  splitMode = true;
+  el('splitToggleBar').classList.remove('hidden');
+  el('splitReopenBtn').classList.add('hidden');
+  renderPaymentMethodCards();
+  updateAllocation();
+}
+
+function equalSplitAmounts() {
+  const ids = Object.keys(selectedMethods);
+  if (!ids.length) return;
+  const each = Math.floor((orderThisAmount / ids.length) * 100) / 100;
+  let remainder = orderThisAmount;
+  ids.forEach((id, i) => {
+    if (i === ids.length - 1) selectedMethods[id] = Math.round(remainder * 100) / 100;
+    else { selectedMethods[id] = each; remainder -= each; }
+  });
+  renderPaymentMethodCards();
+  updateAllocation();
+}
+
+function renderPaymentMethodCards() {
+  const wrap = el('paymentMethodCards');
+  wrap.innerHTML = seed5.paymentConfig.methods.map((m) => {
+    const meta = methodMeta[m.id] || {};
+    const isSelected = m.id in selectedMethods;
+    const amount = selectedMethods[m.id] || 0;
+    return `
+    <div class="pay-method-card ${isSelected ? 'selected' : ''}" data-mode="${m.id}">
+      <span class="pm-radio"></span>
+      <span class="pm-icon">${meta.icon || '💰'}</span>
+      <div><strong>${m.label}${meta.online ? '<span class="pm-badge">Online</span>' : ''}</strong><small>${meta.subtitle || ''}</small></div>
+      ${isSelected ? `<div class="pm-amount-row"><label>Amount</label><input type="number" min="0" class="pm-amount-input" data-mode="${m.id}" value="${amount}" /></div>` : ''}
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('.pay-method-card').forEach((card) => card.addEventListener('click', (e) => {
+    if (e.target.classList.contains('pm-amount-input')) return;
+    selectMethod(card.dataset.mode);
+  }));
+  wrap.querySelectorAll('.pm-amount-input').forEach((input) => {
+    input.addEventListener('click', (e) => e.stopPropagation());
+    input.addEventListener('input', (e) => { selectedMethods[e.target.dataset.mode] = Number(e.target.value) || 0; updateAllocation(); });
+  });
+}
+
+function updateAllocation() {
+  const entered = Object.values(selectedMethods).reduce((s, v) => s + (Number(v) || 0), 0);
+  const remaining = orderThisAmount - entered;
+  const previous = seed2.payments.balanceDue;
+  el('obPrevious').textContent = fmt(previous);
+  el('obThisOrder').textContent = fmt(orderThisAmount);
+  el('obAfter').textContent = fmt(previous + Math.max(0, remaining));
+  el('allocatedText').textContent = fmt(entered) + ' / ' + fmt(orderThisAmount);
+  const pct = orderThisAmount > 0 ? (entered / orderThisAmount) * 100 : 0;
+  const fill = el('allocationFill');
+  fill.style.width = Math.min(100, pct) + '%';
+  fill.classList.toggle('over', entered > orderThisAmount + 0.5);
+  const statusEl = el('allocationStatus');
   const confirmBtn = el('confirmPaymentBtn');
-  if (remaining < -0.5) {
-    msg.innerHTML = `<div class="pay-validation error">Amount entered exceeds the total payable.</div>`;
+  if (entered > orderThisAmount + 0.5) {
+    statusEl.innerHTML = '<span class="error">⚠ Over-allocated</span>';
     confirmBtn.disabled = true;
-  } else if (remaining > 0.5) {
+  } else if (Math.abs(entered - orderThisAmount) < 0.5) {
+    statusEl.innerHTML = '<span class="ok">✓ Fully allocated</span>';
+    confirmBtn.disabled = entered <= 0;
+  } else if (entered > 0) {
     if (seed5.paymentConfig.allowPartialPayment) {
-      msg.innerHTML = `<div class="pay-validation warn">Partial payment — ${fmt(remaining)} will be added to your balance due.</div>`;
-      confirmBtn.disabled = entered <= 0;
+      statusEl.innerHTML = '<span class="warn">' + fmt(Math.max(0, remaining)) + ' remaining</span>';
+      confirmBtn.disabled = false;
     } else {
-      msg.innerHTML = `<div class="pay-validation error">Full payment is required.</div>`;
+      statusEl.innerHTML = '<span class="error">Full payment required</span>';
       confirmBtn.disabled = true;
     }
   } else {
-    msg.innerHTML = `<div class="pay-validation ok">Amount fully covers this order.</div>`;
-    confirmBtn.disabled = false;
+    statusEl.innerHTML = '<span class="error">Select a method</span>';
+    confirmBtn.disabled = true;
   }
 }
 
@@ -825,8 +983,9 @@ function renderProfile() {
 }
 
 function switchView(view) {
-  ['shop', 'purchases', 'payments', 'help', 'profile'].forEach((v) => el('view-' + v).classList.toggle('hidden', v !== view));
+  ['shop', 'purchases', 'payments', 'help', 'profile', 'onboarding'].forEach((v) => el('view-' + v).classList.toggle('hidden', v !== view));
   document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('active', t.dataset.view === view));
+  el('device').classList.toggle('onboarding-mode', view === 'onboarding');
 }
 
 function openSheet(id) { el('backdrop').classList.add('show'); el(id).classList.add('show'); }
@@ -839,9 +998,12 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 1900);
 }
 
-function openProfileGate(isCheckoutRedirect) {
-  el('profileGateTitle').textContent = isCheckoutRedirect ? 'Complete your profile to place an order' : "Welcome! Let's set up your profile";
+function openOnboarding(isCheckoutRedirect, returnView) {
   pendingCheckout = !!isCheckoutRedirect;
+  onboardingReturnView = returnView || 'shop';
+  el('onboardingTitle').textContent = isCheckoutRedirect
+    ? 'Complete your profile to place an order'
+    : (seed5.customer.profileComplete ? 'Update your profile' : 'Welcome to ' + seed2.store.name);
   const c = seed5.customer;
   el('pfName').value = c.name; el('pfMobile').value = c.mobile; el('pfEmail').value = c.email;
   const addr = c.addresses[0];
@@ -851,7 +1013,7 @@ function openProfileGate(isCheckoutRedirect) {
   el('pfPostal').value = addr ? addr.postal || '' : '';
   el('pfLandmark').value = addr ? addr.landmark || '' : '';
   el('profileGateMsg').innerHTML = '';
-  openSheet('profileGateSheet');
+  switchView('onboarding');
 }
 
 function validateProfileGate() {
@@ -889,27 +1051,25 @@ function wireEvents() {
   el('backdrop').addEventListener('click', closeSheets);
   document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeSheets));
 
-  el('addPaymentRowBtn').addEventListener('click', () => {
-    const totalPayable = Number(el('payTotalPayable').textContent.replace(/[^0-9.]/g, ''));
-    const entered = paymentRows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
-    paymentRows.push({ mode: 'cash', amount: Math.max(0, totalPayable - entered) });
-    renderPaymentRows();
-  });
+  el('splitCloseBtn').addEventListener('click', turnOffSplit);
+  el('splitReopenBtn').addEventListener('click', turnOnSplit);
+  el('equalSplitBtn').addEventListener('click', equalSplitAmounts);
 
   el('confirmPaymentBtn').addEventListener('click', () => {
     const lines = cartLines();
     const subtotal = lines.reduce((s, l) => s + l.total, 0);
     const delivery = cartDeliveryCharge(subtotal);
-    const total = subtotal + delivery;
-    const entered = paymentRows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+    const total = orderThisAmount;
+    const entered = Object.values(selectedMethods).reduce((s, v) => s + (Number(v) || 0), 0);
     const remaining = Math.max(0, total - entered);
-    const modeLabel = paymentRows.filter((r) => r.amount > 0).map((r) => seed5.paymentConfig.methods.find((m) => m.id === r.mode).label).join(' + ');
+    const usedIds = Object.keys(selectedMethods).filter((id) => selectedMethods[id] > 0);
+    const modeLabel = usedIds.map((id) => seed5.paymentConfig.methods.find((m) => m.id === id).label).join(' + ') || '—';
     const id = 'ORD-2025-' + String(10000 + Math.floor(Math.random() * 89999)).slice(-5);
     const now = new Date();
     seed5.purchasesV5.orders.push({
       id, date: now.toISOString().slice(0, 10), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-      status: 'Active', total, subtotal, discount: 0, deliveryCharge: delivery,
-      paymentMode: modeLabel + (remaining > 0 ? ' (partial)' : paymentRows.length > 1 ? ' (split)' : ''),
+      status: 'Active', total, subtotal, discount: orderDiscount, deliveryCharge: delivery,
+      paymentMode: modeLabel + (remaining > 0 ? ' (partial)' : usedIds.length > 1 ? ' (split)' : ''),
       paymentStatus: remaining > 0 ? 'Partially Paid' : 'Paid',
       deliveryAddress: seed5.customer.addresses.find((a) => a.default)?.detail || seed5.customer.addresses[0]?.detail || 'Address on file',
       items: lines.map((l) => ({ name: l.name, qty: l.qty, price: l.price, total: l.total })),
@@ -947,7 +1107,7 @@ function wireEvents() {
   }));
   el('orderSearch').addEventListener('input', (e) => { orderSearchTerm = e.target.value.trim().toLowerCase(); renderOrdersList(); });
 
-  el('editProfileBtn').addEventListener('click', () => openProfileGate(false));
+  el('editProfileBtn').addEventListener('click', () => openOnboarding(false, 'profile'));
   el('profOrdersBtn').addEventListener('click', () => switchView('purchases'));
   el('profLogoutBtn').addEventListener('click', () => showToast('Logged out (demo)'));
   ['notifOrders', 'notifPromo'].forEach((id, i) => el(id).addEventListener('click', () => {
@@ -980,11 +1140,11 @@ function wireEvents() {
     else c.addresses.push({ label: 'Default', detail: addressDetail, default: true });
     c.profileComplete = true;
     renderProfile();
-    closeSheets();
     showToast('Profile saved');
-    if (pendingCheckout) { pendingCheckout = false; openPaymentFlow(); }
+    if (pendingCheckout) { pendingCheckout = false; switchView('shop'); openPaymentFlow(); }
+    else switchView(onboardingReturnView);
   });
-  el('profileGateLater').addEventListener('click', () => { closeSheets(); pendingCheckout = false; });
+  el('profileGateLater').addEventListener('click', () => { pendingCheckout = false; switchView('shop'); });
 }
 </script>
 
