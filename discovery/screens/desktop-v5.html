@@ -258,7 +258,12 @@
   .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%); width: 92%; max-width: 480px; background: #fff; border-radius: 16px; padding: 22px 24px; z-index: 41; box-shadow: 0 30px 70px rgba(0,0,0,.3); opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease; max-height: 86vh; overflow-y: auto; }
   .modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
   .modal.wide { max-width: 620px; }
-  .modal.pay-modal { max-width: 920px; padding: 0; }
+  .pay-drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 800px; max-width: 95vw; background: #fff; z-index: 41; box-shadow: -20px 0 60px rgba(0,0,0,.18); transform: translateX(100%); transition: transform .28s cubic-bezier(.32,.72,0,1); opacity: 1; pointer-events: none; overflow: hidden; }
+  .pay-drawer.show { transform: translateX(0); pointer-events: auto; }
+  .pay-drawer .pay-flow-layout { height: 100vh; }
+  .pay-drawer .pay-flow-left { max-height: 100vh; }
+  .pay-drawer .pay-flow-right { max-height: 100vh; overflow-y: auto; }
+  .pay-drawer-close { position: absolute; top: 20px; right: 20px; z-index: 2; }
 
   /* Review Cart drawer (Addendum 014) — slides in from the right, full height */
   .cart-drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 460px; max-width: 92vw; background: #fff; z-index: 41; box-shadow: -20px 0 60px rgba(0,0,0,.18); transform: translateX(100%); transition: transform .28s cubic-bezier(.32,.72,0,1); display: flex; flex-direction: column; opacity: 1; pointer-events: none; }
@@ -407,9 +412,11 @@
     .panel { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 10px; }
     .panel-head h3, .panel > h3 { font-size: 16px !important; }
     .panel-head a { font-size: 13px; }
-    .summary-row { padding: 9px 0; font-size: 13px; }
+    .summary-row { padding: 9px 0; font-size: 14.5px; }
     .help-row { padding: 7px 0; }
     .help-row .icon { width: 28px; height: 28px; background: transparent; font-size: 18px; }
+    .help-row .t { font-size: 14px; }
+    .help-row .s { font-size: 12.5px; }
     .badges-row { gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
     .badge-card { border-radius: 0; padding: 10px 6px; font-size: 11px; box-shadow: none; }
 
@@ -448,10 +455,11 @@
 
     .pay-layout { grid-template-columns: minmax(0,1.77fr) minmax(360px,1fr); gap: 20px; }
     #view-payments .panel { padding: 19px 25px; margin-bottom: 14px; }
-    table.paytable th { text-transform: none; letter-spacing: 0; font-size: 12px; padding: 10px 3px; }
-    table.paytable td { padding: 10px 3px; font-size: 13px; }
+    table.paytable th { text-transform: none; letter-spacing: 0; font-size: 13px; padding: 10px 3px; }
+    table.paytable td { padding: 11px 3px; font-size: 14.5px; }
     .balance-card { min-height: 260px; text-align: left; background: linear-gradient(135deg,#f3fbf3,#f7fcf5); padding: 20px 24px; }
     .balance-total { color: #f12d16; font-size: 31px; }
+    .balance-due-note { font-size: 13.5px; }
     .btn-row-2 .btn { background: #fff; border: 1px solid #bfcac4; }
 
     .help-layout { grid-template-columns: 1fr 1fr; gap: 30px; }
@@ -753,16 +761,16 @@
      Payment Method / Order Summary reference: outstanding stats, split
      payment toggle, per-method allocation, order-summary rail. No Tax line —
      the no-GST rule from Addendum 011 still applies. -->
-<div class="modal wide pay-modal" id="paymentModal">
-  <button class="modal-x" data-close>✕</button>
+<div class="pay-drawer" id="paymentModal">
+  <button class="drawer-close pay-drawer-close" data-close title="Close">✕</button>
   <div class="pay-flow-layout">
     <div class="pay-flow-left">
-      <h2>Choose Payment Method</h2>
-      <p class="muted">Select how you'd like to pay for this order</p>
+      <h2 id="payFlowTitle">Choose Payment Method</h2>
+      <p class="muted" id="payFlowSub">Select how you'd like to pay for this order</p>
 
       <div class="outstanding-stats">
         <div class="outstanding-box"><div class="ob-label">Previous Outstanding</div><div class="ob-val" id="obPrevious"></div><div class="ob-note">Before this order</div></div>
-        <div class="outstanding-box active"><div class="ob-label">This Order</div><div class="ob-val" id="obThisOrder"></div><div class="ob-note" id="obThisOrderNote"></div></div>
+        <div class="outstanding-box active"><div class="ob-label" id="obThisOrderLabel">This Order</div><div class="ob-val" id="obThisOrder"></div><div class="ob-note" id="obThisOrderNote"></div></div>
         <div class="outstanding-box"><div class="ob-label">Total Outstanding</div><div class="ob-val" id="obAfter"></div><div class="ob-note">After this order</div></div>
       </div>
 
@@ -787,11 +795,11 @@
     <div class="pay-flow-right">
       <div class="order-summary-head">Order Summary</div>
       <div class="summary-customer"><span class="cust-avatar" id="custAvatar"></span><div><strong id="custName"></strong><div class="muted" id="custPhone"></div></div></div>
-      <div class="summary-units"><span class="units-ic">📦</span><div><div>Total Units</div><small>Total quantity of items</small></div><strong id="summaryUnits"></strong></div>
-      <div class="summary-row"><span>Subtotal</span><span id="paySubtotal"></span></div>
-      <div class="summary-row"><span>Discount</span><span id="payDiscount"></span></div>
-      <div class="summary-row"><span>Delivery</span><span id="payDeliveryFee"></span></div>
-      <div class="summary-row total"><span>Grand Total</span><span id="payGrandTotal"></span></div>
+      <div class="summary-units" id="summaryUnitsBox"><span class="units-ic">📦</span><div><div>Total Units</div><small>Total quantity of items</small></div><strong id="summaryUnits"></strong></div>
+      <div class="summary-row" id="paySubtotalRow"><span>Subtotal</span><span id="paySubtotal"></span></div>
+      <div class="summary-row" id="payDiscountRow"><span>Discount</span><span id="payDiscount"></span></div>
+      <div class="summary-row" id="payDeliveryRow"><span>Delivery</span><span id="payDeliveryFee"></span></div>
+      <div class="summary-row total"><span id="payGrandTotalLabel">Grand Total</span><span id="payGrandTotal"></span></div>
       <button class="btn btn-primary full" id="confirmPaymentBtn">Place Order</button>
     </div>
   </div>
@@ -887,7 +895,7 @@ let seed = null, seed2 = null, seed5 = null;
 let activeCategory = 'all';
 let searchTerm = '';
 let sortKey = 'relevance';
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 8;
 let visibleCount = PAGE_SIZE;
 let orderFilter = 'all';
 let orderSearchTerm = '';
@@ -904,6 +912,7 @@ const methodMeta = {
 };
 let pendingCheckout = false;
 let onboardingReturnView = 'shop';
+let payingBalance = false;
 
 function el(id) { return document.getElementById(id); }
 
@@ -1047,6 +1056,16 @@ function renderReviewCart() {
 }
 
 function openPaymentFlow() {
+  payingBalance = false;
+  el('payFlowTitle').textContent = 'Choose Payment Method';
+  el('payFlowSub').textContent = "Select how you'd like to pay for this order";
+  el('obThisOrderLabel').textContent = 'This Order';
+  el('summaryUnitsBox').classList.remove('hidden');
+  el('paySubtotalRow').classList.remove('hidden');
+  el('payDiscountRow').classList.remove('hidden');
+  el('payDeliveryRow').classList.remove('hidden');
+  el('payGrandTotalLabel').textContent = 'Grand Total';
+  el('confirmPaymentBtn').textContent = 'Place Order';
   if (!seed5.customer.profileComplete) { closeModals(); openOnboarding(true); return; }
   const lines = cartLines();
   if (!lines.length) return;
@@ -1057,6 +1076,7 @@ function openPaymentFlow() {
   splitMode = true;
   selectedMethods = { [seed5.paymentConfig.methods[0].id]: orderThisAmount };
 
+
   el('custAvatar').textContent = seed5.customer.avatarInitials;
   el('custName').textContent = seed5.customer.name || 'Guest customer';
   el('custPhone').textContent = seed5.customer.mobile || '—';
@@ -1064,6 +1084,37 @@ function openPaymentFlow() {
   el('paySubtotal').textContent = fmt(subtotal);
   el('payDiscount').textContent = orderDiscount > 0 ? '−' + fmt(orderDiscount) : '₹0';
   el('payDeliveryFee').textContent = delivery === 0 ? 'Free' : fmt(delivery);
+  el('payGrandTotal').textContent = fmt(orderThisAmount);
+  el('splitToggleBar').classList.remove('hidden');
+  el('splitReopenBtn').classList.add('hidden');
+
+  renderPaymentMethodCards();
+  updateAllocation();
+  openModal('paymentModal');
+}
+
+function openBalancePaymentFlow() {
+  const due = seed2.payments.balanceDue;
+  if (due <= 0) return;
+  payingBalance = true;
+  orderThisAmount = due;
+  orderDiscount = 0;
+  splitMode = true;
+  selectedMethods = { [seed5.paymentConfig.methods[0].id]: orderThisAmount };
+
+  el('payFlowTitle').textContent = 'Pay Outstanding Balance';
+  el('payFlowSub').textContent = "Select how you'd like to pay your outstanding balance";
+  el('obThisOrderLabel').textContent = 'Amount to Pay';
+  el('summaryUnitsBox').classList.add('hidden');
+  el('paySubtotalRow').classList.add('hidden');
+  el('payDiscountRow').classList.add('hidden');
+  el('payDeliveryRow').classList.add('hidden');
+  el('payGrandTotalLabel').textContent = 'Amount to Pay';
+  el('confirmPaymentBtn').textContent = 'Pay Now';
+
+  el('custAvatar').textContent = seed5.customer.avatarInitials;
+  el('custName').textContent = seed5.customer.name || 'Guest customer';
+  el('custPhone').textContent = seed5.customer.mobile || '—';
   el('payGrandTotal').textContent = fmt(orderThisAmount);
   el('splitToggleBar').classList.remove('hidden');
   el('splitReopenBtn').classList.add('hidden');
@@ -1147,7 +1198,7 @@ function updateAllocation() {
   el('obPrevious').textContent = fmt(previous);
   el('obThisOrder').textContent = fmt(orderThisAmount);
   el('obThisOrderNote').textContent = fmt(entered) + ' paid now';
-  el('obAfter').textContent = fmt(previous + Math.max(0, remaining));
+  el('obAfter').textContent = fmt(payingBalance ? Math.max(0, previous - entered) : previous + Math.max(0, remaining));
   el('allocatedText').textContent = fmt(entered) + ' / ' + fmt(orderThisAmount);
   const pct = orderThisAmount > 0 ? (entered / orderThisAmount) * 100 : 0;
   const fill = el('allocationFill');
@@ -1305,7 +1356,7 @@ function switchView(view) {
 }
 
 function openModal(id) { el('backdrop').classList.add('show'); el(id).classList.add('show'); }
-function closeModals() { el('backdrop').classList.remove('show'); document.querySelectorAll('.modal, .cart-drawer').forEach((m) => m.classList.remove('show')); el('accountMenu').classList.remove('show'); }
+function closeModals() { el('backdrop').classList.remove('show'); document.querySelectorAll('.modal, .cart-drawer, .pay-drawer').forEach((m) => m.classList.remove('show')); el('accountMenu').classList.remove('show'); }
 
 function showToast(msg) {
   const t = el('toast');
@@ -1401,6 +1452,20 @@ function wireEvents() {
   el('equalSplitBtn').addEventListener('click', equalSplitAmounts);
 
   el('confirmPaymentBtn').addEventListener('click', () => {
+    if (payingBalance) {
+      const total = orderThisAmount;
+      const entered = Math.min(total, Object.values(selectedMethods).reduce((s, v) => s + (Number(v) || 0), 0));
+      if (entered <= 0) return;
+      seed2.payments.balanceDue = Math.max(0, seed2.payments.balanceDue - entered);
+      seed2.payments.paid += entered;
+      if (seed2.payments.balanceDue === 0) seed2.payments.invoicesPending = 0;
+      payingBalance = false;
+      renderPayments();
+      renderAccountSummary();
+      closeModals();
+      showToast(`Payment successful · ${fmt(entered)} paid towards balance`);
+      return;
+    }
     const lines = cartLines();
     const subtotal = lines.reduce((s, l) => s + l.total, 0);
     const delivery = cartDeliveryCharge(subtotal);
@@ -1434,13 +1499,7 @@ function wireEvents() {
     showToast(`Order ${id} placed${remaining > 0 ? ' · ' + fmt(remaining) + ' added to balance due' : ''}`);
   });
 
-  el('payBalanceBtn').addEventListener('click', () => {
-    const p = seed2.payments;
-    if (p.balanceDue <= 0) return;
-    p.paid += p.balanceDue; p.balanceDue = 0; p.invoicesPending = 0;
-    renderPayments(); renderAccountSummary();
-    showToast('Payment successful (demo)');
-  });
+  el('payBalanceBtn').addEventListener('click', openBalancePaymentFlow);
 
   el('topicSubmit').addEventListener('click', () => { closeModals(); showToast('Query submitted — we\'ll get back to you shortly'); });
 

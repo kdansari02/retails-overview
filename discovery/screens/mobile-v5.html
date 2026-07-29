@@ -497,11 +497,11 @@
     <!-- Payment flow (Addendum 013 — redesigned against the supplied reference) -->
     <div class="sheet" id="paymentSheet">
       <div class="handle"></div>
-      <h2>Choose Payment Method</h2>
-      <p class="muted">Select how you'd like to pay for this order</p>
+      <h2 id="payFlowTitle">Choose Payment Method</h2>
+      <p class="muted" id="payFlowSub">Select how you'd like to pay for this order</p>
       <div class="outstanding-stats">
         <div class="outstanding-box"><div class="ob-label">Previous</div><div class="ob-val" id="obPrevious"></div></div>
-        <div class="outstanding-box active"><div class="ob-label">This order</div><div class="ob-val" id="obThisOrder"></div></div>
+        <div class="outstanding-box active"><div class="ob-label" id="obThisOrderLabel">This order</div><div class="ob-val" id="obThisOrder"></div></div>
         <div class="outstanding-box"><div class="ob-label">After order</div><div class="ob-val" id="obAfter"></div></div>
       </div>
       <div class="split-toggle-bar" id="splitToggleBar">
@@ -518,11 +518,11 @@
       </div>
       <div class="order-summary-head" style="margin-top:16px;">Order Summary</div>
       <div class="summary-customer"><span class="cust-avatar" id="custAvatar"></span><div><strong id="custName"></strong><div class="muted" id="custPhone"></div></div></div>
-      <div class="pay-summary-row"><span>Total Units</span><span id="summaryUnits"></span></div>
-      <div class="pay-summary-row"><span>Subtotal</span><span id="paySubtotal"></span></div>
-      <div class="pay-summary-row"><span>Discount</span><span id="payDiscount"></span></div>
-      <div class="pay-summary-row"><span>Delivery</span><span id="payDeliveryFee"></span></div>
-      <div class="pay-summary-row total"><span>Grand Total</span><span id="payGrandTotal"></span></div>
+      <div class="pay-summary-row" id="summaryUnitsBox"><span>Total Units</span><span id="summaryUnits"></span></div>
+      <div class="pay-summary-row" id="paySubtotalRow"><span>Subtotal</span><span id="paySubtotal"></span></div>
+      <div class="pay-summary-row" id="payDiscountRow"><span>Discount</span><span id="payDiscount"></span></div>
+      <div class="pay-summary-row" id="payDeliveryRow"><span>Delivery</span><span id="payDeliveryFee"></span></div>
+      <div class="pay-summary-row total"><span id="payGrandTotalLabel">Grand Total</span><span id="payGrandTotal"></span></div>
       <div class="secure-note">🛡 All transactions are secure and encrypted</div>
       <div class="btn-row stack">
         <button class="btn btn-primary full" id="confirmPaymentBtn">Place Order</button>
@@ -625,6 +625,7 @@ let orderThisAmount = 0;
 let orderDiscount = 0;
 let pendingCheckout = false;
 let onboardingReturnView = 'shop';
+let payingBalance = false;
 const methodMeta = {
   cash: { icon: '🚚', subtitle: 'Pay in cash upon delivery', online: false },
   upi: { icon: '📱', subtitle: 'GPay, PhonePe, Paytm', online: true },
@@ -773,6 +774,16 @@ function renderReviewCart() {
 }
 
 function openPaymentFlow() {
+  payingBalance = false;
+  el('payFlowTitle').textContent = 'Choose Payment Method';
+  el('payFlowSub').textContent = "Select how you'd like to pay for this order";
+  el('obThisOrderLabel').textContent = 'This order';
+  el('summaryUnitsBox').classList.remove('hidden');
+  el('paySubtotalRow').classList.remove('hidden');
+  el('payDiscountRow').classList.remove('hidden');
+  el('payDeliveryRow').classList.remove('hidden');
+  el('payGrandTotalLabel').textContent = 'Grand Total';
+  el('confirmPaymentBtn').textContent = 'Place Order';
   if (!seed5.customer.profileComplete) { closeSheets(); openOnboarding(true); return; }
   const lines = cartLines();
   if (!lines.length) return;
@@ -790,6 +801,37 @@ function openPaymentFlow() {
   el('paySubtotal').textContent = fmt(subtotal);
   el('payDiscount').textContent = orderDiscount > 0 ? '−' + fmt(orderDiscount) : '₹0';
   el('payDeliveryFee').textContent = delivery === 0 ? 'Free' : fmt(delivery);
+  el('payGrandTotal').textContent = fmt(orderThisAmount);
+  el('splitToggleBar').classList.remove('hidden');
+  el('splitReopenBtn').classList.add('hidden');
+
+  renderPaymentMethodCards();
+  updateAllocation();
+  openSheet('paymentSheet');
+}
+
+function openBalancePaymentFlow() {
+  const due = seed2.payments.balanceDue;
+  if (due <= 0) return;
+  payingBalance = true;
+  orderThisAmount = due;
+  orderDiscount = 0;
+  splitMode = true;
+  selectedMethods = { [seed5.paymentConfig.methods[0].id]: orderThisAmount };
+
+  el('payFlowTitle').textContent = 'Pay Outstanding Balance';
+  el('payFlowSub').textContent = "Select how you'd like to pay your outstanding balance";
+  el('obThisOrderLabel').textContent = 'Amount to pay';
+  el('summaryUnitsBox').classList.add('hidden');
+  el('paySubtotalRow').classList.add('hidden');
+  el('payDiscountRow').classList.add('hidden');
+  el('payDeliveryRow').classList.add('hidden');
+  el('payGrandTotalLabel').textContent = 'Amount to Pay';
+  el('confirmPaymentBtn').textContent = 'Pay Now';
+
+  el('custAvatar').textContent = seed5.customer.avatarInitials;
+  el('custName').textContent = seed5.customer.name || 'Guest customer';
+  el('custPhone').textContent = seed5.customer.mobile || '—';
   el('payGrandTotal').textContent = fmt(orderThisAmount);
   el('splitToggleBar').classList.remove('hidden');
   el('splitReopenBtn').classList.add('hidden');
@@ -871,7 +913,7 @@ function updateAllocation() {
   const previous = seed2.payments.balanceDue;
   el('obPrevious').textContent = fmt(previous);
   el('obThisOrder').textContent = fmt(orderThisAmount);
-  el('obAfter').textContent = fmt(previous + Math.max(0, remaining));
+  el('obAfter').textContent = fmt(payingBalance ? Math.max(0, previous - entered) : previous + Math.max(0, remaining));
   el('allocatedText').textContent = fmt(entered) + ' / ' + fmt(orderThisAmount);
   const pct = orderThisAmount > 0 ? (entered / orderThisAmount) * 100 : 0;
   const fill = el('allocationFill');
@@ -1068,6 +1110,19 @@ function wireEvents() {
   el('equalSplitBtn').addEventListener('click', equalSplitAmounts);
 
   el('confirmPaymentBtn').addEventListener('click', () => {
+    if (payingBalance) {
+      const total = orderThisAmount;
+      const entered = Math.min(total, Object.values(selectedMethods).reduce((s, v) => s + (Number(v) || 0), 0));
+      if (entered <= 0) return;
+      seed2.payments.balanceDue = Math.max(0, seed2.payments.balanceDue - entered);
+      seed2.payments.paid += entered;
+      if (seed2.payments.balanceDue === 0) seed2.payments.invoicesPending = 0;
+      payingBalance = false;
+      renderPayments();
+      closeSheets();
+      showToast(`Payment successful · ${fmt(entered)} paid towards balance`);
+      return;
+    }
     const lines = cartLines();
     const subtotal = lines.reduce((s, l) => s + l.total, 0);
     const delivery = cartDeliveryCharge(subtotal);
@@ -1100,13 +1155,7 @@ function wireEvents() {
     showToast(`Order ${id} placed${remaining > 0 ? ' · ' + fmt(remaining) + ' added to balance due' : ''}`);
   });
 
-  el('payNowBtn').addEventListener('click', () => {
-    const p = seed2.payments;
-    if (p.balanceDue <= 0) return;
-    p.paid += p.balanceDue; p.balanceDue = 0; p.invoicesPending = 0;
-    renderPayments();
-    showToast('Payment successful (demo)');
-  });
+  el('payNowBtn').addEventListener('click', openBalancePaymentFlow);
 
   el('topicSubmit').addEventListener('click', () => { closeSheets(); showToast('Query submitted — we\'ll get back to you shortly'); });
   el('waBanner').addEventListener('click', () => window.open('https://wa.me/' + seed2.store.whatsapp.replace(/\D/g, ''), '_blank'));
