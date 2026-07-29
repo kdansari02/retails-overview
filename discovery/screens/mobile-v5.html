@@ -762,7 +762,7 @@ function renderReviewCart() {
   el('cartCountLine').textContent = lines.reduce((s, l) => s + l.qty, 0) + ' item(s) in your cart';
   el('reviewLines').innerHTML = lines.length ? lines.map((l) => {
     const p = seed5.productsV5.find((x) => x.id === l.id);
-    const pos = { kinley: '-93px -573px', coke: '-342px -573px', sprite: '-588px -573px', fanta: '-831px -573px' }[productPhotoClass(p)] || '-588px -573px';
+    const pos = { kinley: '-123px -603px', coke: '-372px -603px', sprite: '-618px -603px', fanta: '-861px -603px' }[productPhotoClass(p)] || '-618px -603px';
     return `<div class="cart-row-line"><div class="thumb" style="background-position:${pos};"></div><div><div class="name">${l.name}</div><div class="price">${fmt(l.price)} × ${l.qty}</div></div><div class="line-total">${fmt(l.total)}</div></div>`;
   }).join('') : '<p class="muted">Your cart is empty.</p>';
   el('reviewSubtotal').textContent = fmt(subtotal);
@@ -936,8 +936,8 @@ function updateAllocation() {
       confirmBtn.disabled = true;
     }
   } else {
-    statusEl.innerHTML = '<span class="error">Select a method</span>';
-    confirmBtn.disabled = true;
+    statusEl.innerHTML = '<span class="warn">₹0 paid now — ' + fmt(orderThisAmount) + ' added to balance</span>';
+    confirmBtn.disabled = false;
   }
 }
 
@@ -964,11 +964,10 @@ function renderOrdersList() {
   wrap.innerHTML = rows.length ? rows.map((o) => `
     <div class="order-card" data-id="${o.id}">
       <div class="order-top"><div><div class="order-id">${o.id}</div><div class="order-date">${fmtDate(o.date)} · ${o.time}</div></div><span class="status-pill ${statusClass(o.status)}">${o.status}</span></div>
-      <div class="order-main"><div class="order-total">${fmt(o.total)}</div><button class="order-action" data-id="${o.id}">${o.status === 'Delivered' ? 'Reorder ↻' : 'View details ›'}</button></div>
+      <div class="order-main"><div class="order-total">${fmt(o.total)}</div><button class="order-action" data-id="${o.id}">View details ›</button></div>
     </div>`).join('') : '<div class="empty">No orders match.</div>';
   wrap.querySelectorAll('.order-action').forEach((b) => b.addEventListener('click', () => {
     const o = seed5.purchasesV5.orders.find((x) => x.id === b.dataset.id);
-    if (o.status === 'Delivered') { showToast(`Items from ${o.id} added to cart`); return; }
     openOrderDetail(o);
   }));
 }
@@ -1113,14 +1112,13 @@ function wireEvents() {
     if (payingBalance) {
       const total = orderThisAmount;
       const entered = Math.min(total, Object.values(selectedMethods).reduce((s, v) => s + (Number(v) || 0), 0));
-      if (entered <= 0) return;
       seed2.payments.balanceDue = Math.max(0, seed2.payments.balanceDue - entered);
       seed2.payments.paid += entered;
       if (seed2.payments.balanceDue === 0) seed2.payments.invoicesPending = 0;
       payingBalance = false;
       renderPayments();
       closeSheets();
-      showToast(`Payment successful · ${fmt(entered)} paid towards balance`);
+      showToast(entered > 0 ? `Payment successful · ${fmt(entered)} paid towards balance` : `No payment made now — ${fmt(seed2.payments.balanceDue)} remains outstanding`);
       return;
     }
     const lines = cartLines();
@@ -1136,8 +1134,8 @@ function wireEvents() {
     seed5.purchasesV5.orders.push({
       id, date: now.toISOString().slice(0, 10), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
       status: 'Active', total, subtotal, discount: orderDiscount, deliveryCharge: delivery,
-      paymentMode: modeLabel + (remaining > 0 ? ' (partial)' : usedIds.length > 1 ? ' (split)' : ''),
-      paymentStatus: remaining > 0 ? 'Partially Paid' : 'Paid',
+      paymentMode: entered <= 0 ? 'Unpaid — pay later' : modeLabel + (remaining > 0 ? ' (partial)' : usedIds.length > 1 ? ' (split)' : ''),
+      paymentStatus: entered <= 0 ? 'Unpaid' : remaining > 0 ? 'Partially Paid' : 'Paid',
       deliveryAddress: seed5.customer.addresses.find((a) => a.default)?.detail || seed5.customer.addresses[0]?.detail || 'Address on file',
       items: lines.map((l) => ({ name: l.name, qty: l.qty, price: l.price, total: l.total })),
       timeline: [{ step: 'Order Placed', at: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }), done: true }, { step: 'Packed', at: '', done: false }, { step: 'Out for Delivery', at: '', done: false }, { step: 'Delivered', at: '', done: false }]

@@ -460,6 +460,12 @@
     .balance-card { min-height: 260px; text-align: left; background: linear-gradient(135deg,#f3fbf3,#f7fcf5); padding: 20px 24px; }
     .balance-total { color: #f12d16; font-size: 31px; }
     .balance-due-note { font-size: 13.5px; }
+
+    #storeModal { max-width: 560px; padding: 28px 30px; }
+    #storeModal h2 { font-size: 22px; }
+    #storeModal .muted { font-size: 14px; }
+    #storeModal .sheet-label { font-size: 12.5px; margin-top: 18px; }
+    #storeModal .sheet-value { font-size: 16.5px; }
     .btn-row-2 .btn { background: #fff; border: 1px solid #bfcac4; }
 
     .help-layout { grid-template-columns: 1fr 1fr; gap: 30px; }
@@ -731,11 +737,6 @@
   <div class="sheet-label">Location</div><div class="sheet-value" id="mStoreLoc"></div>
   <div class="sheet-label">Support hours</div><div class="sheet-value" id="mStoreHours"></div>
   <div class="sheet-label">Contact</div><div class="sheet-value" id="mStoreContact"></div>
-  <div class="btn-row">
-    <a class="btn btn-primary" style="text-decoration:none;text-align:center;flex:1;" id="storeCallLink">📞 Call</a>
-    <a class="btn btn-secondary" style="text-decoration:none;text-align:center;flex:1;" id="storeWaLink" target="_blank" rel="noopener">💬 WhatsApp</a>
-    <a class="btn btn-secondary" style="text-decoration:none;text-align:center;flex:1;" id="storeMapLink" target="_blank" rel="noopener">📍 Map</a>
-  </div>
   <div class="btn-row"><button class="btn btn-secondary full" data-close>Close</button></div>
 </div>
 
@@ -822,6 +823,18 @@
   <div class="pay-summary-row total"><span>Total payable</span><span id="odTotal"></span></div>
   <div class="sheet-row"><span>Payment mode</span><span id="odPaymentMode"></span></div>
   <div class="sheet-row"><span>Payment status</span><span id="odPaymentStatus"></span></div>
+  <div class="btn-row"><button class="btn btn-primary full" data-close>Close</button></div>
+</div>
+
+<div class="modal" id="queryDetailModal">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div><h2 id="qdTitle"></h2><div class="muted" id="qdMeta"></div></div>
+    <span class="status-pill" id="qdStatus"></span>
+  </div>
+  <div class="sheet-label">Query ID</div><div class="sheet-value" id="qdId"></div>
+  <div class="sheet-label">Category</div><div class="sheet-value" id="qdType"></div>
+  <div class="sheet-label">Raised on</div><div class="sheet-value" id="qdDate"></div>
+  <p class="muted" id="qdNote" style="margin-top:14px;"></p>
   <div class="btn-row"><button class="btn btn-primary full" data-close>Close</button></div>
 </div>
 
@@ -948,9 +961,6 @@ function renderHeader() {
   el('mStoreLoc').textContent = s.location;
   el('mStoreHours').textContent = s.supportHours;
   el('mStoreContact').textContent = `${s.phone} · WhatsApp ${s.whatsapp}`;
-  el('storeCallLink').href = 'tel:' + s.phone.replace(/\s+/g, '');
-  el('storeWaLink').href = 'https://wa.me/' + s.whatsapp.replace(/\D/g, '');
-  el('storeMapLink').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(seed5.storeDetails.mapQuery);
   el('callBtn').href = 'tel:' + s.phone.replace(/\s+/g, '');
   el('waBtn').href = 'https://wa.me/' + s.whatsapp.replace(/\D/g, '');
   el('accInitials').textContent = seed5.customer.avatarInitials;
@@ -1042,7 +1052,7 @@ function renderReviewCart() {
   el('cartCountLine').textContent = lines.reduce((s, l) => s + l.qty, 0) + ' item(s) in your cart';
   el('cartLines').innerHTML = lines.length ? lines.map((l) => {
     const p = seed5.productsV5.find((x) => x.id === l.id);
-    return `<div class="cart-row"><div class="thumb" style="background-position:${{'kinley':'-93px -573px','coke':'-342px -573px','sprite':'-588px -573px','fanta':'-831px -573px'}[productPhotoClass(p)] || '-588px -573px'};"></div>
+    return `<div class="cart-row"><div class="thumb" style="background-position:${{'kinley':'-119px -599px','coke':'-368px -599px','sprite':'-614px -599px','fanta':'-857px -599px'}[productPhotoClass(p)] || '-614px -599px'};"></div>
       <div><div class="name">${l.name}</div><div class="price">${fmt(l.price)} × ${l.qty}</div></div>
       <div class="line-total">${fmt(l.total)}</div></div>`;
   }).join('') : '<p class="muted">Your cart is empty.</p>';
@@ -1221,8 +1231,8 @@ function updateAllocation() {
       confirmBtn.disabled = true;
     }
   } else {
-    statusEl.innerHTML = '<span class="error">Select a payment method</span>';
-    confirmBtn.disabled = true;
+    statusEl.innerHTML = '<span class="warn">₹0 paid now — ' + fmt(orderThisAmount) + ' added to outstanding balance</span>';
+    confirmBtn.disabled = false;
   }
 }
 
@@ -1251,13 +1261,27 @@ function renderOrdersTable() {
       <td>${fmtDate(o.date)}<div style="color:var(--muted);font-size:11.5px;">${o.time}</div></td>
       <td><span class="status-pill ${statusClass(o.status)}">${o.status}</span></td>
       <td>${fmt(o.total)}</td>
-      <td style="padding-right:16px;"><button class="order-pill-btn" data-id="${o.id}">${o.status === 'Delivered' ? 'Reorder ↻' : 'View details ›'}</button></td>
+      <td style="padding-right:16px;"><button class="order-pill-btn" data-id="${o.id}">View details ›</button></td>
     </tr>`).join('') : `<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px 0;">No orders match.</td></tr>`;
   el('ordersBody').querySelectorAll('.order-pill-btn').forEach((b) => b.addEventListener('click', () => {
     const o = seed5.purchasesV5.orders.find((x) => x.id === b.dataset.id);
-    if (o.status === 'Delivered') { showToast(`Items from ${o.id} added to cart`); return; }
     openOrderDetail(o);
   }));
+}
+
+function openQueryDetail(q) {
+  el('qdTitle').textContent = q.title;
+  el('qdMeta').textContent = q.type + ' · #' + q.id;
+  const pill = el('qdStatus');
+  pill.textContent = q.status;
+  pill.className = 'status-pill ' + (q.status === 'Resolved' ? 'status-resolved' : 'status-inprogress');
+  el('qdId').textContent = q.id;
+  el('qdType').textContent = q.type;
+  el('qdDate').textContent = fmtDate(q.date) + ' · ' + q.time;
+  el('qdNote').textContent = q.status === 'Resolved'
+    ? 'This query has been resolved. If the issue persists, raise a new query on WhatsApp.'
+    : 'Our support team is reviewing this request and will get back to you shortly.';
+  openModal('queryDetailModal');
 }
 
 function openOrderDetail(o) {
@@ -1326,7 +1350,7 @@ function renderHelp() {
       <td><span class="status-pill ${q.status === 'Resolved' ? 'status-resolved' : 'status-inprogress'}">${q.status}</span></td>
       <td><button class="link-btn" data-id="${q.id}">View →</button></td>
     </tr>`).join('');
-  el('queriesTable').querySelectorAll('.link-btn').forEach((b) => b.addEventListener('click', () => showToast('Query #' + b.dataset.id + ' details (demo)')));
+  el('queriesTable').querySelectorAll('.link-btn').forEach((b) => b.addEventListener('click', () => openQueryDetail(h.openQueries.find((q) => q.id === b.dataset.id))));
 
   el('commonTopics').innerHTML = h.commonTopics.map((c) => `<div class="common-card"><div class="t">${c.title}</div><div class="s">${c.subtitle}</div></div>`).join('');
   el('commonTopics').querySelectorAll('.common-card').forEach((c) => c.addEventListener('click', () => showToast(c.querySelector('.t').textContent + ' help (demo)')));
@@ -1455,7 +1479,6 @@ function wireEvents() {
     if (payingBalance) {
       const total = orderThisAmount;
       const entered = Math.min(total, Object.values(selectedMethods).reduce((s, v) => s + (Number(v) || 0), 0));
-      if (entered <= 0) return;
       seed2.payments.balanceDue = Math.max(0, seed2.payments.balanceDue - entered);
       seed2.payments.paid += entered;
       if (seed2.payments.balanceDue === 0) seed2.payments.invoicesPending = 0;
@@ -1463,7 +1486,7 @@ function wireEvents() {
       renderPayments();
       renderAccountSummary();
       closeModals();
-      showToast(`Payment successful · ${fmt(entered)} paid towards balance`);
+      showToast(entered > 0 ? `Payment successful · ${fmt(entered)} paid towards balance` : `No payment made now — ${fmt(seed2.payments.balanceDue)} remains outstanding`);
       return;
     }
     const lines = cartLines();
@@ -1479,8 +1502,8 @@ function wireEvents() {
     seed5.purchasesV5.orders.push({
       id, date: now.toISOString().slice(0, 10), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
       status: 'Active', total, subtotal, discount: orderDiscount, deliveryCharge: delivery,
-      paymentMode: modeLabel + (remaining > 0 ? ' (partial)' : usedIds.length > 1 ? ' (split)' : ''),
-      paymentStatus: remaining > 0 ? 'Partially Paid' : 'Paid',
+      paymentMode: entered <= 0 ? 'Unpaid — pay later' : modeLabel + (remaining > 0 ? ' (partial)' : usedIds.length > 1 ? ' (split)' : ''),
+      paymentStatus: entered <= 0 ? 'Unpaid' : remaining > 0 ? 'Partially Paid' : 'Paid',
       deliveryAddress: seed5.customer.addresses.find((a) => a.default)?.detail || seed5.customer.addresses[0]?.detail || 'Address on file',
       items: lines.map((l) => ({ name: l.name, qty: l.qty, price: l.price, total: l.total })),
       timeline: [{ step: 'Order Placed', at: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }), done: true }, { step: 'Packed', at: '', done: false }, { step: 'Out for Delivery', at: '', done: false }, { step: 'Delivered', at: '', done: false }]
