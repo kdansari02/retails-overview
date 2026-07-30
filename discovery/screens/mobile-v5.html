@@ -58,8 +58,6 @@
   .verified { color: var(--brand); font-size: 13px; }
   .store-sub { color: var(--muted); font-size: 11.5px; margin-top: 1px; }
   .store-loc { color: var(--muted); font-size: 11.5px; margin-top: 1px; display: flex; align-items: center; gap: 4px; }
-  .contact-row { display: flex; gap: 8px; margin-top: 10px; }
-  .contact-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 9px; font-weight: 600; font-size: 13px; color: var(--ink); text-decoration: none; }
 
   .page-header { padding: 16px 16px 4px; display: flex; align-items: center; justify-content: space-between; }
   .page-header .title { font-weight: 700; font-size: 19px; }
@@ -302,10 +300,6 @@
             <div class="store-loc"><span class="ui-icon" data-icon="map-pin"></span> <span id="storeLocText"></span></div>
           </div>
         </div>
-        <div class="contact-row">
-          <a class="contact-btn" id="callBtn"><span class="ui-icon" data-icon="phone"></span> Call</a>
-          <a class="contact-btn" id="waBtn" target="_blank" rel="noopener"><span class="ui-icon" data-icon="message-circle"></span> WhatsApp</a>
-        </div>
       </div>
       <div class="content">
         <div class="search-row">
@@ -463,7 +457,6 @@
         <a class="btn btn-primary" style="text-decoration:none;text-align:center;" id="storeCallLink">📞 Call</a>
         <a class="btn btn-secondary" style="text-decoration:none;text-align:center;" id="storeWaLink" target="_blank" rel="noopener">💬 WhatsApp</a>
       </div>
-      <div class="btn-row"><a class="btn btn-secondary full" style="text-decoration:none;text-align:center;" id="storeMapLink" target="_blank" rel="noopener">📍 View on map</a></div>
       <div class="btn-row"><button class="btn btn-secondary full" data-close>Close</button></div>
     </div>
 
@@ -661,9 +654,6 @@ function renderStoreHeader() {
   el('sStoreHours').textContent = s.supportHours;
   el('storeCallLink').href = 'tel:' + s.phone.replace(/\s+/g, '');
   el('storeWaLink').href = 'https://wa.me/' + s.whatsapp.replace(/\D/g, '');
-  el('storeMapLink').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(seed5.storeDetails.mapQuery);
-  el('callBtn').href = 'tel:' + s.phone.replace(/\s+/g, '');
-  el('waBtn').href = 'https://wa.me/' + s.whatsapp.replace(/\D/g, '');
 }
 
 function renderPills() {
