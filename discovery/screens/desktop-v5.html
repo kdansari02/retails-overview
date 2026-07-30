@@ -455,7 +455,6 @@
     #storeModal .muted { font-size: 14px; }
     #storeModal .sheet-label { font-size: 12.5px; margin-top: 18px; }
     #storeModal .sheet-value { font-size: 16.5px; }
-    .btn-row-2 .btn { background: #fff; border: 1px solid #bfcac4; }
 
     .help-layout { grid-template-columns: 1fr 1fr; gap: 30px; }
     .topic-card { min-height: 91px; padding: 14px; margin-bottom: 14px; }
@@ -491,8 +490,6 @@
       </div>
     </div>
     <div class="top-actions">
-      <a class="action-btn" id="callBtn"><span class="ui-icon" data-icon="phone"></span> Call</a>
-      <a class="action-btn" id="waBtn" target="_blank" rel="noopener"><span class="ui-icon" data-icon="message-circle"></span> WhatsApp</a>
       <button class="action-btn" id="infoBtn"><span class="ui-icon" data-icon="info"></span> Store info</button>
       <div class="account-wrap">
         <button class="account-btn" id="accountBtn"><span class="avatar" id="accInitials"></span><span class="account-name" id="accName"></span> ▾</button>
@@ -716,7 +713,10 @@
   </div>
   <div class="sheet-label">Location</div><div class="sheet-value" id="mStoreLoc"></div>
   <div class="sheet-label">Support hours</div><div class="sheet-value" id="mStoreHours"></div>
-  <div class="sheet-label">Contact</div><div class="sheet-value" id="mStoreContact"></div>
+  <div class="btn-row-2" style="margin-top:16px;">
+    <a class="btn btn-primary" style="text-decoration:none;text-align:center;" id="storeCallLink"><span class="ui-icon" data-icon="phone"></span> Call</a>
+    <a class="btn btn-secondary" style="text-decoration:none;text-align:center;" id="storeWaLink" target="_blank" rel="noopener"><span class="ui-icon" data-icon="message-circle"></span> WhatsApp</a>
+  </div>
   <div class="btn-row"><button class="btn btn-secondary full" data-close>Close</button></div>
 </div>
 
@@ -943,9 +943,8 @@ function renderHeader() {
   el('mStoreSub').textContent = s.subtitle;
   el('mStoreLoc').textContent = s.location;
   el('mStoreHours').textContent = s.supportHours;
-  el('mStoreContact').textContent = `${s.phone} · WhatsApp ${s.whatsapp}`;
-  el('callBtn').href = 'tel:' + s.phone.replace(/\s+/g, '');
-  el('waBtn').href = 'https://wa.me/' + s.whatsapp.replace(/\D/g, '');
+  el('storeCallLink').href = 'tel:' + s.phone.replace(/\s+/g, '');
+  el('storeWaLink').href = 'https://wa.me/' + s.whatsapp.replace(/\D/g, '');
   el('accInitials').textContent = seed5.customer.avatarInitials;
   el('accName').textContent = 'My account';
 }
