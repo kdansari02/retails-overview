@@ -105,9 +105,7 @@
   .cart-badge .ui-icon svg { width: 27px; height: 27px; stroke-width: 2.2; }
   .cart-badge #cartCount { position: absolute; top: -7px; right: -7px; background: var(--orange); color: #fff; font-size: 10px; line-height: 17px; min-width: 17px; height: 17px; text-align: center; font-weight: 700; border-radius: 999px; padding: 0 4px; }
   .cart-total { font-weight: 700; font-size: 14px; }
-  .cart-bar-actions { display: flex; align-items: center; gap: 6px; }
   .cart-bar button { background: var(--brand); color: #fff; border: none; border-radius: 10px; padding: 9px 14px; font-weight: 700; font-size: 12.5px; cursor: pointer; font-family: inherit; }
-  .cart-bar-close { background: #f0f1f3 !important; color: var(--muted) !important; width: 30px; height: 30px; flex: none; border-radius: 50% !important; padding: 0 !important; font-size: 12px !important; display: flex; align-items: center; justify-content: center; }
 
   .filter-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
   .filter-scroll::-webkit-scrollbar { display: none; }
@@ -435,10 +433,7 @@
         <div class="cart-badge"><span class="ui-icon" data-icon="shopping-cart"></span><span id="cartCount">0</span></div>
         <div class="cart-total" id="cartTotal">₹0</div>
       </div>
-      <div class="cart-bar-actions">
-        <button id="reviewCartBtn">Review Cart</button>
-        <button class="cart-bar-close" id="cartBarClose" title="Close">✕</button>
-      </div>
+      <button id="reviewCartBtn">Review Cart</button>
     </div>
 
     <nav class="tabbar">
@@ -1094,7 +1089,6 @@ function wireEvents() {
 
   el('reviewCartBtn').addEventListener('click', () => { renderReviewCart(); openSheet('reviewSheet'); });
   el('cartBarToggle').addEventListener('click', () => { renderReviewCart(); openSheet('reviewSheet'); });
-  el('cartBarClose').addEventListener('click', () => { cartBarDismissed = true; updateCartBar(); });
   el('proceedPaymentBtn').addEventListener('click', () => { closeSheets(); openPaymentFlow(); });
   el('backdrop').addEventListener('click', closeSheets);
   document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeSheets));
