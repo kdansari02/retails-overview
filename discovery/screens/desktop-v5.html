@@ -251,16 +251,16 @@
   .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%); width: 92%; max-width: 480px; background: #fff; border-radius: 16px; padding: 22px 24px; z-index: 41; box-shadow: 0 30px 70px rgba(0,0,0,.3); opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease; max-height: 86vh; overflow-y: auto; }
   .modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
   .modal.wide { max-width: 620px; }
-  .pay-drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 800px; max-width: 95vw; background: #fff; z-index: 41; box-shadow: -20px 0 60px rgba(0,0,0,.18); transform: translateX(100%); transition: transform .28s cubic-bezier(.32,.72,0,1); opacity: 1; pointer-events: none; overflow: hidden; }
-  .pay-drawer.show { transform: translateX(0); pointer-events: auto; }
+  .pay-drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 800px; max-width: 95vw; background: #fff; z-index: 41; transform: translateX(100%); transition: transform .28s cubic-bezier(.32,.72,0,1); opacity: 1; pointer-events: none; overflow: hidden; }
+  .pay-drawer.show { transform: translateX(0); pointer-events: auto; box-shadow: -20px 0 60px rgba(0,0,0,.18); }
   .pay-drawer .pay-flow-layout { height: 100vh; }
   .pay-drawer .pay-flow-left { max-height: 100vh; }
   .pay-drawer .pay-flow-right { max-height: 100vh; overflow-y: auto; }
   .pay-drawer-close { position: absolute; top: 20px; right: 20px; z-index: 2; }
 
   /* Review Cart drawer (Addendum 014) — slides in from the right, full height */
-  .cart-drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 460px; max-width: 92vw; background: #fff; z-index: 41; box-shadow: -20px 0 60px rgba(0,0,0,.18); transform: translateX(100%); transition: transform .28s cubic-bezier(.32,.72,0,1); display: flex; flex-direction: column; opacity: 1; pointer-events: none; }
-  .cart-drawer.show { transform: translateX(0); pointer-events: auto; }
+  .cart-drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 460px; max-width: 92vw; background: #fff; z-index: 41; transform: translateX(100%); transition: transform .28s cubic-bezier(.32,.72,0,1); display: flex; flex-direction: column; opacity: 1; pointer-events: none; }
+  .cart-drawer.show { transform: translateX(0); pointer-events: auto; box-shadow: -20px 0 60px rgba(0,0,0,.18); }
   .drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px 6px; flex: none; }
   .drawer-head h2 { margin: 0; font-size: 21px; }
   .drawer-close { width: 34px; height: 34px; border-radius: 50%; border: none; background: #f0f1f3; cursor: pointer; font-size: 14px; color: var(--muted); }
@@ -564,12 +564,6 @@
 
   <!-- MY PURCHASES -->
   <section class="view hidden" id="view-purchases">
-    <div class="stat-cards">
-      <div class="stat-card"><span class="stat-icon" data-icon="wallet"></span><div class="lbl">This month purchased</div><div class="val" id="pThisMonth"></div></div>
-      <div class="stat-card"><span class="stat-icon" data-icon="shopping-bag"></span><div class="lbl">Open orders</div><div class="val" id="pOpenOrders"></div></div>
-      <div class="stat-card"><span class="stat-icon" data-icon="box"></span><div class="lbl">Delivered</div><div class="val" id="pDelivered"></div></div>
-      <div class="stat-card"><span class="stat-icon" data-icon="clock"></span><div class="lbl">Pending / Active</div><div class="val" id="pPendingActive"></div></div>
-    </div>
     <div class="purchases-layout">
       <div class="panel" style="padding:0;">
         <div class="filter-row">
@@ -1222,11 +1216,6 @@ function updateAllocation() {
 }
 
 function renderPurchases() {
-  const p = seed5.purchasesV5;
-  el('pThisMonth').textContent = fmt(p.thisMonthTotal);
-  el('pOpenOrders').textContent = p.openOrders;
-  el('pDelivered').textContent = p.delivered;
-  el('pPendingActive').textContent = p.pendingActive;
   renderOrdersTable();
 }
 
